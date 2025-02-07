@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+  },
+  "devDependencies": {
+  },
+  "license": "UNLICENSED",
+  "private": true,
+  "scripts": {
+    "sf": "cd front && yarn start",
+    "sb": "cd back && yarn start"
+  }
+}
