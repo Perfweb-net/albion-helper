@@ -11,24 +11,18 @@ export const isTokenValid = async (token) => {
         const decodedToken = jwtDecode(token);
         const currentTime = Date.now() / 1000; // En secondes
         const expirationTime = decodedToken.exp; // Temps d'expiration du token
+        const timeLeft = expirationTime - currentTime;
 
         // Vérifier si le token est expiré
-        if (expirationTime <= currentTime) {
-            return false;
-        }
-
-        // Vérifier si le token expire dans moins de 5 minutes (300 secondes)
-        const timeLeft = expirationTime - currentTime;
-        if (timeLeft <= 300) {  // 5 minutes en secondes
-            await api.post('/token/refresh').then((response) => {
-                const newToken = response.data.token;
-                localStorage.setItem('token', newToken);
+        if (expirationTime <= currentTime || timeLeft <= 300) {  // 5 minutes en secondes
+            await api.post('/token/refresh',{refresh_token: localStorage.getItem('refreshToken')}).then((response) => {
+                localStorage.setItem('token', response.data.token);
+                localStorage.setItem('refreshToken', response.data.refresh_token);
             }).catch((error) => {
                 console.error('Error refreshing token:', error);
             });
         }
 
-        // Si le token n'est pas expiré et n'expire pas dans les 5 prochaines minutes
         return true;
     } catch (error) {
         console.error('Invalid token:', error);

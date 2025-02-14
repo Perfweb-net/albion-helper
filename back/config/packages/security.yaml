@@ -15,11 +15,6 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        main:
-            lazy: true
-            stateless: true
-            provider: app_user_provider
-
         api:
             pattern: ^/api
             stateless: true
@@ -36,6 +31,7 @@ security:
 
     # Access control rules
     access_control:
+        - { path: ^/api/register, roles: PUBLIC_ACCESS }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }

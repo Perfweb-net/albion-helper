@@ -11,7 +11,7 @@ const api = axios.create({
 api.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem('token'); // Ou utilisez sessionStorage
-        if (token) {
+        if (token && !config.url.includes('/api/token/refresh')) {
             config.headers['Authorization'] = `Bearer ${token}`;
         }
         return config;
