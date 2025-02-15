@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-    baseURL: 'http://localhost:8001/api', // Remplacez par l'URL de votre API
+    baseURL: 'http://albion-back.perfweb.net:80/api', // Remplacez par l'URL de votre API
     headers: {
         'Content-Type': 'application/json',
     },
