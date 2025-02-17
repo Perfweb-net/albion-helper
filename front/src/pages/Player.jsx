@@ -1,19 +1,24 @@
 import React, {useState, useEffect} from 'react';
 import api from '../api';
 import {useNavigate, useParams} from 'react-router-dom';
-import {Avatar, Box, Card, CardContent, Divider, Grid2, Typography} from "@mui/material";
+import {Avatar, Box, Button, Card, CardContent, Divider, Grid2, Typography} from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import {isTokenValid} from "../components/PrivateRoute";
 
 const Player = () => {  // Le nom du composant commence par une majuscule
     const [player, setPlayer] = useState('');
     const [error, setError] = useState('');
-    const navigate = useNavigate();
     const playerId = useParams().playerId;
+    const navigate = useNavigate();  // Initialisation du hook pour la navigation
 
-    useEffect(() => {
+    useEffect(() =>{
         const getPlayerInfo = async (e) => {
+            const token = localStorage.getItem('token');
+
+            await isTokenValid(token);
+
             await api.get("/player/" + playerId).then(
                 (response) => {
-                    console.log(response);
                     if (response.data.statut !== "OK") {
                         setError(response.data.message);
                     } else {
@@ -27,8 +32,15 @@ const Player = () => {  // Le nom du composant commence par une majuscule
         getPlayerInfo();
     }, [playerId]);
 
+    const handleGoBack = () => {
+        navigate('/players');  // Remplace "/dashboard" par le chemin du tableau de bord
+    };
+
     return (
         <>
+            <Button onClick={handleGoBack} sx={{alignSelf: 'flex-start', marginLeft: 3, marginBottom: 2}} startIcon={<ArrowBackIcon/>}>
+                back
+            </Button>
             {player && (
                 <Card sx={{maxWidth: 600, margin: "auto", padding: 2, boxShadow: 3}}>
                     <CardContent>

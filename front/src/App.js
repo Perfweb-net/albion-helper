@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import Login from './components/Login';
-import Register from './components/Register';
+import Login from './pages/Login';
+import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
 import Header from "./layout/Header";
@@ -25,7 +25,7 @@ const App = () => {
     return (
         <Router>
             <Header/>
-            <main style={{ marginBottom: '100px' , marginTop: '50px' }}>
+            <main style={{ marginBottom: '100px' , marginTop: '25px' }}>
                 <Routes>
                     {/* Route publique */}
                     <Route path="/" element={<Login/>}/>

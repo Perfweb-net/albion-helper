@@ -1,7 +1,10 @@
 import React, {useContext, useState} from 'react';
-import {AppBar, Toolbar, Typography, Button, Box} from '@mui/material';
+import {AppBar, Toolbar, Button, Box} from '@mui/material';
 import {Link, useNavigate} from 'react-router-dom';
 import {UserContext} from "../context/UserContext";
+import Logo from "../components/svg/Logo";
+import {motion} from "framer-motion";
+
 
 const Header = () => {
     // L'état de l'utilisateur connecté
@@ -19,18 +22,25 @@ const Header = () => {
 
     return (
         <AppBar position="sticky">
-            <Toolbar>
+            <Toolbar sx={{display: "flex", justifyContent: "space-between"}}>
                 {/* Logo à gauche */}
-                <Box sx={{flexGrow: 1}}>
-                    <Typography variant="h6" component="div">
-
-                    </Typography>
+                <Box sx={{cursor: "pointer"}} onClick={() => navigate('/dashboard')}>
+                    <motion.div
+                        initial={{ x: 0, rotate: 0 }}
+                        animate={{ x: 0, rotate: 0 }}
+                        whileHover={{
+                            x: [0, -2, 2, -2, 2, 0], // Mouvement de vibration
+                            rotate: [0, -2, 2, -2, 2, 0], // Légère rotation
+                            transition: { duration: 1, repeat: Infinity }
+                        }}
+                    >
+                        <Logo color={"white"} width={90} height={90}/>
+                    </motion.div>
                 </Box>
 
                 {/* Menu au centre */}
                 {isLogin && (
-                    <Box sx={{display: 'flex', gap: 3, marginRight: 4}}>
-                        <Button color="inherit" component={Link} to="/dashboard">Home</Button>
+                    <Box sx={{display: 'flex', gap: 3, marginRight: 4, justifyContent: "flex-end"}}>
                         <Button color="inherit" component={Link} to="/guilds">Guilds</Button>
                         <Button color="inherit" component={Link} to="/players">Players</Button>
                         <Button color="inherit" component={Link} to="/map">Map</Button>
