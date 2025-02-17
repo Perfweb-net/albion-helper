@@ -5,14 +5,11 @@ import {
     Box,
     Button,
     Container,
-    FormControl,
     Grid2,
-    InputLabel,
-    MenuItem,
-    Select,
     TextField,
     Typography
 } from "@mui/material";
+import {isTokenValid} from "../components/PrivateRoute";
 
 const Guilds = () => {  // Le nom du composant commence par une majuscule
     const [pseudo, setPseudo] = useState('');
@@ -20,6 +17,9 @@ const Guilds = () => {  // Le nom du composant commence par une majuscule
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
+        const token = localStorage.getItem('token');
+
+        await isTokenValid(token);
         await api.get("/player/search?pseudo=" + pseudo).then(
             (response) => {
                 setGuilds(response.data.guilds);

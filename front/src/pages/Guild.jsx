@@ -1,8 +1,10 @@
 import React, {useState, useEffect} from 'react';
 import api from '../api';
 import {useNavigate, useParams} from 'react-router-dom';
-import {Avatar, Box, Button, Card, CardContent, Divider, Grid2, Typography} from "@mui/material";
+import {Box, Button, Card, CardContent, Divider, Grid2, Typography} from "@mui/material";
 import moment from "moment";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import {isTokenValid} from "../components/PrivateRoute";
 
 const Player = () => {  // Le nom du composant commence par une majuscule
     const [guild, setGuild] = useState('');
@@ -10,18 +12,20 @@ const Player = () => {  // Le nom du composant commence par une majuscule
     const [overall, setOverall] = useState('')
     const [error, setError] = useState('');
     const [expanded, setExpanded] = useState(false);
+    const navigate = useNavigate();  // Initialisation du hook pour la navigation
+
     const visibleMembers = expanded ? members : members.slice(0, 3);
 
-    const navigate = useNavigate();
-    console.log(useParams());
     const guildId = useParams().guildId;
-    console.log(guildId);
 
     useEffect(() => {
         const getPlayerInfo = async (e) => {
+            const token = localStorage.getItem('token');
+
+            await isTokenValid(token)
+
             await api.get("/guild/" + guildId).then(
                 (response) => {
-                    console.log(response);
                     if (response.data.statut !== "OK") {
                         setError(response.data.message);
                     } else {
@@ -36,8 +40,16 @@ const Player = () => {  // Le nom du composant commence par une majuscule
 
         getPlayerInfo();
     }, [guildId]);
+
+    const handleGoBack = () => {
+        navigate('/guilds');  // Remplace "/dashboard" par le chemin du tableau de bord
+    };
+
     return (
         <>
+            <Button onClick={handleGoBack} sx={{alignSelf: 'flex-start', marginLeft: 3, marginBottom: 2}} startIcon={<ArrowBackIcon/>}>
+                back
+            </Button>
             {guild && (
                 <>
                     <Grid2 container spacing={2}
@@ -74,12 +86,14 @@ const Player = () => {  // Le nom du composant commence par une majuscule
 
                                         <Typography
                                             variant="body1"
-                                        ><strong>Kill fame:</strong> {guild.killFame.toLocaleString()} <strong>pour</strong> {overall.kills} <strong>Kills</strong>
+                                        ><strong>Kill fame:</strong> {guild.killFame.toLocaleString()}
+                                            <strong>pour</strong> {overall.kills} <strong>Kills</strong>
                                         </Typography>
 
                                         <Typography
                                             variant="body1"
-                                        ><strong>Death fame:</strong> {guild.DeathFame.toLocaleString()} <strong>pour</strong> {overall.deaths} <strong>Deaths</strong>
+                                        ><strong>Death fame:</strong> {guild.DeathFame.toLocaleString()}
+                                            <strong>pour</strong> {overall.deaths} <strong>Deaths</strong>
                                         </Typography>
 
                                         <Typography
@@ -121,6 +135,27 @@ const Player = () => {  // Le nom du composant commence par une majuscule
                                         onClick={() => setExpanded(!expanded)}
                                         sx={{marginTop: 2}}
                                     >{expanded ? 'Masquer' : 'Afficher Tout'}</Button>
+                                </CardContent>
+                            </Card>
+                        </Grid2>
+                    </Grid2>
+                </>
+            )}
+
+            {error && (
+                <>
+                    <Grid2 container spacing={2}
+                           sx={{width: '90%', marginLeft: "5%", alignItems: 'center', marginBottom: 2}}>
+                        <Grid2 item size={12}>
+                            <Card>
+                                <CardContent>
+                                    <Box>
+                                        <Typography
+                                            variant="h5"
+                                            fontWeight={"bold"}>
+                                            Erreur lors de la récupération des données
+                                        </Typography>
+                                    </Box>
                                 </CardContent>
                             </Card>
                         </Grid2>

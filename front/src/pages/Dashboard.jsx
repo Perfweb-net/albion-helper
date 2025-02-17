@@ -14,6 +14,7 @@ import {
     Typography
 } from "@mui/material";
 import CircleIcon from "@mui/icons-material/Circle";
+import {isTokenValid} from "../components/PrivateRoute";
 
 const Dashboard = () => {  // Le nom du composant commence par une majuscule
     const [pseudo, setPseudo] = useState('');
@@ -31,6 +32,10 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
     };
 
     const handleSubmit = async (e) => {
+        const token = localStorage.getItem('token');
+
+        await isTokenValid(token)
+
         if (selection === 'map') {
             await api.get(`/map/search?map=${pseudo}`).then((response) => {
                 setMaps(response.data.maps);

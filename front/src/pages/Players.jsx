@@ -9,6 +9,7 @@ import {
     TextField,
     Typography
 } from "@mui/material";
+import {isTokenValid} from "../components/PrivateRoute";
 
 const Players = () => {  // Le nom du composant commence par une majuscule
     const [pseudo, setPseudo] = useState('');
@@ -16,6 +17,9 @@ const Players = () => {  // Le nom du composant commence par une majuscule
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
+        const token = localStorage.getItem('token');
+
+        await isTokenValid(token)
         await api.get("/player/search?pseudo=" + pseudo).then(
             (response) => {
                     setPlayers(response.data.players);

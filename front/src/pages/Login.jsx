@@ -1,8 +1,9 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import api from '../authApi';
 import { useNavigate } from 'react-router-dom';
 import {Box, Button, Container, TextField, Typography} from "@mui/material";
 import {UserContext} from "../context/UserContext";
+import {isTokenValid} from "../components/PrivateRoute";
 
 const Login = () => {
     const [username, setUsername] = useState('');
@@ -10,6 +11,13 @@ const Login = () => {
     const [error, setError] = useState('');
     const navigate = useNavigate();
     const {isLogin, setIsLogin} = useContext(UserContext);
+
+    useEffect(() => {
+        const isValid = isTokenValid(localStorage.getItem('token'));
+        if (isLogin && isValid) {
+            navigate('/dashboard');
+        }
+    }, [navigate, isLogin]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -22,7 +30,7 @@ const Login = () => {
             setIsLogin(true);
             navigate('/dashboard'); // Rediriger vers la page Dashboard après connexion
         } catch (err) {
-            setError('Invalid credentials');
+            setError('Une erreur est survenue lors de la connexion');
             setIsLogin(false);
         }
     };

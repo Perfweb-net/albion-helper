@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import api from '../authApi';
 import { useNavigate } from 'react-router-dom';
-import {Box, Button, Container, FormControl, InputLabel, MenuItem, Select, TextField, Typography} from "@mui/material";
+import {Box, Button, Container, TextField, Typography} from "@mui/material";
 
 const Register = () => {
     const [username, setUsername] = useState('');
