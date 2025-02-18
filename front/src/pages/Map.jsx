@@ -202,7 +202,7 @@ const Map = () => {
                                                     alignItems: "center",
                                                     gap: 1
                                                 }}>
-                                                    {mapTypes[map.type].icon}
+                                                    {mapTypes[map.type]?.icon}
                                                     <Typography variant="body2" color="textSecondary"
                                                                 sx={{fontWeight: 'bold'}}>
                                                         {map.name}
