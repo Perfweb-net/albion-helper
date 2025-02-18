@@ -36,31 +36,50 @@ const Map = () => {
     }, [baseSearch]);
 
     const chestTypes = useMemo(() => ({
-        "Big Avalonian Chest": {color: "gold", fontSize: "large"},
-        "Avalonian Chest": {color: "gold", fontSize: "small"},
-        "Big Group Chest": {color: "blue", fontSize: "large"},
-        "Big Solo Chest": {color: "green", fontSize: "large"},
-        "Solo Chest": {color: "green", fontSize: "small"}
+        "Big Avalonian Chest": {color: "gold", fontSize: "large", info: "Grand Coffre Gold"},
+        "Avalonian Chest": {color: "gold", fontSize: "small", info: "Coffre Gold"},
+        "Big Group Chest": {color: "blue", fontSize: "large", info: "Coffre Bleu"},
+        "Big Solo Chest": {color: "green", fontSize: "large", info: "Grand Coffre Vert"},
+        "Solo Chest": {color: "green", fontSize: "small", info: "Coffre Vert"}
     }), []);
 
     const mapTypes = useMemo(() => ({
-        "TUNNEL_ROYAL": <Crown/>,
-        "TUNNEL_ROYAL_RED": <Crown color="red"/>,
+        "TUNNEL_ROYAL":{icon:<Crown/>, info:"Royal Bleu/Jaune"},
+        "TUNNEL_ROYAL_RED": {icon:<Crown color="red"/>, info:"Royal Rouge"},
 
-        "TUNNEL_DEEP_RAID": <GroupsIcon sx={{color: "gold", fontSize: "large", background: "grey", padding: "3px"}}/>,
-        "TUNNEL_DEEP": <Portal/>,
+        "TUNNEL_DEEP_RAID": {icon:<GroupsIcon sx={{color: "gold", fontSize: "large", background: "grey", padding: "3px"}}/>, info:"Portail Gold"},
+        "TUNNEL_DEEP": {icon:<Portal/>, info:"Retour bréci"},
 
-        "TUNNEL_LOW": <Tunnel color="grey" width={20} height={20}/>,
-        "TUNNEL_MEDIUM": <Tunnel color="blue" width={20} height={20}/>,
-        "TUNNEL_HIGH": <Tunnel color="gold" width={20} height={20}/>,
+        "TUNNEL_LOW": {icon:<Tunnel color="green" width={20} height={20}/>, info:"Suite ava basse"},
+        "TUNNEL_MEDIUM": {icon:<Tunnel color="blue" width={20} height={20}/>, info:"Suite ava moyenne"},
+        "TUNNEL_HIGH": {icon:<Tunnel color="gold" width={20} height={20}/>, info:"Suite ava haute"},
 
-        "TUNNEL_BLACK_HIGH": <HomeIcon sx={{color: "grey", fontSize: "large"}}/>,
-        "TUNNEL_BLACK_MEDIUM": <HomeIcon sx={{color: "blue", fontSize: "large"}}/>,
-        "TUNNEL_BLACK_LOW": <HomeIcon sx={{color: "gold", fontSize: "large"}}/>,
+        "TUNNEL_BLACK_LOW": {icon:<HomeIcon sx={{color: "green", fontSize: "large"}}/>, info:"Suite bz basse"},
+        "TUNNEL_BLACK_MEDIUM": {icon:<HomeIcon sx={{color: "blue", fontSize: "large"}}/>, info:"Suite bz moyenne"},
+        "TUNNEL_BLACK_HIGH": {icon:<HomeIcon sx={{color: "gold", fontSize: "large"}}/>, info:"Suite bz haute"},
 
-        "TUNNEL_HIDEOUT": <DomainIcon sx={{color: "green", fontSize: "large"}}/>,
-        "TUNNEL_HIDEOUT_DEEP": <DomainIcon sx={{color: "gold", fontSize: "large"}}/>,
+        "TUNNEL_HIDEOUT": {icon:<DomainIcon sx={{color: "green", fontSize: "large"}}/>, info:"HO"},
+        "TUNNEL_HIDEOUT_DEEP": {icon:<DomainIcon sx={{color: "gold", fontSize: "large"}}/>, info:"HO Deep"},
     }), []);
+
+    const filteredMapTypes = useMemo(() => {
+        if (mapsFitered.length === 0) return mapTypes; // Si aucun filtre, on affiche tout
+        const usedTypes = new Set(mapsFitered.map(map => map.type));
+        return Object.fromEntries(Object.entries(mapTypes).filter(([type]) => usedTypes.has(type)));
+    }, [mapsFitered, mapTypes]);
+
+    const filteredChestTypes = useMemo(() => {
+        if (mapsFitered.length === 0) return chestTypes; // Si aucun filtre, on affiche tout
+        const usedChests = new Set();
+        mapsFitered.forEach(map => {
+            map.zoneInfo.markers.forEach(marker => {
+                if (chestTypes[marker.name]) {
+                    usedChests.add(marker.name);
+                }
+            });
+        });
+        return Object.fromEntries(Object.entries(chestTypes).filter(([type]) => usedChests.has(type)));
+    }, [mapsFitered, chestTypes]);
 
     const handleChange = (e) => {
         setSearch(e.target.value)
@@ -183,7 +202,7 @@ const Map = () => {
                                                     alignItems: "center",
                                                     gap: 1
                                                 }}>
-                                                    {mapTypes[map.type]}
+                                                    {mapTypes[map.type].icon}
                                                     <Typography variant="body2" color="textSecondary"
                                                                 sx={{fontWeight: 'bold'}}>
                                                         {map.name}
@@ -219,6 +238,56 @@ const Map = () => {
                             </Grid2>
                         </Box>
                     )}
+                </Box>
+
+                <Box sx={{ marginTop: 4, width: "100%" }}>
+                    <Typography variant="h6" gutterBottom>
+                        Légende
+                    </Typography>
+
+                    <Grid2 container spacing={2}>
+                        {/* Affichage des types de tunnels */}
+                        {Object.entries(filteredMapTypes).map(([type, { icon, info }]) => (
+                            <Grid2 xs={6} sm={4} md={2} key={type}>
+                                <Box
+                                    sx={{
+                                        padding: 2,
+                                        border: "1px solid #ccc",
+                                        borderRadius: 2,
+                                        textAlign: "center",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        backgroundColor: "#f9f9f9",
+                                        '&:hover': { backgroundColor: "#e0e0e0" }
+                                    }}
+                                >
+                                    {icon} <Typography variant="body2" color="textSecondary" sx={{ fontWeight: "bold", marginLeft: 1 }}>{info}</Typography>
+                                </Box>
+                            </Grid2>
+                        ))}
+
+                        {/* Affichage des types de coffres */}
+                        {Object.entries(filteredChestTypes).map(([type, { color, fontSize, info }]) => (
+                            <Grid2 xs={6} sm={4} md={2} key={type}>
+                                <Box
+                                    sx={{
+                                        padding: 2,
+                                        border: "1px solid #ccc",
+                                        borderRadius: 2,
+                                        textAlign: "center",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        backgroundColor: "#f9f9f9",
+                                        '&:hover': { backgroundColor: "#e0e0e0" }
+                                    }}
+                                >
+                                    <CircleIcon sx={{ color, fontSize }} />  <Typography variant="body2" sx={{ ml: 1 }}>{info}</Typography>
+                                </Box>
+                            </Grid2>
+                        ))}
+                    </Grid2>
                 </Box>
             </Container>
         </>
