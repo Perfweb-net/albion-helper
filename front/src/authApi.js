@@ -2,7 +2,7 @@ import axios from 'axios';
 import {isTokenValid} from "./components/PrivateRoute";
 
 const api = axios.create({
-    baseURL: 'https://albion-back.perfweb.net:80/api',
+    baseURL: 'https://albion-back.perfweb.net/api',
     //baseURL: 'http://localhost:8001/api', // Remplacez par l'URL de votre API
     headers: {
         'Content-Type': 'application/json',
