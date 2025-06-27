@@ -7,6 +7,11 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import Crown from '../components/svg/Crown';
 import Portal from '../components/svg/Portal';
 import Tunnel from '../components/svg/Tunnel';
+import ParkIcon from '@mui/icons-material/Park';      // WOOD
+import GrassIcon from '@mui/icons-material/Grass';    // FIBER
+import LandscapeIcon from '@mui/icons-material/Landscape'; // ROCK
+import DiamondIcon from '@mui/icons-material/Diamond'; // ORE (plus parlant)
+import PetsIcon from '@mui/icons-material/Pets';      // HIDE
 
 import {
     Box,
@@ -81,6 +86,23 @@ const Map = () => {
         return Object.fromEntries(Object.entries(chestTypes).filter(([type]) => usedChests.has(type)));
     }, [mapsFitered, chestTypes]);
 
+    const resourceIcons = {
+        WOOD: <ParkIcon sx={{ color: "saddlebrown" }} />, // Bois
+        FIBER: <GrassIcon sx={{ color: "green" }} />,    // Fibre
+        ROCK: <LandscapeIcon sx={{ color: "grey" }} />,  // Pierre
+        ORE: <DiamondIcon sx={{ color: "orange" }} />,  // Minerai
+        HIDE: <PetsIcon sx={{ color: "peru" }} />,       // Peau
+    };
+
+    // Mapping français pour les ressources
+    const resourceLabels = {
+        WOOD: 'Bois',
+        FIBER: 'Fibre',
+        ROCK: 'Pierre',
+        ORE: 'Minerai',
+        HIDE: 'Peau',
+    };
+
     const handleChange = (e) => {
         setSearch(e.target.value)
     };
@@ -112,6 +134,12 @@ const Map = () => {
             setMapsFitered([]);
         }
     }, [baseSearch, maps, search]);
+
+    // Ajout des tailles d'icônes pour les mobs
+    const mobResourceIconSize = {
+        giant: 48, // taille grande
+        elite: 24, // taille petite
+    };
 
     return (
         <>
@@ -180,6 +208,38 @@ const Map = () => {
                                         return acc;
                                     }, {});
 
+                                    // Détection des mobs géants ou élites par ressource (avec comptage)
+                                    const mobResourceIconsMap = {};
+                                    (map.zoneInfo.mobs || []).forEach(mob => {
+                                        let type = null;
+                                        let size = null;
+                                        if (mob.name.toLowerCase().includes('giant')) {
+                                            size = mobResourceIconSize.giant;
+                                            if (mob.name.includes('WOOD')) type = 'WOOD';
+                                            if (mob.name.includes('FIBER')) type = 'FIBER';
+                                            if (mob.name.includes('ROCK')) type = 'ROCK';
+                                            if (mob.name.includes('ORE')) type = 'ORE';
+                                            if (mob.name.includes('HIDE')) type = 'HIDE';
+                                        } else if (mob.name.toLowerCase().includes('elite')) {
+                                            size = mobResourceIconSize.elite;
+                                            if (mob.name.includes('WOOD')) type = 'WOOD';
+                                            if (mob.name.includes('FIBER')) type = 'FIBER';
+                                            if (mob.name.includes('ROCK')) type = 'ROCK';
+                                            if (mob.name.includes('ORE')) type = 'ORE';
+                                            if (mob.name.includes('HIDE')) type = 'HIDE';
+                                        }
+                                        if (type && resourceIcons[type] && size) {
+                                            if (!mobResourceIconsMap[type]) {
+                                                mobResourceIconsMap[type] = { count: 0, size, icon: resourceIcons[type] };
+                                            }
+                                            mobResourceIconsMap[type].count += 1;
+                                            // Si on a déjà un giant, on garde la taille giant (plus grande)
+                                            if (size > mobResourceIconsMap[type].size) {
+                                                mobResourceIconsMap[type].size = size;
+                                            }
+                                        }
+                                    });
+                                    const mobResourceIcons = Object.entries(mobResourceIconsMap);
 
                                     return (
                                         <Grid2 xs={12} sm={6} md={4} key={map.name}>
@@ -231,6 +291,25 @@ const Map = () => {
                                                         </Box>
                                                     ))}
                                                 </Box>
+
+                                                {/* Affichage des mobs géants/élites de ressource */}
+                                                {mobResourceIcons.length > 0 && (
+                                                    <Box sx={{
+                                                        mt: 1,
+                                                        display: "flex",
+                                                        justifyContent: "center",
+                                                        flexWrap: "wrap"
+                                                    }}>
+                                                        {mobResourceIcons.map(([type, mob], idx) => (
+                                                            <Box key={idx} sx={{ display: "flex", alignItems: "center", mx: 1 }}>
+                                                                {React.cloneElement(mob.icon, { style: { fontSize: mob.size } })}
+                                                                <Typography variant="body2" sx={{ ml: 0.5 }}>
+                                                                    x{mob.count}
+                                                                </Typography>
+                                                            </Box>
+                                                        ))}
+                                                    </Box>
+                                                )}
                                             </Box>
                                         </Grid2>
                                     );
@@ -284,6 +363,27 @@ const Map = () => {
                                     }}
                                 >
                                     <CircleIcon sx={{ color, fontSize }} />  <Typography variant="body2" sx={{ ml: 1 }}>{info}</Typography>
+                                </Box>
+                            </Grid2>
+                        ))}
+
+                        {/* Affichage des types de ressources */}
+                        {Object.entries(resourceIcons).map(([type, icon]) => (
+                            <Grid2 xs={6} sm={4} md={2} key={type}>
+                                <Box
+                                    sx={{
+                                        padding: 2,
+                                        border: "1px solid #ccc",
+                                        borderRadius: 2,
+                                        textAlign: "center",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        backgroundColor: "#f9f9f9",
+                                        '&:hover': { backgroundColor: "#e0e0e0" }
+                                    }}
+                                >
+                                    {icon} <Typography variant="body2" sx={{ ml: 1 }}>{resourceLabels[type]}</Typography>
                                 </Box>
                             </Grid2>
                         ))}
