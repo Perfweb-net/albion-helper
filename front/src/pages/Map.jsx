@@ -208,38 +208,41 @@ const Map = () => {
                                         return acc;
                                     }, {});
 
-                                    // Détection des mobs géants ou élites par ressource (avec comptage)
+                                    // Détection des mobs géants ou élites par ressource (avec comptage séparé)
                                     const mobResourceIconsMap = {};
                                     (map.zoneInfo.mobs || []).forEach(mob => {
-                                        let type = null;
-                                        let size = null;
+                                        let resourceType = null;
+                                        let mobType = null;
+
                                         if (mob.name.toLowerCase().includes('giant')) {
-                                            size = mobResourceIconSize.giant;
-                                            if (mob.name.includes('WOOD')) type = 'WOOD';
-                                            if (mob.name.includes('FIBER')) type = 'FIBER';
-                                            if (mob.name.includes('ROCK')) type = 'ROCK';
-                                            if (mob.name.includes('ORE')) type = 'ORE';
-                                            if (mob.name.includes('HIDE')) type = 'HIDE';
+                                            mobType = 'giant';
                                         } else if (mob.name.toLowerCase().includes('elite')) {
-                                            size = mobResourceIconSize.elite;
-                                            if (mob.name.includes('WOOD')) type = 'WOOD';
-                                            if (mob.name.includes('FIBER')) type = 'FIBER';
-                                            if (mob.name.includes('ROCK')) type = 'ROCK';
-                                            if (mob.name.includes('ORE')) type = 'ORE';
-                                            if (mob.name.includes('HIDE')) type = 'HIDE';
+                                            mobType = 'elite';
                                         }
-                                        if (type && resourceIcons[type] && size) {
-                                            if (!mobResourceIconsMap[type]) {
-                                                mobResourceIconsMap[type] = { count: 0, size, icon: resourceIcons[type] };
+
+                                        if (mobType) {
+                                            if (mob.name.includes('WOOD')) resourceType = 'WOOD';
+                                            else if (mob.name.includes('FIBER')) resourceType = 'FIBER';
+                                            else if (mob.name.includes('ROCK')) resourceType = 'ROCK';
+                                            else if (mob.name.includes('ORE')) resourceType = 'ORE';
+                                            else if (mob.name.includes('HIDE')) resourceType = 'HIDE';
+                                        }
+
+                                        if (resourceType && mobType) {
+                                            if (!mobResourceIconsMap[resourceType]) {
+                                                mobResourceIconsMap[resourceType] = {};
                                             }
-                                            mobResourceIconsMap[type].count += 1;
-                                            // Si on a déjà un giant, on garde la taille giant (plus grande)
-                                            if (size > mobResourceIconsMap[type].size) {
-                                                mobResourceIconsMap[type].size = size;
+                                            if (!mobResourceIconsMap[resourceType][mobType]) {
+                                                mobResourceIconsMap[resourceType][mobType] = {
+                                                    count: 0,
+                                                    size: mobResourceIconSize[mobType],
+                                                    icon: resourceIcons[resourceType]
+                                                };
                                             }
+                                            mobResourceIconsMap[resourceType][mobType].count++;
                                         }
                                     });
-                                    const mobResourceIcons = Object.entries(mobResourceIconsMap);
+                                    const mobResourceEntries = Object.entries(mobResourceIconsMap);
 
                                     return (
                                         <Grid2 xs={12} sm={6} md={4} key={map.name}>
@@ -293,19 +296,32 @@ const Map = () => {
                                                 </Box>
 
                                                 {/* Affichage des mobs géants/élites de ressource */}
-                                                {mobResourceIcons.length > 0 && (
+                                                {mobResourceEntries.length > 0 && (
                                                     <Box sx={{
                                                         mt: 1,
                                                         display: "flex",
                                                         justifyContent: "center",
-                                                        flexWrap: "wrap"
+                                                        flexWrap: "wrap",
+                                                        gap: 2,
                                                     }}>
-                                                        {mobResourceIcons.map(([type, mob], idx) => (
+                                                        {mobResourceEntries.map(([type, mobs], idx) => (
                                                             <Box key={idx} sx={{ display: "flex", alignItems: "center", mx: 1 }}>
-                                                                {React.cloneElement(mob.icon, { style: { fontSize: mob.size } })}
-                                                                <Typography variant="body2" sx={{ ml: 0.5 }}>
-                                                                    x{mob.count}
-                                                                </Typography>
+                                                                {mobs.giant && (
+                                                                    <Box sx={{ display: 'flex', alignItems: 'center', mr: 1 }}>
+                                                                         {React.cloneElement(mobs.giant.icon, { style: { fontSize: mobs.giant.size } })}
+                                                                         <Typography variant="body2" sx={{ ml: 0.5 }}>
+                                                                            x{mobs.giant.count}
+                                                                         </Typography>
+                                                                    </Box>
+                                                                )}
+                                                                {mobs.elite && (
+                                                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                                                        {React.cloneElement(mobs.elite.icon, { style: { fontSize: mobs.elite.size } })}
+                                                                        <Typography variant="body2" sx={{ ml: 0.5 }}>
+                                                                            x{mobs.elite.count}
+                                                                        </Typography>
+                                                                    </Box>
+                                                                )}
                                                             </Box>
                                                         ))}
                                                     </Box>
