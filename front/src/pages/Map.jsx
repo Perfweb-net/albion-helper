@@ -17,6 +17,8 @@ import {
     Box,
     Button,
     Container, Grid2,
+    FormControlLabel,
+    Switch,
     TextField,
     Typography
 } from "@mui/material";
@@ -27,6 +29,8 @@ const Map = () => {
     const [mapsFitered, setMapsFitered] = useState([]);
     const [search, setSearch] = useState('');
     const [baseSearch, setBaseSearch] = useState('');
+    const [showChestInfo, setShowChestInfo] = useState(true);
+    const [showGatherInfo, setShowGatherInfo] = useState(false);
 
     const handleSubmit = useCallback(async () => {
         if (baseSearch.length === 3) {
@@ -182,6 +186,28 @@ const Map = () => {
                                 Search
                             </Button>
                         </Grid2>
+                        <Grid2 size={12} sx={{ display: 'flex', justifyContent: 'center', gap: 2, mt: 2 }}>
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={showChestInfo}
+                                        onChange={(e) => setShowChestInfo(e.target.checked)}
+                                        name="showChestInfo"
+                                    />
+                                }
+                                label="Coffres"
+                            />
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={showGatherInfo}
+                                        onChange={(e) => setShowGatherInfo(e.target.checked)}
+                                        name="showGatherInfo"
+                                    />
+                                }
+                                label="Gather"
+                            />
+                        </Grid2>
                     </Grid2>
 
                     {mapsFitered.length > 0 && (
@@ -214,18 +240,24 @@ const Map = () => {
                                         let resourceType = null;
                                         let mobType = null;
 
-                                        if (mob.name.toLowerCase().includes('giant')) {
+                                        if ((mob.name.toLowerCase().includes('giant') || mob.name.toLowerCase().includes('guardian') || mob.name.toLowerCase().includes('BASILISK'))) {
                                             mobType = 'giant';
-                                        } else if (mob.name.toLowerCase().includes('elite')) {
+                                        } else if (mob.name.toLowerCase().includes('elite') ||  mob.name.toLowerCase().includes('veteran')) {
                                             mobType = 'elite';
                                         }
 
                                         if (mobType) {
-                                            if (mob.name.includes('WOOD')) resourceType = 'WOOD';
-                                            else if (mob.name.includes('FIBER')) resourceType = 'FIBER';
-                                            else if (mob.name.includes('ROCK')) resourceType = 'ROCK';
-                                            else if (mob.name.includes('ORE')) resourceType = 'ORE';
-                                            else if (mob.name.includes('HIDE')) resourceType = 'HIDE';
+                                            if (mob.name.includes('WOOD') || mob.name.includes('ENT')) {
+                                                resourceType = 'WOOD';
+                                            } else if (mob.name.includes('FIBER') || mob.name.includes('DRYAD')) {
+                                                resourceType = 'FIBER';
+                                            } else if (mob.name.includes('ROCK') || mob.name.includes('ROCKGIANT')) {
+                                                resourceType = 'ROCK';
+                                            } else if (mob.name.includes('ORE') || mob.name.includes('OREGIANT')) {
+                                                resourceType = 'ORE';
+                                            } else if (mob.name.includes('HIDE') || mob.name.includes('BASILISK')) {
+                                                resourceType = 'HIDE';
+                                            }
                                         }
 
                                         if (resourceType && mobType) {
@@ -273,30 +305,32 @@ const Map = () => {
                                                 </Box>
 
                                                 {/* Affichage des coffres */}
-                                                <Box sx={{
-                                                    mt: 1,
-                                                    display: "flex",
-                                                    justifyContent: "center",
-                                                    flexWrap: "wrap"
-                                                }}>
-                                                    {Object.entries(chestCounts).map(([type, count], index) => (
-                                                        <Box key={index}
-                                                             sx={{display: "flex", alignItems: "center", mx: 1}}>
-                                                            <CircleIcon sx={{
-                                                                border: "1px solid black",
-                                                                borderRadius: "50%",
-                                                                color: chestTypes[type].color,
-                                                                fontSize: chestTypes[type].fontSize
-                                                            }}/>
-                                                            <Typography variant="body2" sx={{ml: 0.5}}>
-                                                                {count}
-                                                            </Typography>
-                                                        </Box>
-                                                    ))}
-                                                </Box>
+                                                {showChestInfo && Object.keys(chestCounts).length > 0 && (
+                                                    <Box sx={{
+                                                        mt: 1,
+                                                        display: "flex",
+                                                        justifyContent: "center",
+                                                        flexWrap: "wrap"
+                                                    }}>
+                                                        {Object.entries(chestCounts).map(([type, count], index) => (
+                                                            <Box key={index}
+                                                                 sx={{display: "flex", alignItems: "center", mx: 1}}>
+                                                                <CircleIcon sx={{
+                                                                    border: "1px solid black",
+                                                                    borderRadius: "50%",
+                                                                    color: chestTypes[type].color,
+                                                                    fontSize: chestTypes[type].fontSize
+                                                                }}/>
+                                                                <Typography variant="body2" sx={{ml: 0.5}}>
+                                                                    {count}
+                                                                </Typography>
+                                                            </Box>
+                                                        ))}
+                                                    </Box>
+                                                )}
 
                                                 {/* Affichage des mobs géants/élites de ressource */}
-                                                {mobResourceEntries.length > 0 && (
+                                                {showGatherInfo && mobResourceEntries.length > 0 && (
                                                     <Box sx={{
                                                         mt: 1,
                                                         display: "flex",
@@ -339,7 +373,6 @@ const Map = () => {
                     <Typography variant="h6" gutterBottom>
                         Légende
                     </Typography>
-
                     <Grid2 container spacing={2}>
                         {/* Affichage des types de tunnels */}
                         {Object.entries(filteredMapTypes).map(([type, { icon, info }]) => (
@@ -363,7 +396,7 @@ const Map = () => {
                         ))}
 
                         {/* Affichage des types de coffres */}
-                        {Object.entries(filteredChestTypes).map(([type, { color, fontSize, info }]) => (
+                        {showChestInfo && Object.entries(filteredChestTypes).map(([type, { color, fontSize, info }]) => (
                             <Grid2 xs={6} sm={4} md={2} key={type}>
                                 <Box
                                     sx={{
@@ -384,7 +417,7 @@ const Map = () => {
                         ))}
 
                         {/* Affichage des types de ressources */}
-                        {Object.entries(resourceIcons).map(([type, icon]) => (
+                        {showGatherInfo && Object.entries(resourceIcons).map(([type, icon]) => (
                             <Grid2 xs={6} sm={4} md={2} key={type}>
                                 <Box
                                     sx={{
