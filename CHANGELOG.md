@@ -14,6 +14,10 @@ All notable changes to the Albion Helper project will be documented in this file
 - **Dependabot :** activé (`.github/dependabot.yml`) pour composer, npm et GitHub Actions (C4.1.1).
 
 ### Fixed
+- **BUG-011 :** Échec de connexion invisible — l'intercepteur axios rechargeait la page sur tout 401, y compris celui du login ; les appels d'authentification sont désormais exclus de la redirection (détecté par la recette AUTH-05).
+- **BUG-012 :** « Kill Ratio : NaN » sur la fiche joueur quand Death Fame = 0 — garde ajoutée (détecté par la recette RECH-02).
+- **BUG-013 :** Clés React dupliquées dans les listes de guildes (`AllianceId` non unique) — remplacées par `guild.Id` (détecté par la recette RECH-03).
+- **Accessibilité (audit axe-core/Lighthouse du 12/06) :** 47 curseurs de maîtrise sans étiquette (`aria-label` ajouté), sélecteurs sans `labelId`, contraste du texte désactivé relevé de 1,8:1 à 4,5:1. Scores Lighthouse : login 100, register 100, accueil 93.
 - **BUG-009 :** Page Admin — la carte « nouveaux aujourd'hui » affichait toujours « — » (`stats.newUsersToday` lu au lieu de `newToday` renvoyé par l'API).
 - **Tests Admin.jsx :** 7 tests Jest en échec — le mock `useTranslation` recréait `t` à chaque render, provoquant une boucle infinie de fetch via `useCallback([t])` ; mocks et assertions réalignés sur la page (i18n). Suites : 12/12, 95 tests verts.
 - **Code mort :** `AuthController::login()` (jamais exécuté, intercepté par `json_login`) remplacé par le pattern documenté Symfony (route conservée pour le `check_path`, corps explicite).

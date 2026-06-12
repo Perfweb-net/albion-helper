@@ -32,24 +32,24 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 - [x] Environnement de développement en place (Docker Compose, Symfony 7.4, React 19, PostgreSQL)
 - [x] Environnement de test séparé (SQLite, `.env.test`, fixtures)
 - [x] Déploiement continu implémenté (12/06) : job `deploy` après succès de tous les tests, push `master` uniquement, SSH vers le serveur + `deploy/deploy.sh` (pull, composer --no-dev, migrations, cache, build front)
-- [ ] Protocole de déploiement continu rédigé pour le dossier (séquences : tests → SSH → pull → migrations → build)
-- [ ] Critères de qualité et de performance définis et documentés
+- [x] Protocole de déploiement continu rédigé (dossier §5 : 8 séquences détaillées)
+- [x] Critères de qualité et de performance définis et documentés (dossier §4.3)
 
 ### C2.1.2 — Intégration continue
 - [x] Pipeline GitHub Actions : tests back (PHPUnit) + front (Jest) sur push/PR, génération clés JWT, schéma BDD test
-- [ ] Protocole d'intégration continue explicité clairement (séquences d'intégration) — rédaction dossier
+- [x] Protocole d'intégration continue explicité (dossier §4.2 : 7 séquences)
 
 ### C2.2.1 — Prototype de l'application ⚠️ ÉLIM
 - [x] Prototype fonctionnel répondant aux besoins (auth, joueurs, guildes, carte, routes partagées, compositions, craft, admin, i18n, dark mode, tutoriel)
 - [x] Ensemble cohérent de fonctionnalités principales + composants d'interface fonctionnels
 - [x] Architecture logicielle structurée et maintenable (Controller → Service → Repository → Entity)
 - [x] Frameworks et paradigmes de développement utilisés (Symfony/Doctrine, React/hooks/context)
-- [ ] Présentation du prototype rédigée pour le dossier (spécificités ergonomiques, équipements ciblés)
+- [x] Présentation du prototype rédigée avec 7 captures d'écran (dossier §1)
 
 ### C2.2.2 — Harnais de tests unitaires ⚠️ ÉLIM
 - [x] Tests backend : 18 tests PHPUnit / 50 assertions — verts (Symfony 7.4, vérifié 12/06)
 - [x] Tests frontend : 12 suites Jest / 95 tests — **100% verts** (Admin.test.jsx réparé le 12/06)
-- [ ] Jeu de tests couvrant une fonctionnalité complète, décrit dans le dossier (critère : « les tests couvrent la majorité du code »)
+- [x] Jeu de tests décrit : authentification couverte de bout en bout API→UI→utilitaires (dossier §6.2)
 
 ### C2.2.3 — Sécurisation, accessibilité, évolutivité ⚠️ ÉLIM
 Critère officiel : « les mesures couvrent les 10 failles OWASP » + « référentiel d'accessibilité présenté et justifié ».
@@ -61,11 +61,11 @@ Critère officiel : « les mesures couvrent les 10 failles OWASP » + « référ
 - [x] A05 : CORS via `%env(CORS_ALLOW_ORIGIN)%` (plus de wildcard) + headers de sécurité (`SecurityHeadersSubscriber` : nosniff, X-Frame-Options, Referrer-Policy, CSP) — fait le 12/06
 - [x] A06 : dépendances — Symfony 7.2 (EOL) → 7.4.13 LTS (`composer audit` : 0 advisory, corrige CVE-2025-64500 high), axios 1.17.0 ; vulnérabilités restantes = chaîne de build react-scripts (dev uniquement, risque accepté)
 - [x] A07 : mot de passe ≥ 8 caractères au register + rotation des refresh tokens (`single_use: true`) — fait le 12/06
-- [ ] JWT en `localStorage` : justifier le choix + mitigations dans le dossier (TTL 1 h + rotation refresh) — ou migrer en cookie httpOnly plus tard
-- [ ] Présentation des mesures de sécurité, faille OWASP par faille OWASP (rédaction dossier)
+- [x] JWT en `localStorage` : choix justifié + mitigations documentées dans le dossier (§7.1) — migration httpOnly en axe d'amélioration
+- [x] Mesures de sécurité présentées faille OWASP par faille OWASP avec preuves de recette (dossier §7)
 - [x] Accessibilité de base : `lang="fr"`, ARIA sur Login et Header (aria-label, aria-expanded, aria-live)
-- [ ] Référentiel d'accessibilité choisi, présenté et **justifié** (RGAA 4.1 recommandé)
-- [ ] Actions accessibilité handicap présentées + audit outillé (Lighthouse/axe-core) avec scores consignés
+- [x] Référentiel RGAA 4.1 présenté et justifié (dossier §8.1)
+- [x] Audit outillé du 12/06 : Lighthouse (login 100, register 100, accueil 93) + axe-core sur 7 pages — corrections immédiates (47 aria-label, labelId, contraste disabled 1,8→4,5:1), constat contraste chips consigné avec remédiation (dossier §8.3)
 
 ### C2.2.4 — Déploiement à chaque modification / gestion des versions
 - [x] Système de gestion de versions utilisé (git, branches main/develop)
@@ -73,40 +73,40 @@ Critère officiel : « les mesures couvrent les 10 failles OWASP » + « référ
 - [x] Évolutions tracées : travail commité le 12/06 en 9 lots Conventional Commits (docs, feat back, feat front, test, fix security, chore deps, ci, build) — maintenir cette convention pour la suite
 
 ### C2.3.1 — Cahier de recettes ⚠️ ÉLIM
-- [ ] Scénarios de tests numérotés : préconditions, étapes, résultats attendus
-- [ ] Couverture de l'ensemble des fonctionnalités attendues (critère officiel)
-- [ ] Exécution réelle : résultats obtenus + statuts PASS/FAIL datés (tests fonctionnels, structurels et de sécurité)
+- [x] 26 scénarios numérotés (AUTH, RECH, CARTE, ROUTE, COMPO, CRAFT, ADM, CONF, SEC) avec préconditions, étapes, attendus — **exécutés le 12/06 via Playwright + API : 26/26 PASS**
+- [x] 3 anomalies réelles détectées par la recette (BUG-011/012/013), corrigées et re-testées le jour même
+- [x] Intégré au dossier (§10 de `dossier/Dossier_Bloc2_Albion_Helper.docx`)
 
 ### C2.3.2 — Plan de correction des bogues
-- [ ] Bogues détectés, qualifiés et traités (matière dispo : BUG-001→008 du CHANGELOG)
-- [ ] Analyse des points d'amélioration pour chaque test en échec
-- [ ] Document rédigé pour le dossier
+- [x] Registre BUG-001→013 + OBS-01, qualifiés (gravité/origine) et traités (dossier §11.2)
+- [x] Analyse des échecs : AUTH-05 FAIL→correctif→PASS documenté ; processus de correction décrit (dossier §11.1)
+- [x] Plan de correction intégré au dossier (§11)
 
 ### C2.4.1 — Documentation technique
-- [ ] Manuel de déploiement
-- [ ] Manuel d'utilisation
-- [ ] Manuel de mise à jour
-- [ ] Les manuels décrivent les choix de technologies et langages
+- [x] Manuel de déploiement VPS Nginx+PHP-FPM en 9 étapes (dossier §12.1)
+- [x] Manuel d'utilisation par fonctionnalité (dossier §12.2)
+- [x] Manuel de mise à jour : app, dépendances, schéma BDD, données (dossier §12.3)
+- [x] Les manuels décrivent les technologies (Nginx, PHP-FPM, Doctrine, React build)
 
 ## Livrable Bloc 2 — dossier 30 pages max (liste officielle du règlement)
 
-- [ ] 1. Le protocole de déploiement continu
-- [ ] 2. Les critères de qualité et de performance
-- [ ] 3. Le protocole d'intégration continue
-- [ ] 4. Une architecture logicielle structurée permettant la maintenabilité (schéma)
-- [ ] 5. Une présentation d'un des prototypes réalisés
-- [ ] 6. L'utilisation de frameworks et des paradigmes de développement
-- [ ] 7. Un jeu de tests unitaires couvrant une fonctionnalité demandée
-- [ ] 8. Une présentation des mesures de sécurité mises en œuvre
-- [ ] 9. Une présentation des actions pour l'accès aux personnes en situation de handicap
-- [ ] 10. L'historique des différentes versions
-- [ ] 11. La dernière version du logiciel fonctionnel, fiable et viable
-- [ ] 12. Le cahier de recettes
-- [ ] 13. Le plan de correction des bogues
-- [ ] 14. Le manuel de déploiement
-- [ ] 15. Le manuel d'utilisation
-- [ ] 16. Le manuel de mise à jour
-- [ ] **Dépôt sur DigiformaCertif avant le 19/06** (code source + dossier)
+- [x] 1. Le protocole de déploiement continu
+- [x] 2. Les critères de qualité et de performance
+- [x] 3. Le protocole d'intégration continue
+- [x] 4. Une architecture logicielle structurée permettant la maintenabilité (schéma)
+- [x] 5. Une présentation d'un des prototypes réalisés
+- [x] 6. L'utilisation de frameworks et des paradigmes de développement
+- [x] 7. Un jeu de tests unitaires couvrant une fonctionnalité demandée
+- [x] 8. Une présentation des mesures de sécurité mises en œuvre
+- [x] 9. Une présentation des actions pour l'accès aux personnes en situation de handicap
+- [x] 10. L'historique des différentes versions
+- [x] 11. La dernière version du logiciel fonctionnel, fiable et viable
+- [x] 12. Le cahier de recettes
+- [x] 13. Le plan de correction des bogues
+- [x] 14. Le manuel de déploiement
+- [x] 15. Le manuel d'utilisation
+- [x] 16. Le manuel de mise à jour
+- [ ] **DERNIÈRE ÉTAPE : relire `dossier/Dossier_Bloc2_Albion_Helper.docx` (mettre à jour le sommaire dans Word) puis déposer code + dossier sur DigiformaCertif avant le 19/06**
 
 ---
 
