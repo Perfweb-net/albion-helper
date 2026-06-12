@@ -1,0 +1,61 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: "!ChangeMe!"
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  back:
+    image: php:8.2-cli
+    working_dir: /app
+    volumes:
+      - ./back:/app
+    ports:
+      - "8055:8055"
+    environment:
+      DATABASE_URL: "postgresql://app:!ChangeMe!@db:5432/app?serverVersion=16&charset=utf8"
+      APP_ENV: dev
+      APP_SECRET: f9e62d483bf55417fd7eefdb883c4348
+      JWT_PASSPHRASE: ""
+      CORS_ALLOW_ORIGIN: '^https?://(localhost|127\.0\.0\.1)(:[0-9]+)?$'
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "
+        apt-get update -q && apt-get install -y -q libpq-dev libzip-dev unzip git &&
+        docker-php-ext-install pdo pdo_pgsql zip &&
+        curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer &&
+        composer install --no-interaction --prefer-dist &&
+        php bin/console lexik:jwt:generate-keypair --skip-if-exists &&
+        php bin/console doctrine:migrations:migrate --no-interaction &&
+        php -S 0.0.0.0:8055 -t public
+      "
+
+  front:
+    image: node:20-alpine
+    working_dir: /app
+    volumes:
+      - ./front:/app
+      - /app/node_modules
+    ports:
+      - "4055:3000"
+    environment:
+      REACT_APP_API_URL: http://localhost:8055/api
+      CHOKIDAR_USEPOLLING: "true"
+    command: sh -c "npm install --legacy-peer-deps && npm start"
+
+volumes:
+  db_data:

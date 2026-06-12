@@ -23,6 +23,12 @@ class User implements UserInterface, \Symfony\Component\Security\Core\User\Passw
     #[ORM\Column(type: "json")]
     private array $roles = [];
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $preferences = null;
+
     // Getter and setter methods for each property
 
     public function getId(): ?int
@@ -67,6 +73,12 @@ class User implements UserInterface, \Symfony\Component\Security\Core\User\Passw
     }
 
     // Méthode nécessaire pour implémenter UserInterface
+    public function getCreatedAt(): ?\DateTimeImmutable { return $this->createdAt; }
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self { $this->createdAt = $createdAt; return $this; }
+
+    public function getPreferences(): ?array { return $this->preferences; }
+    public function setPreferences(?array $v): self { $this->preferences = $v; return $this; }
+
     public function eraseCredentials(): void
     {
         // Cette méthode est vide car nous n'utilisons pas de données sensibles à supprimer

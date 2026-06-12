@@ -49,6 +49,7 @@ class Zone
     {
         $this->resources = new ArrayCollection();
         $this->mobs = new ArrayCollection();
+        $this->markers = new ArrayCollection();
     }
 
     public function getId(): ?int
