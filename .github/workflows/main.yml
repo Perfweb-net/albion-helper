@@ -1,0 +1,63 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  backend-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite
+          coverage: none
+
+      - name: Install Dependencies
+        run: composer install --working-dir=back
+
+      - name: Generate JWT Keys
+        run: |
+          cd back
+          mkdir -p config/jwt
+          php bin/console lexik:jwt:generate-keypair --skip-if-exists
+        env:
+          APP_ENV: test
+          JWT_PASSPHRASE: test_passphrase
+
+      - name: Create Test Database
+        run: |
+          cd back
+          php bin/console doctrine:schema:create --env=test
+        env:
+          APP_ENV: test
+
+      - name: Run Backend Tests
+        run: |
+          cd back
+          php bin/phpunit
+        env:
+          APP_ENV: test
+
+  frontend-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install Dependencies
+        run: npm ci --prefix front
+
+      - name: Run Frontend Tests
+        run: CI=true npm test --prefix front -- --watchAll=false
