@@ -1,0 +1,20 @@
+framework:
+    rate_limiter:
+        # Limite les créations de compte : 5 inscriptions max par IP par heure.
+        # lock_factory: null — le verrou fichier (flock) est superflu pour un fixed_window
+        # sur cache local, et provoque un deadlock dans les tests WebTestCase.
+        registration:
+            policy: 'fixed_window'
+            limit: 5
+            interval: '1 hour'
+            lock_factory: null
+
+# En test, le compteur persiste dans le cache entre les runs : on désactive de fait la limite
+when@test:
+    framework:
+        rate_limiter:
+            registration:
+                policy: 'fixed_window'
+                limit: 100000
+                interval: '1 hour'
+                lock_factory: null

@@ -1,3 +1,6 @@
 gesdinet_jwt_refresh_token:
     refresh_token_class: App\Entity\RefreshToken
     ttl: 2592000
+    # Rotation des refresh tokens : chaque refresh invalide l'ancien token et en émet un nouveau.
+    # Mitigation du stockage des tokens côté client (un token volé ne sert qu'une fois).
+    single_use: true

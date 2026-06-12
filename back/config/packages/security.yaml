@@ -28,16 +28,31 @@ security:
                 check_path: /api/login # or, if you have defined a route for your login path, the route name you used
                 success_handler: lexik_jwt_authentication.handler.authentication_success
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
+            # Protection brute-force : 5 tentatives max par utilisateur/IP, fenêtre de 15 minutes
+            login_throttling:
+                max_attempts: 5
+                interval: '15 minutes'
 
     # Access control rules
     access_control:
+        - { path: ^/api/health, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
         - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }
+        - { path: ^/api/routes/share/, roles: PUBLIC_ACCESS }
+        - { path: ^/api/compositions/share/, roles: PUBLIC_ACCESS }
+        - { path: ^/api/proxy/icon/, roles: PUBLIC_ACCESS }
+        - { path: ^/api/admin, roles: ROLE_ADMIN }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:
+        firewalls:
+            api:
+                # Le compteur de throttling persiste entre les runs de tests : limite très haute
+                login_throttling:
+                    max_attempts: 100000
+                    interval: '15 minutes'
         password_hashers:
             # By default, password hashers are resource intensive and take time. This is
             # important to generate secure password hashes. In tests however, secure hashes
