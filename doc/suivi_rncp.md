@@ -29,9 +29,10 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 ## Compétences
 
 ### C2.1.1 — Environnements de déploiement et de test
-- [x] Environnement de développement en place (Docker Compose, Symfony 7.2, React 19, PostgreSQL)
+- [x] Environnement de développement en place (Docker Compose, Symfony 7.4, React 19, PostgreSQL)
 - [x] Environnement de test séparé (SQLite, `.env.test`, fixtures)
-- [ ] Protocole de déploiement continu explicité (séquences de déploiement) — le pipeline actuel ne déploie pas
+- [x] Déploiement continu implémenté (12/06) : job `deploy` après succès de tous les tests, push `master` uniquement, SSH vers le serveur + `deploy/deploy.sh` (pull, composer --no-dev, migrations, cache, build front)
+- [ ] Protocole de déploiement continu rédigé pour le dossier (séquences : tests → SSH → pull → migrations → build)
 - [ ] Critères de qualité et de performance définis et documentés
 
 ### C2.1.2 — Intégration continue
@@ -312,4 +313,6 @@ Bonus audit dépendances : **Symfony 7.2 (EOL) → 7.4.13 LTS** (`composer audit
 
 - **Dossier** — rédiger la justification localStorage (mitigations : TTL 1 h + rotation refresh) dans la section sécurité.
 - **npm audit (front)** — 57 vulnérabilités restantes, toutes dans la chaîne de build `react-scripts` (outillage de dev, non exposé en production) : documenter comme risque accepté dans le dossier ; migration hors CRA (Vite) en axe d'amélioration (C4.3.1).
-- **Hook pre-commit** (`.git/hooks/pre-commit`) — buggé : il fait `cd back` puis linte des chemins relatifs à la racine (échec sur tout commit PHP), et son grep bloque le pattern localStorage pourtant assumé. À corriger manuellement (cd racine + affiner le grep) — commits du 12/06 passés avec lint manuel + `--no-verify`.
+- ~~Hook pre-commit~~ — réparé le 12/06 (lint depuis la racine du dépôt, grep sécurité affiné sur des patterns non ambigus).
+- **GitHub** — passer la branche par défaut de `main` à `master` (Settings → Branches), puis supprimer `main` : `git push origin --delete main`.
+- **Secrets GitHub Actions à créer** (Settings → Secrets and variables → Actions) pour le déploiement : `SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY`, `DEPLOY_PATH` (chemin du projet sur le serveur), `SSH_PORT` (optionnel, défaut 22).

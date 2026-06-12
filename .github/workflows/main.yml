@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ master, develop ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ master, develop ]
 
 jobs:
   backend-tests:
@@ -57,7 +57,27 @@ jobs:
           node-version: '22'
 
       - name: Install Dependencies
-        run: npm ci --prefix front
+        run: npm ci --prefix front --legacy-peer-deps
 
       - name: Run Frontend Tests
         run: CI=true npm test --prefix front -- --watchAll=false
+
+  deploy:
+    runs-on: ubuntu-latest
+    # Déploiement uniquement quand TOUS les tests passent, sur push master
+    needs: [backend-tests, frontend-tests]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    environment: production
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script_stop: true
+          script: |
+            cd ${{ secrets.DEPLOY_PATH }}
+            sh deploy/deploy.sh
