@@ -1,16 +1,26 @@
 import React, {useState, useEffect} from 'react';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import Login from './pages/Login';
-import Register from './pages/Register';
-import Dashboard from './pages/Dashboard';
+import Login from './pages/Login/Login';
+import Register from './pages/Register/Register';
+import Dashboard from './pages/Dashboard/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
-import Header from "./layout/Header";
-import Footer from "./layout/Footer";
-import Player from "./pages/Player";
-import Guild from "./pages/Guild";
-import Map from "./pages/Map";
-import Players from "./pages/Players";
-import Guilds from "./pages/Guilds";
+import Header from "./layout/Header/Header";
+import Footer from "./layout/Footer/Footer";
+import Player from "./pages/Player/Player";
+import Guild from "./pages/Guild/Guild";
+import Map from "./pages/Map/Map";
+import Players from "./pages/Players/Players";
+import Guilds from "./pages/Guilds/Guilds";
+import Items from "./pages/Items/Items";
+import Tutorial from "./pages/Tutorial/Tutorial";
+import GameRoutes from "./pages/Routes/Routes";
+import RouteShare from "./pages/Routes/RouteShare";
+import Admin from "./pages/Admin/Admin";
+import Craft from "./pages/Craft/Craft";
+import CraftDetail from "./pages/Craft/CraftDetail";
+import Compositions from "./pages/Compositions/Compositions";
+import CompositionEditor from "./pages/Compositions/CompositionEditor";
+import CompositionShare from "./pages/Compositions/CompositionShare";
 
 const App = () => {
     // Vérifie si l'utilisateur est authentifié
@@ -25,10 +35,11 @@ const App = () => {
     return (
         <Router>
             <Header/>
-            <main style={{ marginBottom: '100px' , marginTop: '25px' }}>
+            <main style={{ marginBottom: '80px', marginTop: '20px', flex: 1 }}>
                 <Routes>
                     {/* Route publique */}
-                    <Route path="/" element={<Login/>}/>
+                    <Route path="/" element={<Tutorial/>}/>
+                    <Route path="/tutorial" element={<Tutorial/>}/>
                     <Route path="/register" element={<Register/>}/>
                     <Route path="/login" element={<Login/>}/>
 
@@ -49,6 +60,11 @@ const App = () => {
                     />
 
                     <Route
+                        path="/items"
+                        element={<PrivateRoute element={<Items/>} isAuthenticated={isAuthenticated}/>}
+                    />
+
+                    <Route
                         path="/players"
                         element={<PrivateRoute element={<Players/>} isAuthenticated={isAuthenticated}/>}
                     />
@@ -58,6 +74,32 @@ const App = () => {
                     <Route
                         path="/guild/:guildId"
                         element={<PrivateRoute element={<Guild/>} isAuthenticated={isAuthenticated}/>}
+                    />
+                    <Route
+                        path="/routes"
+                        element={<PrivateRoute element={<GameRoutes/>} isAuthenticated={isAuthenticated}/>}
+                    />
+                    <Route path="/routes/share/:token" element={<RouteShare/>}/>
+                    <Route path="/compositions/share/:token" element={<CompositionShare/>}/>
+                    <Route
+                        path="/craft"
+                        element={<PrivateRoute element={<Craft/>} isAuthenticated={isAuthenticated}/>}
+                    />
+                    <Route
+                        path="/craft/:id"
+                        element={<PrivateRoute element={<CraftDetail/>} isAuthenticated={isAuthenticated}/>}
+                    />
+                    <Route
+                        path="/compositions"
+                        element={<PrivateRoute element={<Compositions/>} isAuthenticated={isAuthenticated}/>}
+                    />
+                    <Route
+                        path="/compositions/:id"
+                        element={<PrivateRoute element={<CompositionEditor/>} isAuthenticated={isAuthenticated}/>}
+                    />
+                    <Route
+                        path="/admin"
+                        element={<PrivateRoute element={<Admin/>} isAuthenticated={isAuthenticated}/>}
                     />
                 </Routes>
             </main>

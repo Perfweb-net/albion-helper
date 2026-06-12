@@ -1,0 +1,196 @@
+@import '../../styles/variables';
+
+.tutorial {
+  &__container {
+    padding: 32px 0;
+  }
+
+  &__header {
+    margin-bottom: 48px;
+    text-align: center;
+  }
+
+  &__icon {
+    font-size: 64px;
+    color: $primary-color;
+    margin-bottom: 16px;
+  }
+
+  &__title {
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+
+  &__subtitle {
+    color: $text-secondary;
+    font-size: 1.125rem;
+  }
+
+  &__info-card {
+    margin-bottom: 48px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.08);
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.05) 0%, rgba(22, 33, 62, 0.05) 100%);
+  }
+
+  &__info-content {
+    padding: 40px;
+    text-align: center;
+  }
+
+  &__section-title {
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  &__text {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+
+  &__cta-box {
+    margin-top: 32px;
+  }
+
+  &__cta-button {
+    padding: 14px 32px;
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  &__cta-text {
+    color: $text-secondary;
+  }
+
+  &__link {
+    color: $primary-color;
+    text-decoration: none;
+    font-weight: 600;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__features-title {
+    font-weight: 700;
+    margin-bottom: 32px;
+    text-align: center;
+  }
+
+  &__feature-card {
+    height: 100%;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.08);
+    @include card-hover;
+  }
+
+  &__feature-content {
+    padding: 32px;
+  }
+
+  &__feature-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  &__feature-icon {
+    font-size: 40px;
+    color: $primary-color;
+  }
+
+  &__feature-title {
+    font-weight: 600;
+  }
+
+  &__feature-description {
+    color: $text-secondary;
+    line-height: 1.7;
+  }
+
+  &__steps-paper {
+    padding: 40px;
+    margin-top: 48px;
+    margin-bottom: 48px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.08);
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.03) 0%, rgba(22, 33, 62, 0.03) 100%);
+  }
+
+  &__steps-title {
+    font-weight: 600;
+    margin-bottom: 32px;
+    text-align: center;
+  }
+
+  &__steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  &__step {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    padding: 24px;
+    background-color: $background-paper;
+    border-radius: $border-radius;
+    box-shadow: $shadow-sm;
+    transition: $transition;
+
+    &:hover {
+      box-shadow: $shadow-md;
+      transform: translateX(8px);
+    }
+  }
+
+  &__step-number {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, $primary-color 0%, $primary-light 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  &__step-content {
+    flex: 1;
+  }
+
+  &__step-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  &__step-description {
+    color: $text-secondary;
+    line-height: 1.6;
+  }
+
+  &__footer-cta {
+    text-align: center;
+    padding: 48px 0;
+    background: linear-gradient(135deg, rgba(26, 26, 46, 0.05) 0%, rgba(22, 33, 62, 0.05) 100%);
+    border-radius: $border-radius-large;
+    margin-top: 48px;
+  }
+
+  &__footer-title {
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+
+  &__footer-button {
+    padding: 14px 32px;
+    font-size: 1.125rem;
+    font-weight: 600;
+  }
+}
+

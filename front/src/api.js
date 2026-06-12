@@ -1,26 +1,21 @@
 import axios from 'axios';
-import {isTokenValid} from "./components/PrivateRoute";
+import { isTokenValid } from './utils/authUtils';
 
 const api = axios.create({
-    baseURL: 'https://albion-back.perfweb.net/api',
-    //baseURL: 'http://localhost:8001/api', //
-    contentType: 'application/json',
+    baseURL: process.env.REACT_APP_API_URL || 'http://localhost:8000/api',
+    headers: {
+        'Content-Type': 'application/json',
+    },
 });
 
 api.interceptors.request.use(
-    (config) => {
-        let token = localStorage.getItem('token'); // Ou utilisez sessionStorage
-
-        if (token) {
-            if (!config.url.includes('token/refresh')) {
-                const isValid = isTokenValid(token).then((response) => {
-                    token = localStorage.getItem('token');
-                    return response;
-                });
-
-                if (isValid) {
-                    config.headers['Authorization'] = `Bearer ${token}`;
-                }
+    async (config) => {
+        const token = localStorage.getItem('token');
+        if (token && !config.url.includes('token/refresh')) {
+            await isTokenValid(token);
+            const currentToken = localStorage.getItem('token');
+            if (currentToken) {
+                config.headers['Authorization'] = `Bearer ${currentToken}`;
             }
         }
         return config;
@@ -31,11 +26,9 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     response => response,
     error => {
-        if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-            // Déconnexion : suppression des tokens
+        if (error.response?.status === 401 || error.response?.status === 403) {
             localStorage.removeItem('token');
             localStorage.removeItem('refreshToken');
-            // Redirige vers la page de login
             window.location.href = '/login';
         }
         return Promise.reject(error);

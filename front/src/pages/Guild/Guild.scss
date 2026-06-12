@@ -1,0 +1,113 @@
+@import '../../styles/variables';
+
+.guild {
+  &__container {
+    padding: 32px 0;
+  }
+
+  &__back-button {
+    margin-bottom: 24px;
+  }
+
+  &__profile-card {
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  &__profile-content {
+    padding: 32px;
+  }
+
+  &__profile-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  &__avatar {
+    width: 100px;
+    height: 100px;
+    background-color: $primary-color;
+  }
+
+  &__info {
+    flex: 1;
+  }
+
+  &__name {
+    font-weight: 700;
+    margin-bottom: 16px;
+  }
+
+  &__meta {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+  }
+
+  &__meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__founder-link {
+    cursor: pointer;
+    color: $primary-color;
+    text-decoration: underline;
+    
+    &:hover {
+      color: $primary-dark;
+    }
+  }
+
+  &__stats-card {
+    height: 100%;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  &__stats-content {
+    padding: 24px;
+  }
+
+  &__stats-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+
+  &__stats-title {
+    font-weight: 600;
+  }
+
+  &__stat-paper {
+    padding: 16px;
+    color: white;
+  }
+
+  &__members-card {
+    height: 100%;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  &__members-content {
+    padding: 24px;
+  }
+
+  &__members-title {
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+
+  &__member-item {
+    border-radius: 4px;
+    margin-bottom: 4px;
+    
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.04);
+    }
+  }
+}
+

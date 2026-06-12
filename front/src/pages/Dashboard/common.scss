@@ -1,0 +1,62 @@
+@import '../../styles/variables';
+
+// Styles communs pour toutes les pages
+.page {
+  &__container {
+    padding: 32px 0;
+  }
+
+  &__header {
+    margin-bottom: 32px;
+    text-align: center;
+  }
+
+  &__title {
+    font-weight: 700;
+  }
+
+  &__subtitle {
+    color: $text-secondary;
+  }
+
+  &__card {
+    margin-bottom: 32px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  &__card-content {
+    padding: 32px;
+  }
+
+  &__search-card {
+    margin-bottom: 32px;
+    box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.08);
+  }
+
+  &__results-section {
+    width: 100%;
+  }
+
+  &__results-title {
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+
+  &__item-card {
+    cursor: pointer;
+    height: 100%;
+    @include card-hover;
+  }
+
+  &__item-content {
+    text-align: center;
+    padding: 24px;
+  }
+
+  &__button {
+    padding: 12px 24px;
+    font-weight: 600;
+    @include button-hover;
+  }
+}
+

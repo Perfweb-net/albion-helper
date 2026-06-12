@@ -1,0 +1,95 @@
+.routes {
+  &__container {
+    padding-top: 32px;
+    padding-bottom: 80px;
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  &__icon {
+    font-size: 3rem !important;
+    color: var(--gold, #c9a84c);
+  }
+
+  &__title {
+    font-family: 'Cinzel', serif !important;
+    font-weight: 700 !important;
+    color: var(--gold, #c9a84c) !important;
+  }
+
+  &__create-btn {
+    margin-bottom: 16px;
+  }
+
+  &__form-card {
+    margin-bottom: 24px;
+    border: 1px solid rgba(201, 168, 76, 0.3) !important;
+  }
+
+  &__zone-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: nowrap;
+  }
+
+  &__zone-number {
+    min-width: 24px;
+    font-weight: 700;
+    color: var(--gold, #c9a84c);
+    font-family: 'Cinzel', serif;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__route-card {
+    border: 1px solid rgba(201, 168, 76, 0.2) !important;
+    transition: border-color 0.3s ease !important;
+
+    &:hover {
+      border-color: rgba(201, 168, 76, 0.6) !important;
+    }
+  }
+
+  &__route-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  &__route-name {
+    font-family: 'Cinzel', serif !important;
+    font-weight: 600 !important;
+  }
+
+  &__route-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__zones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  &__zone-chip-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+}

@@ -1,12 +1,13 @@
 import React from 'react';
 import { Box, Typography, Container } from '@mui/material';
+import './Footer.scss';
 
 const Footer = () => {
     return (
-        <Box sx={{ bgcolor: '#333', color: 'white', py: 2, mt: 'auto' , position: 'fixed', bottom: 0, width: '100%' }}>
+        <Box className="footer">
             <Container maxWidth="lg">
-                <Typography variant="body2" align="center">
-                    &copy; 2025 My Website. All rights reserved.
+                <Typography variant="body2" align="center" className="footer__text">
+                    &copy; {new Date().getFullYear()} Albion Helper. Tous droits réservés.
                 </Typography>
             </Container>
         </Box>

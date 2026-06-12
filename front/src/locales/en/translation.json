@@ -1,0 +1,133 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "map": "Map",
+    "players": "Players",
+    "guilds": "Guilds",
+    "routes": "Routes",
+    "items": "Items",
+    "craft": "Craft",
+    "tutorial": "Tutorial",
+    "admin": "Administration",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout"
+  },
+  "auth": {
+    "username": "Username",
+    "password": "Password",
+    "login_title": "Login",
+    "login_subtitle": "Sign in to your account",
+    "login_button": "Sign In",
+    "login_error": "An error occurred while signing in. Please check your credentials.",
+    "no_account": "No account yet?",
+    "register_link": "Register",
+    "register_title": "Register",
+    "register_subtitle": "Create your account to get started",
+    "register_button": "Register",
+    "register_error": "An error occurred while registering",
+    "already_account": "Already have an account?",
+    "login_link": "Sign In"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome to Albion Helper",
+    "subtitle": "Your assistant for exploring the world of Albion Online"
+  },
+  "player": {
+    "search_placeholder": "Search for a player...",
+    "search_button": "Search",
+    "kill_fame": "Kill Fame",
+    "death_fame": "Death Fame",
+    "pve_fame": "PvE Fame",
+    "gathering_fame": "Gathering Fame",
+    "crafting_fame": "Crafting Fame",
+    "guild": "Guild",
+    "alliance": "Alliance",
+    "no_results": "No players found"
+  },
+  "guild": {
+    "search_placeholder": "Guild ID...",
+    "members": "Members",
+    "kills": "Kills",
+    "deaths": "Deaths",
+    "fame": "Fame",
+    "top_players": "Top Players"
+  },
+  "map": {
+    "search_placeholder": "Search for a zone...",
+    "tier": "Tier",
+    "type": "Type",
+    "resources": "Resources",
+    "mobs": "Mobs",
+    "no_results": "No zones found"
+  },
+  "routes": {
+    "title": "Routes",
+    "create": "Create a Route",
+    "name_label": "Route Name",
+    "add_zone": "Add a Zone",
+    "timer_label": "Duration (minutes)",
+    "max_zones": "Maximum 8 zones per route",
+    "expires_in": "Expires in",
+    "share": "Share",
+    "copy_link": "Copy Link",
+    "link_copied": "Link copied!",
+    "delete": "Delete",
+    "no_routes": "No routes created",
+    "expired": "Expired",
+    "hours": "h",
+    "minutes": "min",
+    "shared_route": "Shared Route",
+    "save": "Save Route"
+  },
+  "admin": {
+    "title": "Administration",
+    "stats": "Statistics",
+    "users": "Users",
+    "total_users": "Total Users",
+    "new_today": "New Today",
+    "active_routes": "Active Routes",
+    "total_routes": "Total Routes",
+    "player_searches": "Player Searches",
+    "guild_searches": "Guild/Alliance Searches",
+    "username": "Username",
+    "role": "Role",
+    "actions": "Actions",
+    "make_admin": "Make Admin",
+    "remove_admin": "Remove Admin",
+    "delete_user": "Delete",
+    "confirm_delete": "Confirm deletion",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "language_management": "Language Management",
+    "add_language": "Add Language"
+  },
+  "tutorial": {
+    "title": "Welcome to Albion Helper",
+    "subtitle": "Your assistant for exploring the world of Albion Online",
+    "start_tour": "Start Guided Tour",
+    "skip": "Skip",
+    "next": "Next",
+    "back": "Back",
+    "finish": "Finish"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "search": "Search",
+    "back": "Back",
+    "yes": "Yes",
+    "no": "No"
+  },
+  "theme": {
+    "dark": "Dark Mode",
+    "light": "Light Mode",
+    "toggle": "Toggle Theme"
+  }
+}

@@ -1,0 +1,69 @@
+@import '../../styles/variables';
+
+.register {
+  &__container {
+    padding: 64px 0;
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+  }
+
+  &__card {
+    width: 100%;
+    box-shadow: 0px 8px 40px rgba(0, 0, 0, 0.12);
+    border-radius: 16px;
+  }
+
+  &__content {
+    padding: 40px;
+  }
+
+  &__header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  &__icon {
+    font-size: 48px;
+    color: $primary-color;
+    margin-bottom: 16px;
+  }
+
+  &__title {
+    font-weight: 700;
+  }
+
+  &__subtitle {
+    color: $text-secondary;
+  }
+
+  &__textfield {
+    margin-bottom: 24px;
+  }
+
+  &__alert {
+    margin-bottom: 24px;
+  }
+
+  &__button {
+    padding: 12px 0;
+    margin-bottom: 24px;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  &__link-container {
+    text-align: center;
+  }
+
+  &__link {
+    color: $primary-color;
+    text-decoration: none;
+    font-weight: 600;
+    
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
