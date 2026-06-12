@@ -122,13 +122,13 @@ Critère officiel : « les mesures couvrent les 10 failles OWASP » + « référ
 - [x] Sonde applicative : endpoint `/api/health` public (statut DB + API Albion)
 - [x] Canal Monolog `incident` dédié (dev + prod)
 - [ ] Sonde externe : créer le monitor UptimeRobot sur https://albion-back.perfweb.net/api/health (5 min, mot-clé OK, alerte e-mail) + **insérer la capture dans le dossier §3.4** ; sonde interne cron prête : installer `deploy/healthcheck-probe.sh` dans la crontab du VPS (*/5)
-- [ ] Indicateurs de suivi pertinents définis (disponibilité, temps de réponse, taux d'erreur)
+- [x] Indicateurs définis avec cibles : dispo ≥99%, réponse <1s, détection ≤5 min, 5xx <1% (dossier Bloc 4 §3.1)
 - [x] Système décrit avec schéma : 2 sondes (UptimeRobot + cron interne avec anti-spam et e-mail de rétablissement), /api/health détaillé, signalements, journaux (dossier Bloc 4 §3)
 
 ### C4.2.1 — Consignation des anomalies ⚠️ ÉLIM
 - [x] Processus documenté : 6 canaux de collecte, cycle consignation→qualification→correctif→re-test, grille gravité/priorité (dossier Bloc 4 §4)
-- [ ] Fiche de consignation type (infos permettant de reproduire le bogue)
-- [ ] Fiches remplies sur des anomalies réelles du projet (matière dispo : bug `isTokenValid`, base de test obsolète, mocks Admin.test.jsx…)
+- [x] Fiche normalisée (11 champs dont reproduction obligatoire) — dossier Bloc 4 §4.3
+- [x] Exemplaire réel rempli : BUG-011 (symptôme→reproduction→cause racine→correctif→validation) + registre BUG-001→013
 
 ### C4.2.2 — Création et déploiement de correctifs
 - [x] Correctifs réels disponibles comme matière (BUG-001→008 corrigés, pipeline CI qui valide)
@@ -153,7 +153,7 @@ Critère officiel : « les mesures couvrent les 10 failles OWASP » + « référ
 - [x] 6. La présentation des recommandations argumentées d'amélioration
 - [x] 7. La présentation d'un exemplaire du journal de version
 - [x] 8. Un exemple de problème résolu en collaboration avec le support client
-- [ ] **Dépôt sur DigiformaCertif entre le 20 et le 24/07**
+- [ ] **DERNIÈRES ÉTAPES : créer le monitor UptimeRobot + insérer sa capture (§3.4), installer la sonde cron sur le VPS, relire le docx (sommaire) et déposer sur DigiformaCertif entre le 20 et le 24/07**
 
 ---
 
