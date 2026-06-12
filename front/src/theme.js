@@ -14,7 +14,8 @@ const darkPalette = {
   primary: { main: GOLD, light: GOLD_LIGHT, dark: GOLD_DARK, contrastText: '#0d0d0d' },
   secondary: { main: '#9b3b3b', light: '#c45252', dark: '#6b2020', contrastText: '#fff' },
   background: { default: '#0a0805', paper: '#130f08' },
-  text: { primary: '#e8dcc8', secondary: '#b8a88a', disabled: '#6e5c3e' },
+  // disabled relevé pour le contraste WCAG AA (4.5:1 sur fond #130f08) — audit axe-core du 12/06
+  text: { primary: '#e8dcc8', secondary: '#b8a88a', disabled: '#9d8a64' },
   divider: GOLD_BORDER,
   success: { main: '#4a7c4a', light: '#6aad6a', dark: '#2f5c2f' },
   warning: { main: GOLD, light: GOLD_LIGHT, dark: GOLD_DARK },

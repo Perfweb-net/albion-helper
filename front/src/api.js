@@ -26,7 +26,11 @@ api.interceptors.request.use(
 api.interceptors.response.use(
     response => response,
     error => {
-        if (error.response?.status === 401 || error.response?.status === 403) {
+        // Ne pas rediriger pour les échecs d'authentification eux-mêmes (mauvais identifiants,
+        // inscription refusée) : la page doit afficher l'erreur à l'utilisateur.
+        const url = error.config?.url || '';
+        const isAuthCall = url.includes('/login') || url.includes('/register') || url.includes('token/refresh');
+        if (!isAuthCall && (error.response?.status === 401 || error.response?.status === 403)) {
             localStorage.removeItem('token');
             localStorage.removeItem('refreshToken');
             window.location.href = '/login';

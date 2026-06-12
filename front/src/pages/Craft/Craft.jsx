@@ -294,8 +294,8 @@ const Craft = () => {
                         {locationType === 'city' && (
                             <Grid2 size={{ xs: 12, sm: 6, md: 2 }}>
                                 <FormControl fullWidth size="small">
-                                    <InputLabel>Ville</InputLabel>
-                                    <Select value={city} label="Ville" onChange={e => setCity(e.target.value)}>
+                                    <InputLabel id="craft-city-label">Ville</InputLabel>
+                                    <Select labelId="craft-city-label" value={city} label="Ville" onChange={e => setCity(e.target.value)}>
                                         {CITIES.map(c => <MenuItem key={c} value={c}>{c}</MenuItem>)}
                                     </Select>
                                 </FormControl>
@@ -422,6 +422,7 @@ const Craft = () => {
                                                 </Box>
                                                 <Slider
                                                     size="small" value={spec} min={0} max={100} step={1}
+                                                    aria-label={`Maîtrise ${labels[branch]}`}
                                                     onChange={(_, v) => setSpecializations(prev => ({ ...prev, [branch]: v }))}
                                                     sx={{ color: '#c9a84c', py: '6px' }}
                                                 />

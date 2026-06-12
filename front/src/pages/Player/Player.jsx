@@ -122,7 +122,7 @@ const Player = () => {  // Le nom du composant commence par une majuscule
                                         <Paper sx={{ p: 2, backgroundColor: 'primary.main', color: 'white' }}>
                                             <Typography variant="body2" sx={{ opacity: 0.9 }}>Kill Ratio</Typography>
                                             <Typography variant="h6" fontWeight={700}>
-                                                {Math.round(player.KillFame / player.DeathFame * 100) / 100}
+                                                {player.DeathFame > 0 ? Math.round(player.KillFame / player.DeathFame * 100) / 100 : '—'}
                                             </Typography>
                                         </Paper>
                                     </Grid2>

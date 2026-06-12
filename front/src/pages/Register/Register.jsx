@@ -19,7 +19,7 @@ const Register = () => {
             await api.post('/register', { username, password });
             navigate('/login');
         } catch (err) {
-            setError(err.response?.data?.message || 'Une erreur est survenue lors de l\'inscription');
+            setError(err.response?.data?.error || err.response?.data?.message || 'Une erreur est survenue lors de l\'inscription');
         }
     };
 

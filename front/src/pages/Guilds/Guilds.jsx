@@ -87,7 +87,7 @@ const Guilds = () => {  // Le nom du composant commence par une majuscule
 
                     <Grid2 container spacing={3}>
                         {guilds.map((guild) => (
-                            <Grid2 size={{xs: 12, sm: 6, md: 4}} key={guild.AllianceId}>
+                            <Grid2 size={{xs: 12, sm: 6, md: 4}} key={guild.Id}>
                                 <Card
                                     sx={{
                                         cursor: 'pointer',
