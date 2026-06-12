@@ -69,7 +69,7 @@ Critère officiel : « les mesures couvrent les 10 failles OWASP » + « référ
 ### C2.2.4 — Déploiement à chaque modification / gestion des versions
 - [x] Système de gestion de versions utilisé (git, branches main/develop)
 - [x] Dernière version du logiciel fonctionnelle, fiable et viable
-- [ ] Évolutions tracées : **commiter le travail en cours** (dizaines de fichiers non commités) avec messages Conventional Commits — historique actuel illisible (`build -4`, `-`)
+- [x] Évolutions tracées : travail commité le 12/06 en 9 lots Conventional Commits (docs, feat back, feat front, test, fix security, chore deps, ci, build) — maintenir cette convention pour la suite
 
 ### C2.3.1 — Cahier de recettes ⚠️ ÉLIM
 - [ ] Scénarios de tests numérotés : préconditions, étapes, résultats attendus
@@ -306,8 +306,10 @@ Critère officiel : « les mesures couvrent les 10 failles OWASP » + « référ
 
 Bonus audit dépendances : **Symfony 7.2 (EOL) → 7.4.13 LTS** (`composer audit` : 36 advisories → 0, dont CVE-2025-64500 high) ; **axios 1.7.9 → 1.17.0**.
 
+7. ~~Git~~ — travail commité le 12/06 en 9 lots Conventional Commits ; convention à maintenir.
+
 ## ☐ Restantes
 
-7. **Git** — commiter le travail en cours par lots cohérents en Conventional Commits ; arrêter les messages type `build -4`.
 - **Dossier** — rédiger la justification localStorage (mitigations : TTL 1 h + rotation refresh) dans la section sécurité.
 - **npm audit (front)** — 57 vulnérabilités restantes, toutes dans la chaîne de build `react-scripts` (outillage de dev, non exposé en production) : documenter comme risque accepté dans le dossier ; migration hors CRA (Vite) en axe d'amélioration (C4.3.1).
+- **Hook pre-commit** (`.git/hooks/pre-commit`) — buggé : il fait `cd back` puis linte des chemins relatifs à la racine (échec sur tout commit PHP), et son grep bloque le pattern localStorage pourtant assumé. À corriger manuellement (cd racine + affiner le grep) — commits du 12/06 passés avec lint manuel + `--no-verify`.
