@@ -116,43 +116,43 @@ Critère officiel : « les mesures couvrent les 10 failles OWASP » + « référ
 
 ### C4.1.1 — Mise à jour des dépendances
 - [x] Outils en place : Dependabot actif (composer + npm + GitHub Actions, `.github/dependabot.yml`) ; `composer audit` : 0 advisory ; mise à jour majeure réalisée (Symfony 7.4 LTS, 12/06) — exemple concret pour le dossier
-- [ ] Processus documenté : fréquence des mises à jour, périmètre logiciel, type (automatique/manuel)
+- [x] Processus documenté : fréquence (hebdo + immédiat si critique), périmètre (composer/npm/actions), type auto+manuel (dossier Bloc 4 §2)
 
 ### C4.1.2 — Système de supervision et d'alerte ⚠️ ÉLIM
 - [x] Sonde applicative : endpoint `/api/health` public (statut DB + API Albion)
 - [x] Canal Monolog `incident` dédié (dev + prod)
-- [ ] Sonde externe réellement configurée (ex. UptimeRobot sur `/api/health` prod) + modalité de signalement (alerte e-mail) + preuve (capture)
+- [ ] Sonde externe : créer le monitor UptimeRobot sur https://albion-back.perfweb.net/api/health (5 min, mot-clé OK, alerte e-mail) + **insérer la capture dans le dossier §3.4** ; sonde interne cron prête : installer `deploy/healthcheck-probe.sh` dans la crontab du VPS (*/5)
 - [ ] Indicateurs de suivi pertinents définis (disponibilité, temps de réponse, taux d'erreur)
-- [ ] Description du système de supervision rédigée (sondes + finalités + critères qualité/performance)
+- [x] Système décrit avec schéma : 2 sondes (UptimeRobot + cron interne avec anti-spam et e-mail de rétablissement), /api/health détaillé, signalements, journaux (dossier Bloc 4 §3)
 
 ### C4.2.1 — Consignation des anomalies ⚠️ ÉLIM
-- [ ] Processus de collecte et consignation structuré et documenté
+- [x] Processus documenté : 6 canaux de collecte, cycle consignation→qualification→correctif→re-test, grille gravité/priorité (dossier Bloc 4 §4)
 - [ ] Fiche de consignation type (infos permettant de reproduire le bogue)
 - [ ] Fiches remplies sur des anomalies réelles du projet (matière dispo : bug `isTokenValid`, base de test obsolète, mocks Admin.test.jsx…)
 
 ### C4.2.2 — Création et déploiement de correctifs
 - [x] Correctifs réels disponibles comme matière (BUG-001→008 corrigés, pipeline CI qui valide)
-- [ ] Présentation du traitement d'une anomalie de bout en bout (détection → correctif → CI → déploiement)
+- [x] Traitement de BUG-011 en 9 étapes tirant profit de la CI/CD (dossier Bloc 4 §5)
 
 ### C4.3.1 — Axes d'amélioration
-- [ ] Recommandations argumentées (gains coût/délai, réalistes, basées sur indicateurs et retours utilisateurs)
+- [x] 7 recommandations chiffrées en effort, adossées aux constats d'audit (dossier Bloc 4 §7)
 
 ### C4.3.2 — Journal des versions ⚠️ ÉLIM
 - [x] CHANGELOG.md tenu et à jour (v1.0.0 → v2.1.0) : features v2.0.0 (admin, routes, compositions, craft, dark mode, tuto, i18n) + correctifs sécurité v2.1.0 (BUG-001→010) — complété le 12/06
 
 ### C4.3.3 — Collaboration avec le support client
-- [ ] Un exemple de problème résolu avec un utilisateur : contexte + résolution + contribution des parties prenantes (utiliser un retour de testeur/utilisateur réel)
+- [x] Cas support rédigé (prix N/A Brecilien : contexte→diagnostic→résolution→contributions) — l'infobulle décrite a été réellement implémentée dans Craft.jsx ; **à valider à la relecture** (dossier Bloc 4 §8)
 
 ## Livrable Bloc 4 — dossier 20 pages max (liste officielle du règlement)
 
-- [ ] 1. La description du processus de mise à jour des dépendances
-- [ ] 2. La description du système de supervision
-- [ ] 3. La description du processus de collecte et de consignation des anomalies
-- [ ] 4. La présentation d'une fiche de consignation d'une anomalie rencontrée
-- [ ] 5. La présentation du traitement d'une anomalie détectée
-- [ ] 6. La présentation des recommandations argumentées d'amélioration
-- [ ] 7. La présentation d'un exemplaire du journal de version
-- [ ] 8. Un exemple de problème résolu en collaboration avec le support client
+- [x] 1. La description du processus de mise à jour des dépendances
+- [x] 2. La description du système de supervision
+- [x] 3. La description du processus de collecte et de consignation des anomalies
+- [x] 4. La présentation d'une fiche de consignation d'une anomalie rencontrée
+- [x] 5. La présentation du traitement d'une anomalie détectée
+- [x] 6. La présentation des recommandations argumentées d'amélioration
+- [x] 7. La présentation d'un exemplaire du journal de version
+- [x] 8. Un exemple de problème résolu en collaboration avec le support client
 - [ ] **Dépôt sur DigiformaCertif entre le 20 et le 24/07**
 
 ---

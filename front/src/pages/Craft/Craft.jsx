@@ -590,7 +590,9 @@ const Craft = () => {
                                                     </Typography>
                                                 </Box>
                                             ) : (
-                                                <Typography variant="body2" color="text.disabled">N/A</Typography>
+                                                <Tooltip title="Aucun ordre de vente sur ce marché : l'API d'Albion ne renvoie pas de prix pour cet item dans cette ville">
+                                                    <Typography variant="body2" color="text.disabled" sx={{ cursor: 'help' }}>N/A</Typography>
+                                                </Tooltip>
                                             )}
                                         </TableCell>
                                         <TableCell align="right">
