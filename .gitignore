@@ -1,2 +1,20 @@
 .idea
 node_modules
+
+# Outils locaux (IA, MCP)
+.claude/
+back/.claude/
+.mcp.json
+.playwright-mcp/
+todo/
+
+# Artefacts de dev à la racine (captures d'écran, exports de test)
+/*.png
+/*.jpg
+/exported-jpeg-dataurl.txt
+
+# Rapports de couverture
+front/coverage*/
+
+# Fichier auto-généré par Symfony Flex
+back/config/reference.php
