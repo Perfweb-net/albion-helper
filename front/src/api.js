@@ -10,6 +10,9 @@ const api = axios.create({
 
 api.interceptors.request.use(
     async (config) => {
+        // Serveur de jeu courant (americas/europe/asia) — lu par le back (X-Albion-Server)
+        config.headers['X-Albion-Server'] = localStorage.getItem('albionServer') || 'europe';
+
         const token = localStorage.getItem('token');
         if (token && !config.url.includes('token/refresh')) {
             await isTokenValid(token);

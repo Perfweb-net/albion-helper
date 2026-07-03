@@ -1,10 +1,13 @@
 import { UserProvider } from "./UserContext";
+import { ServerProvider } from "./ServerContext";
 // Importe d'autres contextes ici si nécessaire
 
 const AllProviders = ({ children }) => {
     return (
         <UserProvider>
-            {children}
+            <ServerProvider>
+                {children}
+            </ServerProvider>
         </UserProvider>
     );
 };
