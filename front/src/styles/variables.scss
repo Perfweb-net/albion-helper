@@ -1,12 +1,12 @@
-// Variables globales
-$primary-color: #1a1a2e;
-$primary-light: #16213e;
-$primary-dark: #0f0f1e;
-$secondary-color: #e94560;
-$background-default: #f5f7fa;
-$background-paper: #ffffff;
-$text-primary: #1a1a2e;
-$text-secondary: #6b7280;
+// Variables globales — alignées sur le thème sombre "fantasy" (cf. src/theme.js).
+$primary-color: #c9a84c;        // or (accent principal)
+$primary-light: #e8c96b;
+$primary-dark: #8b6914;
+$secondary-color: #9b3b3b;
+$background-default: #0a0805;
+$background-paper: #1c1508;
+$text-primary: #e8dcc8;
+$text-secondary: #b8a88a;
 $border-radius: 12px;
 $border-radius-large: 16px;
 $border-radius-small: 8px;

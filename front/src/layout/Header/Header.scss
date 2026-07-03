@@ -3,7 +3,7 @@
 .header {
   &__appbar {
     box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-    background: linear-gradient(135deg, $primary-color 0%, $primary-light 100%);
+    background: linear-gradient(135deg, #0d0b06 0%, #1a1309 100%);
   }
 
   &__toolbar {
@@ -70,7 +70,7 @@
   }
 
   &__drawer {
-    background: linear-gradient(135deg, $primary-color 0%, $primary-light 100%);
+    background: linear-gradient(135deg, #0d0b06 0%, #1a1309 100%);
   }
 
   &__drawer-content {
@@ -79,7 +79,7 @@
     flex-direction: column;
     padding: 24px;
     height: 100%;
-    background: linear-gradient(135deg, $primary-color 0%, $primary-light 100%);
+    background: linear-gradient(135deg, #0d0b06 0%, #1a1309 100%);
   }
 
   &__drawer-header {
