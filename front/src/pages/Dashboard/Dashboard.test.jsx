@@ -48,7 +48,7 @@ test('submits search and calls API', async () => {
     const input = screen.getByRole('textbox');
     fireEvent.change(input, { target: { value: 'testplayer' } });
 
-    const btn = screen.getByRole('button', { name: /rechercher/i });
+    const btn = screen.getByRole('button', { name: 'common.search' });
     fireEvent.click(btn);
 
     await waitFor(() => expect(api.get).toHaveBeenCalled());
