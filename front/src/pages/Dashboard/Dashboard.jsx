@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import api from '../../api';
 import {useNavigate} from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     Box,
     Button,
@@ -26,6 +27,7 @@ import {isTokenValid} from "../../components/PrivateRoute";
 import './Dashboard.scss';
 
 const Dashboard = () => {  // Le nom du composant commence par une majuscule
+    const { t } = useTranslation();
     const [pseudo, setPseudo] = useState('');
     const [players, setPlayers] = useState('');
     const [guilds, setGuilds] = useState('');
@@ -72,10 +74,10 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
         <Container maxWidth="lg" className="dashboard__container">
             <Box className="dashboard__header">
                 <Typography variant="h3" className="dashboard__title" gutterBottom>
-                    Dashboard
+                    {t('dashboard.title')}
                 </Typography>
                 <Typography variant="body1" className="dashboard__subtitle">
-                    Recherchez des joueurs, guildes ou cartes
+                    {t('dashboard.search_subtitle')}
                 </Typography>
             </Box>
 
@@ -84,29 +86,29 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
                     <Grid2 container spacing={3} sx={{ alignItems: 'center' }}>
                         <Grid2 size={{xs: 12, sm: 3}}>
                             <FormControl fullWidth>
-                                <InputLabel id="search-type-label">Type de recherche</InputLabel>
+                                <InputLabel id="search-type-label">{t('dashboard.search_type_label')}</InputLabel>
                                 <Select
                                     labelId="search-type-label"
                                     value={selection}
                                     onChange={(e) => setSelection(e.target.value)}
-                                    label="Type de recherche"
+                                    label={t('dashboard.search_type_label')}
                                 >
                                     <MenuItem value="joueur">
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                             <PersonIcon fontSize="small" />
-                                            Joueurs
+                                            {t('dashboard.menu_players')}
                                         </Box>
                                     </MenuItem>
                                     <MenuItem value="guilde">
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                             <GroupsIcon fontSize="small" />
-                                            Guilde
+                                            {t('dashboard.menu_guild')}
                                         </Box>
                                     </MenuItem>
                                     <MenuItem value="map">
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                             <MapIcon fontSize="small" />
-                                            Map
+                                            {t('dashboard.menu_map')}
                                         </Box>
                                     </MenuItem>
                                 </Select>
@@ -115,7 +117,7 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
 
                         <Grid2 size={{xs: 12, sm: 7}}>
                             <TextField
-                                label="Rechercher"
+                                label={t('common.search')}
                                 variant="outlined"
                                 fullWidth
                                 value={pseudo}
@@ -125,7 +127,7 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
                                         handleSubmit();
                                     }
                                 }}
-                                placeholder="Entrez un nom..."
+                                placeholder={t('dashboard.search_placeholder')}
                             />
                         </Grid2>
 
@@ -139,7 +141,7 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
                                 startIcon={<SearchIcon />}
                                 className="dashboard__button"
                             >
-                                Rechercher
+                                {t('common.search')}
                             </Button>
                         </Grid2>
                     </Grid2>
@@ -150,7 +152,7 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
                 {players && players.length > 0 && (
                     <Box className="dashboard__results-section">
                         <Typography variant="h5" className="dashboard__results-title" gutterBottom>
-                            Joueurs trouvés ({players.length})
+                            {t('dashboard.players_found', { count: players.length })}
                         </Typography>
 
                         <Grid2 container spacing={3}>
@@ -185,7 +187,7 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
                 {guilds && guilds.length > 0 && (
                     <Box sx={{ width: '100%', mt: 4 }}>
                         <Typography variant="h5" fontWeight={600} gutterBottom sx={{ mb: 3 }}>
-                            Guildes trouvées ({guilds.length})
+                            {t('dashboard.guilds_found', { count: guilds.length })}
                         </Typography>
 
                         <Grid2 container spacing={3}>
@@ -219,7 +221,7 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
                 {maps.length > 0 && (
                     <Box sx={{ width: '100%', mt: 4 }}>
                         <Typography variant="h5" fontWeight={600} gutterBottom sx={{ mb: 3 }}>
-                            Cartes trouvées ({maps.length})
+                            {t('dashboard.maps_found', { count: maps.length })}
                         </Typography>
 
                         <Grid2 container spacing={3}>

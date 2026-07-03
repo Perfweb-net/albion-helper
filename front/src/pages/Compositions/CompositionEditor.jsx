@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     Box, Container, Typography, Button, TextField, IconButton, Tooltip,
     CircularProgress, Alert, Paper, Chip, ToggleButtonGroup, ToggleButton,
@@ -21,25 +22,15 @@ import SlotPicker from './SlotPicker';
 import { exportCompositionAsJpeg } from './compositionExport';
 
 const SLOTS = ['weapon', 'offhand', 'head', 'armor', 'boots', 'cape', 'food', 'potion', 'mount'];
-const SLOT_LABELS = {
-    weapon: 'Arme', offhand: 'OH', head: 'Tête', armor: 'Armure',
-    boots: 'Bottes', cape: 'Cape', food: 'Food', potion: 'Potion', mount: 'Monture',
-};
 
-const VISIBILITY_CONFIG = {
-    private:  { label: 'Privé',    icon: <LockIcon   sx={{ fontSize: 14 }} />, color: '#8b949e' },
-    url_only: { label: 'URL only', icon: <LinkIcon   sx={{ fontSize: 14 }} />, color: '#58a6ff' },
-    public:   { label: 'Public',   icon: <PublicIcon sx={{ fontSize: 14 }} />, color: '#3fb950' },
-};
-
-function emptyPlayer(index) {
-    return { name: `Joueur ${index + 1}`, weapon: null, offhand: null, head: null, armor: null, boots: null, cape: null, food: null, potion: null, mount: null, swaps: {} };
+function emptyPlayer(index, t) {
+    return { name: t('compositions.player_default_name', { n: index + 1 }), weapon: null, offhand: null, head: null, armor: null, boots: null, cape: null, food: null, potion: null, mount: null, swaps: {} };
 }
 
-function SlotButton({ item, onClick, size = 44, showLabel, label }) {
+function SlotButton({ item, onClick, size = 44, showLabel, label, chooseLabel }) {
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.3 }}>
-            <Tooltip title={item?.name ?? `Choisir ${label}`}>
+            <Tooltip title={item?.name ?? chooseLabel ?? label}>
                 <Box
                     onClick={onClick}
                     sx={{
@@ -73,6 +64,14 @@ function SlotButton({ item, onClick, size = 44, showLabel, label }) {
 }
 
 function PlayerRow({ player, index, onChange, onRemove }) {
+    const { t } = useTranslation();
+    const SLOT_LABELS = {
+        weapon: t('compositions.slot_weapon'), offhand: t('compositions.slot_offhand'),
+        head: t('compositions.slot_head'), armor: t('compositions.slot_armor'),
+        boots: t('compositions.slot_boots'), cape: t('compositions.slot_cape'),
+        food: t('compositions.slot_food'), potion: t('compositions.slot_potion'),
+        mount: t('compositions.slot_mount'),
+    };
     const [picker, setPicker]     = useState(null);
     const [showSwaps, setShowSwaps] = useState(Object.keys(player.swaps ?? {}).length > 0);
 
@@ -123,7 +122,7 @@ function PlayerRow({ player, index, onChange, onRemove }) {
 
                 {visibleSlots.map(slot => (
                     <Box key={slot} sx={{ position: 'relative' }}>
-                        <SlotButton item={player[slot]} label={SLOT_LABELS[slot]} showLabel onClick={() => setPicker({ slot, isSwap: false })} />
+                        <SlotButton item={player[slot]} label={SLOT_LABELS[slot]} chooseLabel={t('compositions.choose_slot', { slot: SLOT_LABELS[slot] })} showLabel onClick={() => setPicker({ slot, isSwap: false })} />
                         {player[slot] && (
                             <IconButton size="small" onClick={clearSlot(slot, false)}
                                 sx={{ position: 'absolute', top: -6, right: -6, bgcolor: '#0d1117', p: '2px', '&:hover': { bgcolor: '#f44336' } }}>
@@ -135,14 +134,14 @@ function PlayerRow({ player, index, onChange, onRemove }) {
 
                 <Divider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
 
-                <Tooltip title={showSwaps ? 'Masquer les swaps' : 'Gérer les swaps'}>
+                <Tooltip title={showSwaps ? t('compositions.hide_swaps') : t('compositions.manage_swaps')}>
                     <IconButton size="small" onClick={() => setShowSwaps(v => !v)}
                         sx={{ color: showSwaps ? '#c9a84c' : '#8b949e', border: '1px solid', borderColor: showSwaps ? 'rgba(201,168,76,0.5)' : '#30363d' }}>
                         <SwapHorizIcon fontSize="small" />
                     </IconButton>
                 </Tooltip>
 
-                <Tooltip title="Retirer ce joueur">
+                <Tooltip title={t('compositions.remove_player')}>
                     <IconButton size="small" onClick={() => onRemove(index)} sx={{ color: '#f44336', ml: 'auto' }}>
                         <DeleteIcon fontSize="small" />
                     </IconButton>
@@ -154,7 +153,7 @@ function PlayerRow({ player, index, onChange, onRemove }) {
                     <Chip label="⇄ swap" size="small" sx={{ bgcolor: '#21262d', color: '#c9a84c', fontSize: '0.7rem', height: 20 }} />
                     {visibleSlots.map(slot => (
                         <Box key={`swap-${slot}`} sx={{ position: 'relative' }}>
-                            <SlotButton item={player.swaps?.[slot] ?? null} label={SLOT_LABELS[slot]} showLabel size={34} onClick={() => setPicker({ slot, isSwap: true })} />
+                            <SlotButton item={player.swaps?.[slot] ?? null} label={SLOT_LABELS[slot]} chooseLabel={t('compositions.choose_slot', { slot: SLOT_LABELS[slot] })} showLabel size={34} onClick={() => setPicker({ slot, isSwap: true })} />
                             {player.swaps?.[slot] && (
                                 <IconButton size="small" onClick={clearSlot(slot, true)}
                                     sx={{ position: 'absolute', top: -5, right: -5, bgcolor: '#0d1117', p: '1px', '&:hover': { bgcolor: '#f44336' } }}>
@@ -177,6 +176,7 @@ function PlayerRow({ player, index, onChange, onRemove }) {
 export default function CompositionEditor() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const { user } = useContext(UserContext);
 
     const [comp, setComp]           = useState(null);
@@ -194,8 +194,8 @@ export default function CompositionEditor() {
 
     const load = useCallback(async () => {
         if (isNew) {
-            setName('Nouvelle composition');
-            setPlayers([emptyPlayer(0)]);
+            setName(t('compositions.new_composition_name'));
+            setPlayers([emptyPlayer(0, t)]);
             setLoading(false);
             return;
         }
@@ -204,14 +204,14 @@ export default function CompositionEditor() {
             const c = res.data;
             setComp(c);
             setName(c.name);
-            setPlayers(c.players.length ? c.players : [emptyPlayer(0)]);
+            setPlayers(c.players.length ? c.players : [emptyPlayer(0, t)]);
             setVisibility(c.visibility ?? 'private');
         } catch {
-            setError('Composition introuvable');
+            setError(t('compositions.error_not_found'));
         } finally {
             setLoading(false);
         }
-    }, [id, isNew]);
+    }, [id, isNew, t]);
 
     useEffect(() => { load(); }, [load]);
 
@@ -225,9 +225,9 @@ export default function CompositionEditor() {
                 const res = await api.put(`/compositions/${id}`, { name, players, visibility });
                 setComp(res.data);
             }
-            setSnack('Sauvegardé !');
+            setSnack(t('compositions.saved'));
         } catch {
-            setError('Erreur lors de la sauvegarde');
+            setError(t('compositions.error_save'));
         } finally {
             setSaving(false);
         }
@@ -238,7 +238,7 @@ export default function CompositionEditor() {
         try {
             await exportCompositionAsJpeg({ name, owner: comp?.owner ?? user?.username ?? '?', players });
         } catch (e) {
-            setError('Erreur export : ' + e.message);
+            setError(t('compositions.error_export', { message: e.message }));
         } finally {
             setExporting(false);
         }
@@ -247,8 +247,14 @@ export default function CompositionEditor() {
     const copyShareLink = () => {
         const url = `${window.location.origin}/compositions/share/${comp.shareToken}`;
         navigator.clipboard.writeText(url);
-        setSnack('Lien copié !');
+        setSnack(t('compositions.link_copied'));
         setShareDialog(false);
+    };
+
+    const VISIBILITY_CONFIG = {
+        private:  { label: t('compositions.visibility_private'),  icon: <LockIcon   sx={{ fontSize: 14 }} />, color: '#8b949e' },
+        url_only: { label: t('compositions.visibility_url_only'), icon: <LinkIcon   sx={{ fontSize: 14 }} />, color: '#58a6ff' },
+        public:   { label: t('compositions.visibility_public'),   icon: <PublicIcon sx={{ fontSize: 14 }} />, color: '#3fb950' },
     };
 
     if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}><CircularProgress /></Box>;
@@ -274,7 +280,7 @@ export default function CompositionEditor() {
                 />
 
                 <Typography sx={{ color: '#8b949e', fontSize: '0.82rem' }}>
-                    {players.length} / 100 joueurs
+                    {t('compositions.player_counter', { count: players.length })}
                 </Typography>
 
                 <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
@@ -305,19 +311,19 @@ export default function CompositionEditor() {
 
                     {canShare && (
                         <Button size="small" variant="outlined" startIcon={<ShareIcon />} onClick={() => setShareDialog(true)}>
-                            Lien
+                            {t('compositions.share_link_button')}
                         </Button>
                     )}
 
                     <Button size="small" variant="outlined"
                         startIcon={exporting ? <CircularProgress size={14} /> : <DownloadIcon />}
                         onClick={handleExport} disabled={exporting || players.length === 0}>
-                        JPEG
+                        {t('compositions.export_jpeg')}
                     </Button>
 
                     <Button size="small" variant="contained" onClick={save} disabled={saving}
                         startIcon={saving ? <CircularProgress size={14} color="inherit" /> : null}>
-                        Sauvegarder
+                        {t('common.save')}
                     </Button>
                 </Box>
             </Box>
@@ -334,21 +340,21 @@ export default function CompositionEditor() {
 
             {players.length < 100 && (
                 <Button variant="outlined" startIcon={<PersonAddIcon />}
-                    onClick={() => setPlayers(prev => [...prev, emptyPlayer(prev.length)])}
+                    onClick={() => setPlayers(prev => [...prev, emptyPlayer(prev.length, t)])}
                     sx={{ mt: 1, borderStyle: 'dashed' }} fullWidth>
-                    Ajouter un joueur
+                    {t('compositions.add_player')}
                 </Button>
             )}
 
             {/* Share dialog */}
             <Dialog open={shareDialog} onClose={() => setShareDialog(false)} maxWidth="sm" fullWidth
                 PaperProps={{ sx: { bgcolor: '#161b22', border: '1px solid rgba(201,168,76,0.25)' } }}>
-                <DialogTitle sx={{ fontFamily: 'Cinzel, serif', color: '#c9a84c' }}>Lien de partage</DialogTitle>
+                <DialogTitle sx={{ fontFamily: 'Cinzel, serif', color: '#c9a84c' }}>{t('compositions.share_dialog_title')}</DialogTitle>
                 <DialogContent>
                     <Typography sx={{ fontSize: '0.82rem', mb: 1.5, color: '#8b949e' }}>
                         {visibility === 'public'
-                            ? 'Cette composition est publique et listée dans la galerie.'
-                            : 'Accessible uniquement via ce lien (non listé).'}
+                            ? t('compositions.share_hint_public')
+                            : t('compositions.share_hint_url_only')}
                     </Typography>
                     <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
                         <TextField size="small" fullWidth
@@ -360,7 +366,7 @@ export default function CompositionEditor() {
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setShareDialog(false)}>Fermer</Button>
+                    <Button onClick={() => setShareDialog(false)}>{t('common.close')}</Button>
                 </DialogActions>
             </Dialog>
 

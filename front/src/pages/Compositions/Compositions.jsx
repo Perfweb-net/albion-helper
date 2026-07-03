@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     Box, Container, Typography, Button, Card, CardContent, CardActions,
     IconButton, CircularProgress, Alert, Grid2, Chip, Tooltip,
@@ -17,13 +18,13 @@ import PublicIcon from '@mui/icons-material/Public';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import api from '../../api';
 
-const VISIBILITY_CONFIG = {
-    private:  { label: 'Privé',    icon: <LockIcon   sx={{ fontSize: 12 }} />, color: '#8b949e' },
-    url_only: { label: 'URL only', icon: <LinkIcon   sx={{ fontSize: 12 }} />, color: '#58a6ff' },
-    public:   { label: 'Public',   icon: <PublicIcon sx={{ fontSize: 12 }} />, color: '#3fb950' },
-};
-
 function VisibilityChip({ visibility }) {
+    const { t } = useTranslation();
+    const VISIBILITY_CONFIG = {
+        private:  { label: t('compositions.visibility_private'),  icon: <LockIcon   sx={{ fontSize: 12 }} />, color: '#8b949e' },
+        url_only: { label: t('compositions.visibility_url_only'), icon: <LinkIcon   sx={{ fontSize: 12 }} />, color: '#58a6ff' },
+        public:   { label: t('compositions.visibility_public'),   icon: <PublicIcon sx={{ fontSize: 12 }} />, color: '#3fb950' },
+    };
     const cfg = VISIBILITY_CONFIG[visibility] ?? VISIBILITY_CONFIG.private;
     return (
         <Chip
@@ -37,6 +38,7 @@ function VisibilityChip({ visibility }) {
 
 function CompoCard({ comp, onDelete, onCopyLink, showOwner }) {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const canShare = comp.visibility === 'url_only' || comp.visibility === 'public';
 
     return (
@@ -47,12 +49,12 @@ function CompoCard({ comp, onDelete, onCopyLink, showOwner }) {
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 0.75, flexWrap: 'wrap', mb: 1 }}>
                     <Chip icon={<GroupsIcon sx={{ fontSize: 12 }} />}
-                        label={`${comp.players.length} joueur${comp.players.length !== 1 ? 's' : ''}`}
+                        label={t('compositions.player_count', { count: comp.players.length })}
                         size="small" sx={{ bgcolor: '#21262d', fontSize: '0.7rem', height: 20 }} />
                     <VisibilityChip visibility={comp.visibility} />
                 </Box>
                 {showOwner && (
-                    <Typography sx={{ fontSize: '0.75rem', color: '#c9a84c', mb: 0.5 }}>par {comp.owner}</Typography>
+                    <Typography sx={{ fontSize: '0.75rem', color: '#c9a84c', mb: 0.5 }}>{t('compositions.by_owner', { owner: comp.owner })}</Typography>
                 )}
                 <Typography sx={{ fontSize: '0.72rem', color: '#8b949e' }}>
                     {new Date(comp.updatedAt).toLocaleDateString('fr-FR')}
@@ -60,14 +62,14 @@ function CompoCard({ comp, onDelete, onCopyLink, showOwner }) {
             </CardContent>
             <CardActions sx={{ justifyContent: 'flex-end', pt: 0, gap: 0.5 }}>
                 {canShare && (
-                    <Tooltip title="Copier le lien">
+                    <Tooltip title={t('compositions.copy_link')}>
                         <IconButton size="small" onClick={() => onCopyLink(comp)} sx={{ color: '#8b949e', '&:hover': { color: '#58a6ff' } }}>
                             <ContentCopyIcon sx={{ fontSize: 16 }} />
                         </IconButton>
                     </Tooltip>
                 )}
                 {!showOwner && (
-                    <Tooltip title="Supprimer">
+                    <Tooltip title={t('common.delete')}>
                         <IconButton size="small" onClick={() => onDelete(comp)} sx={{ color: '#8b949e', '&:hover': { color: '#f44336' } }}>
                             <DeleteIcon sx={{ fontSize: 16 }} />
                         </IconButton>
@@ -76,12 +78,12 @@ function CompoCard({ comp, onDelete, onCopyLink, showOwner }) {
                 {showOwner ? (
                     <Button size="small" variant="outlined" startIcon={<VisibilityIcon />}
                         onClick={() => navigate(`/compositions/share/${comp.shareToken}`)}>
-                        Voir
+                        {t('compositions.view')}
                     </Button>
                 ) : (
                     <Button size="small" variant="outlined" startIcon={<EditIcon />}
                         onClick={() => navigate(`/compositions/${comp.id}`)}>
-                        Éditer
+                        {t('common.edit')}
                     </Button>
                 )}
             </CardActions>
@@ -91,6 +93,7 @@ function CompoCard({ comp, onDelete, onCopyLink, showOwner }) {
 
 export default function Compositions() {
     const navigate = useNavigate();
+    const { t } = useTranslation();
     const [tab, setTab]                   = useState(0);
     const [myComps, setMyComps]           = useState([]);
     const [publicComps, setPublicComps]   = useState([]);
@@ -109,11 +112,11 @@ export default function Compositions() {
             const res = await api.get('/compositions');
             setMyComps(res.data);
         } catch {
-            setError('Impossible de charger les compositions');
+            setError(t('compositions.error_load_mine'));
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [t]);
 
     const loadPublic = useCallback(async () => {
         setPubLoading(true);
@@ -121,11 +124,11 @@ export default function Compositions() {
             const res = await api.get('/compositions/public');
             setPublicComps(res.data);
         } catch {
-            setError('Impossible de charger la galerie');
+            setError(t('compositions.error_load_gallery'));
         } finally {
             setPubLoading(false);
         }
-    }, []);
+    }, [t]);
 
     useEffect(() => { loadMine(); }, [loadMine]);
 
@@ -142,7 +145,7 @@ export default function Compositions() {
             setNewName('');
             navigate(`/compositions/${res.data.id}`);
         } catch {
-            setError('Erreur lors de la création');
+            setError(t('compositions.error_create'));
         } finally {
             setCreating(false);
         }
@@ -154,7 +157,7 @@ export default function Compositions() {
             await api.delete(`/compositions/${deleteTarget.id}`);
             setMyComps(prev => prev.filter(c => c.id !== deleteTarget.id));
         } catch {
-            setError('Erreur lors de la suppression');
+            setError(t('compositions.error_delete'));
         } finally {
             setDeleteTarget(null);
         }
@@ -162,7 +165,7 @@ export default function Compositions() {
 
     const copyLink = (comp) => {
         navigator.clipboard.writeText(`${window.location.origin}/compositions/share/${comp.shareToken}`);
-        setSnack('Lien copié !');
+        setSnack(t('compositions.link_copied'));
     };
 
     return (
@@ -170,10 +173,10 @@ export default function Compositions() {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
                 <GroupsIcon sx={{ fontSize: 36, color: '#c9a84c' }} />
                 <Typography variant="h4" sx={{ fontFamily: 'Cinzel, serif', color: '#c9a84c', flex: 1 }}>
-                    Compositions
+                    {t('compositions.title')}
                 </Typography>
                 <Button variant="contained" startIcon={<AddIcon />} onClick={() => setCreateDialog(true)}>
-                    Nouvelle
+                    {t('compositions.new')}
                 </Button>
             </Box>
 
@@ -181,8 +184,8 @@ export default function Compositions() {
             {snack && <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSnack('')}>{snack}</Alert>}
 
             <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 3, borderBottom: '1px solid #21262d' }}>
-                <Tab label={`Mes compositions (${myComps.length})`} />
-                <Tab label="Galerie publique" icon={<PublicIcon sx={{ fontSize: 16 }} />} iconPosition="start" />
+                <Tab label={t('compositions.tab_mine', { count: myComps.length })} />
+                <Tab label={t('compositions.tab_gallery')} icon={<PublicIcon sx={{ fontSize: 16 }} />} iconPosition="start" />
             </Tabs>
 
             {/* My compositions */}
@@ -192,7 +195,7 @@ export default function Compositions() {
                     : myComps.length === 0
                         ? <Box sx={{ textAlign: 'center', py: 8, color: '#8b949e' }}>
                             <GroupsIcon sx={{ fontSize: 64, opacity: 0.3, mb: 2 }} />
-                            <Typography>Aucune composition. Créez-en une !</Typography>
+                            <Typography>{t('compositions.empty_mine')}</Typography>
                           </Box>
                         : <Grid2 container spacing={2.5}>
                             {myComps.map(comp => (
@@ -210,7 +213,7 @@ export default function Compositions() {
                     : publicComps.length === 0
                         ? <Box sx={{ textAlign: 'center', py: 8, color: '#8b949e' }}>
                             <PublicIcon sx={{ fontSize: 64, opacity: 0.3, mb: 2 }} />
-                            <Typography>Aucune composition publique pour l'instant.</Typography>
+                            <Typography>{t('compositions.empty_gallery')}</Typography>
                           </Box>
                         : <Grid2 container spacing={2.5}>
                             {publicComps.map(comp => (
@@ -224,18 +227,18 @@ export default function Compositions() {
             {/* Create dialog */}
             <Dialog open={createDialog} onClose={() => setCreateDialog(false)} maxWidth="xs" fullWidth
                 PaperProps={{ sx: { bgcolor: '#161b22', border: '1px solid rgba(201,168,76,0.25)' } }}>
-                <DialogTitle sx={{ fontFamily: 'Cinzel, serif', color: '#c9a84c' }}>Nouvelle composition</DialogTitle>
+                <DialogTitle sx={{ fontFamily: 'Cinzel, serif', color: '#c9a84c' }}>{t('compositions.dialog_create_title')}</DialogTitle>
                 <DialogContent>
-                    <TextField autoFocus fullWidth size="small" label="Nom" value={newName}
+                    <TextField autoFocus fullWidth size="small" label={t('compositions.name_label')} value={newName}
                         onChange={e => setNewName(e.target.value)}
                         onKeyDown={e => { if (e.key === 'Enter') handleCreate(); }}
                         sx={{ mt: 1 }} />
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => { setCreateDialog(false); setNewName(''); }}>Annuler</Button>
+                    <Button onClick={() => { setCreateDialog(false); setNewName(''); }}>{t('common.cancel')}</Button>
                     <Button variant="contained" onClick={handleCreate} disabled={creating || !newName.trim()}
                         startIcon={creating ? <CircularProgress size={14} color="inherit" /> : null}>
-                        Créer
+                        {t('compositions.create')}
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -243,13 +246,13 @@ export default function Compositions() {
             {/* Delete confirm */}
             <Dialog open={!!deleteTarget} onClose={() => setDeleteTarget(null)} maxWidth="xs" fullWidth
                 PaperProps={{ sx: { bgcolor: '#161b22', border: '1px solid rgba(201,168,76,0.25)' } }}>
-                <DialogTitle sx={{ fontFamily: 'Cinzel, serif' }}>Supprimer ?</DialogTitle>
+                <DialogTitle sx={{ fontFamily: 'Cinzel, serif' }}>{t('compositions.dialog_delete_title')}</DialogTitle>
                 <DialogContent>
-                    <Typography>Supprimer <strong>{deleteTarget?.name}</strong> ?</Typography>
+                    <Typography>{t('compositions.dialog_delete_confirm', { name: deleteTarget?.name })}</Typography>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setDeleteTarget(null)}>Annuler</Button>
-                    <Button onClick={handleDelete} color="error" variant="contained">Supprimer</Button>
+                    <Button onClick={() => setDeleteTarget(null)}>{t('common.cancel')}</Button>
+                    <Button onClick={handleDelete} color="error" variant="contained">{t('common.delete')}</Button>
                 </DialogActions>
             </Dialog>
         </Container>

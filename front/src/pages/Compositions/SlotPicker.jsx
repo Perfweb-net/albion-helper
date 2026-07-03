@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField,
     Box, Typography, CircularProgress, InputAdornment, IconButton, Tooltip
@@ -20,11 +21,6 @@ const SLOT_PREFIXES = {
     mount:   ['T8_MOUNT_'],
 };
 
-const SLOT_LABELS = {
-    weapon: 'Arme principale', offhand: 'Off-hand', head: 'Casque',
-    armor: 'Armure', boots: 'Bottes', cape: 'Cape',
-    food: 'Nourriture', potion: 'Potion', mount: 'Monture',
-};
 
 function isTwoHanded(uniqueName) {
     return uniqueName?.startsWith('T8_2H_') ?? false;
@@ -36,6 +32,14 @@ function matchesSlot(uniqueName, slot) {
 }
 
 export default function SlotPicker({ open, slot, onSelect, onClose, isSwap }) {
+    const { t } = useTranslation();
+    const SLOT_LABELS = {
+        weapon: t('compositions.slot_picker_weapon'), offhand: t('compositions.slot_picker_offhand'),
+        head: t('compositions.slot_picker_head'), armor: t('compositions.slot_picker_armor'),
+        boots: t('compositions.slot_picker_boots'), cape: t('compositions.slot_picker_cape'),
+        food: t('compositions.slot_picker_food'), potion: t('compositions.slot_picker_potion'),
+        mount: t('compositions.slot_picker_mount'),
+    };
     const [query, setQuery]     = useState('');
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -93,7 +97,7 @@ export default function SlotPicker({ open, slot, onSelect, onClose, isSwap }) {
                     autoFocus
                     fullWidth
                     size="small"
-                    placeholder="Rechercher…"
+                    placeholder={t('compositions.search_placeholder')}
                     value={query}
                     onChange={e => setQuery(e.target.value)}
                     InputProps={{
@@ -111,13 +115,13 @@ export default function SlotPicker({ open, slot, onSelect, onClose, isSwap }) {
 
                 {!loading && results.length === 0 && query && (
                     <Typography color="text.secondary" sx={{ textAlign: 'center', py: 2 }}>
-                        Aucun résultat
+                        {t('compositions.no_results')}
                     </Typography>
                 )}
 
                 {!loading && results.length === 0 && !query && (
                     <Typography color="text.secondary" sx={{ textAlign: 'center', py: 2, fontSize: '0.85rem' }}>
-                        Saisir un nom pour chercher un item T8
+                        {t('compositions.search_hint')}
                     </Typography>
                 )}
 
@@ -151,7 +155,7 @@ export default function SlotPicker({ open, slot, onSelect, onClose, isSwap }) {
             </DialogContent>
 
             <DialogActions>
-                <Button onClick={onClose} size="small">Annuler</Button>
+                <Button onClick={onClose} size="small">{t('common.cancel')}</Button>
             </DialogActions>
         </Dialog>
     );

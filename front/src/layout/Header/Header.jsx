@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import {
     AppBar, Toolbar, Button, Box, IconButton, Drawer, Divider,
     Typography, Tooltip, Menu, MenuItem
@@ -6,9 +6,11 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { UserContext } from '../../context/UserContext';
 import { useThemeMode } from '../../context/ThemeContext';
+import { useServer } from '../../context/ServerContext';
+import { langFlag } from '../../utils/langFlags';
 import Logo from '../../components/svg/Logo';
 import { useTranslation } from 'react-i18next';
-import { availableLanguages } from '../../i18n';
+import { availableLanguages, fetchAvailableLanguages } from '../../i18n';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -20,6 +22,8 @@ import TranslateIcon from '@mui/icons-material/Translate';
 import RouteIcon from '@mui/icons-material/Route';
 import ConstructionIcon from '@mui/icons-material/Construction';
 import GroupsIcon from '@mui/icons-material/Groups';
+import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
+import PublicIcon from '@mui/icons-material/Public';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import './Header.scss';
 
@@ -27,9 +31,16 @@ const Header = () => {
     const navigate = useNavigate();
     const { isLogin, setIsLogin, user } = useContext(UserContext);
     const { mode, toggleTheme } = useThemeMode();
+    const { server, setServer, current, servers } = useServer();
     const { t, i18n } = useTranslation();
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [langMenuAnchor, setLangMenuAnchor] = useState(null);
+    const [serverMenuAnchor, setServerMenuAnchor] = useState(null);
+    const [languages, setLanguages] = useState(availableLanguages);
+
+    useEffect(() => {
+        fetchAvailableLanguages().then(setLanguages);
+    }, []);
 
     const isAdmin = user?.roles?.includes('ROLE_ADMIN');
 
@@ -52,7 +63,8 @@ const Header = () => {
         { to: '/routes', label: t('nav.routes'), icon: <RouteIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
         { to: '/items', label: t('nav.items') },
         { to: '/craft', label: t('nav.craft'), icon: <ConstructionIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
-        { to: '/compositions', label: 'Compos', icon: <GroupsIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+        { to: '/compositions', label: t('nav.compositions'), icon: <GroupsIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+        { to: '/battles', label: t('nav.battles'), icon: <MilitaryTechIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
     ] : [];
 
     const drawerContent = (
@@ -205,6 +217,14 @@ const Header = () => {
                         </IconButton>
                     </Tooltip>
 
+                    <Tooltip title="Serveur de jeu">
+                        <Button size="small" onClick={(e) => setServerMenuAnchor(e.currentTarget)}
+                            startIcon={<PublicIcon sx={{ fontSize: 18 }} />}
+                            sx={{ color: 'rgba(201,168,76,0.9)', fontSize: '0.72rem', letterSpacing: '0.05em', minWidth: 0 }}>
+                            {current.label}
+                        </Button>
+                    </Tooltip>
+
                     <Tooltip title="Langue / Language">
                         <IconButton size="small" onClick={(e) => setLangMenuAnchor(e.currentTarget)}>
                             <TranslateIcon />
@@ -231,14 +251,29 @@ const Header = () => {
                 </Box>
             </Toolbar>
 
+            {/* Server menu */}
+            <Menu anchorEl={serverMenuAnchor} open={Boolean(serverMenuAnchor)} onClose={() => setServerMenuAnchor(null)}>
+                {servers.map((s) => (
+                    <MenuItem
+                        key={s.key}
+                        onClick={() => { setServer(s.key); setServerMenuAnchor(null); }}
+                        selected={server === s.key}
+                    >
+                        <Box component="span" sx={{ mr: 1 }}>{s.flag}</Box>
+                        {s.label}
+                    </MenuItem>
+                ))}
+            </Menu>
+
             {/* Language menu */}
             <Menu anchorEl={langMenuAnchor} open={Boolean(langMenuAnchor)} onClose={() => setLangMenuAnchor(null)}>
-                {availableLanguages.map((lang) => (
+                {languages.map((lang) => (
                     <MenuItem
                         key={lang.code}
                         onClick={() => handleLangChange(lang.code)}
                         selected={i18n.language === lang.code}
                     >
+                        <Box component="span" sx={{ mr: 1, fontSize: '1.1rem', lineHeight: 1 }}>{langFlag(lang.code)}</Box>
                         {lang.label}
                     </MenuItem>
                 ))}

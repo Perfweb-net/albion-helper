@@ -15,9 +15,11 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import PersonIcon from "@mui/icons-material/Person";
 import {isTokenValid} from "../../components/PrivateRoute";
+import { useTranslation } from 'react-i18next';
 import './Players.scss';
 
 const Players = () => {  // Le nom du composant commence par une majuscule
+    const { t } = useTranslation();
     const [pseudo, setPseudo] = useState('');
     const [players, setPlayers] = useState('');
     const navigate = useNavigate();
@@ -37,10 +39,10 @@ const Players = () => {  // Le nom du composant commence par une majuscule
         <Container maxWidth="lg" sx={{ py: 4 }}>
             <Box sx={{ mb: 4, textAlign: 'center' }}>
                 <Typography variant="h3" fontWeight={700} gutterBottom>
-                    Joueurs
+                    {t('nav.players')}
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                    Recherchez des joueurs d'Albion Online
+                    {t('players.subtitle')}
                 </Typography>
             </Box>
 
@@ -49,7 +51,7 @@ const Players = () => {  // Le nom du composant commence par une majuscule
                     <Grid2 container spacing={3} sx={{ alignItems: 'center' }}>
                         <Grid2 size={{xs: 12, md: 10}}>
                             <TextField
-                                label="Rechercher un joueur"
+                                label={t('players.search_label')}
                                 variant="outlined"
                                 fullWidth
                                 value={pseudo}
@@ -59,7 +61,7 @@ const Players = () => {  // Le nom du composant commence par une majuscule
                                         handleSubmit();
                                     }
                                 }}
-                                placeholder="Entrez un pseudo..."
+                                placeholder={t('player.search_placeholder')}
                             />
                         </Grid2>
 
@@ -73,7 +75,7 @@ const Players = () => {  // Le nom du composant commence par une majuscule
                                 startIcon={<SearchIcon />}
                                 sx={{ py: 1.5 }}
                             >
-                                Rechercher
+                                {t('player.search_button')}
                             </Button>
                         </Grid2>
                     </Grid2>
@@ -84,7 +86,7 @@ const Players = () => {  // Le nom du composant commence par une majuscule
             {players && players.length > 0 && (
                 <Box sx={{ width: '100%' }}>
                     <Typography variant="h5" fontWeight={600} gutterBottom sx={{ mb: 3 }}>
-                        Joueurs trouvés ({players.length})
+                        {t('players.results_count', { count: players.length })}
                     </Typography>
 
                     <Grid2 container spacing={3}>

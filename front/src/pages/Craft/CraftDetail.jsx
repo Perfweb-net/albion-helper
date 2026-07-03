@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     Box, Container, Typography, Card, CardContent, Grid2, Button, Slider,
     FormControl, InputLabel, Select, MenuItem, Switch, FormControlLabel,
@@ -41,17 +42,34 @@ const CRAFTING_SPECIALTY = {
     'Brecilien':     ['cape', 'bag', 'potion'],
 };
 
-const CATEGORY_LABELS   = { weapons: 'Armes', armor: 'Armures', food: 'Nourriture', refinement: 'Raffinage', other: 'Autre' };
-const SUBCATEGORY_LABELS = {
-    sword: 'Épée', bow: 'Arc', axe: 'Hache', spear: 'Lance', crossbow: 'Arbalète',
-    plate_chest: 'Plastron', leather_chest: 'Armure cuir', cloth_chest: 'Robe',
-    plate_helmet: 'Casque lourd', leather_helmet: 'Casque cuir', cloth_helmet: 'Chapeau',
-    plate_boots: 'Bottes lourdes', leather_shoes: 'Chaussures cuir', cloth_shoes: 'Chaussures tissu',
-    wood: 'Bois', metal: 'Métal', hide: 'Peau', fiber: 'Fibre', stone: 'Pierre',
-    stew: 'Ragoût', omelette: 'Omelette',
+// Internal keys — labels rendered via t() at display time
+const CATEGORY_KEYS   = {
+    weapons: 'craft.category.weapons',
+    armor: 'craft.category.armor',
+    food: 'craft.category.food',
+    refinement: 'craft.category.refinement',
+    other: 'craft.category.other',
+};
+const SUBCATEGORY_KEYS = {
+    sword: 'craft.subcategory.sword', bow: 'craft.subcategory.bow', axe: 'craft.subcategory.axe',
+    spear: 'craft.subcategory.spear', crossbow: 'craft.subcategory.crossbow',
+    plate_chest: 'craft.subcategory.plate_chest', leather_chest: 'craft.subcategory.leather_chest',
+    cloth_chest: 'craft.subcategory.cloth_chest',
+    plate_helmet: 'craft.subcategory.plate_helmet', leather_helmet: 'craft.subcategory.leather_helmet',
+    cloth_helmet: 'craft.subcategory.cloth_helmet',
+    plate_boots: 'craft.subcategory.plate_boots', leather_shoes: 'craft.subcategory.leather_shoes',
+    cloth_shoes: 'craft.subcategory.cloth_shoes',
+    wood: 'craft.subcategory.wood', metal: 'craft.subcategory.metal', hide: 'craft.subcategory.hide',
+    fiber: 'craft.subcategory.fiber', stone: 'craft.subcategory.stone',
+    stew: 'craft.subcategory.stew', omelette: 'craft.subcategory.omelette',
 };
 const CATEGORY_SPEC_MAP = { weapons: 'weapons', armor: 'armor', food: 'food', refinement: 'refinement' };
-const SPEC_BRANCH_LABELS = { weapons: 'Armes', armor: 'Armures', food: 'Nourriture', refinement: 'Raffinage' };
+const SPEC_BRANCH_KEYS = {
+    weapons: 'craft.spec_group.weapons',
+    armor: 'craft.spec_group.armor',
+    food: 'craft.spec_group.food',
+    refinement: 'craft.spec_group.refining',
+};
 
 const getCitySpecBonus = (locationType, city, recipe) => {
     if (locationType !== 'city') return 0;
@@ -110,6 +128,7 @@ const SummaryCard = ({ label, value, sub, color, large }) => (
 const CraftDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { t } = useTranslation();
 
     // Settings
     const [locationType, setLocationType] = useState('city');
@@ -148,7 +167,7 @@ const CraftDetail = () => {
         setLoadingRecipe(true);
         api.get(`/crafting/recipes/${id}`)
             .then(r => setRecipe(r.data))
-            .catch(() => setError('Recette introuvable'))
+            .catch(() => setError(t('craft.detail.recipe_not_found')))
             .finally(() => setLoadingRecipe(false));
     }, [id]);
 
@@ -163,7 +182,7 @@ const CraftDetail = () => {
             setMarketData(res.data);
             setLastRefresh(new Date());
         } catch {
-            setError('Erreur lors du chargement des prix marché.');
+            setError(t('craft.error.load_prices'));
         } finally {
             setLoadingPrices(false);
         }
@@ -229,15 +248,16 @@ const CraftDetail = () => {
     if (!recipe) {
         return (
             <Container maxWidth="lg" sx={{ py: 4 }}>
-                <Alert severity="error">{error || 'Recette introuvable'}</Alert>
+                <Alert severity="error">{error || t('craft.detail.recipe_not_found')}</Alert>
                 <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/craft')} sx={{ mt: 2 }}>
-                    Retour au Craft
+                    {t('craft.detail.back')}
                 </Button>
             </Container>
         );
     }
 
     const specBranch = CATEGORY_SPEC_MAP[recipe.category] || 'weapons';
+    const specBranchLabel = t(SPEC_BRANCH_KEYS[specBranch] || specBranch);
 
     return (
         <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -248,7 +268,7 @@ const CraftDetail = () => {
                 onClick={() => navigate('/craft')}
                 sx={{ mb: 2, color: 'text.secondary', '&:hover': { color: '#c9a84c' } }}
             >
-                Retour au Craft
+                {t('craft.detail.back')}
             </Button>
 
             {/* ── Recipe header ── */}
@@ -272,19 +292,22 @@ const CraftDetail = () => {
                         )}
                         <Box sx={{ display: 'flex', gap: 0.8, flexWrap: 'wrap' }}>
                             <Chip label={`T${recipe.tier}`} color="primary" size="small" />
-                            <Chip label={CATEGORY_LABELS[recipe.category] || recipe.category} size="small" />
+                            <Chip label={t(CATEGORY_KEYS[recipe.category] || recipe.category)} size="small" />
                             {recipe.subcategory && (
-                                <Chip label={SUBCATEGORY_LABELS[recipe.subcategory] || recipe.subcategory}
+                                <Chip label={t(SUBCATEGORY_KEYS[recipe.subcategory] || recipe.subcategory)}
                                     variant="outlined" size="small" />
                             )}
                             {recipe.bonusCity && (
                                 <Chip
-                                    label={`Bonus +${recipe.category === 'refinement' ? 40 : 15}% LPB à ${recipe.bonusCity}`}
+                                    label={t('craft.detail.bonus_city_chip', {
+                                        bonus: recipe.category === 'refinement' ? 40 : 15,
+                                        city: recipe.bonusCity,
+                                    })}
                                     color="success" size="small" variant="outlined"
                                 />
                             )}
                             {recipe.outputAmount > 1 && (
-                                <Chip label={`×${recipe.outputAmount} par craft`} size="small" color="secondary" />
+                                <Chip label={t('craft.detail.output_amount', { amount: recipe.outputAmount })} size="small" color="secondary" />
                             )}
                         </Box>
                     </Box>
@@ -293,13 +316,15 @@ const CraftDetail = () => {
                             onClick={() => fetchPrices(recipe)}
                             disabled={loadingPrices}
                             sx={{ color: '#c9a84c' }}
-                            title="Actualiser les prix"
+                            title={t('craft.refresh_prices')}
                         >
                             <RefreshIcon />
                         </IconButton>
                         {lastRefresh && (
                             <Typography variant="caption" color="text.disabled">
-                                Maj {lastRefresh.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+                                {t('craft.detail.last_refresh', {
+                                    time: lastRefresh.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+                                })}
                             </Typography>
                         )}
                     </Box>
@@ -316,31 +341,31 @@ const CraftDetail = () => {
                     <Card sx={{ border: '1px solid rgba(201,168,76,0.2)', position: 'sticky', top: 80 }}>
                         <CardContent sx={{ p: 2.5 }}>
                             <Typography variant="subtitle2" sx={{ fontFamily: 'Cinzel, serif', color: '#c9a84c', mb: 2 }}>
-                                Paramètres
+                                {t('craft.settings')}
                             </Typography>
 
                             {/* Location */}
-                            <Typography variant="caption" color="text.secondary">Lieu de craft</Typography>
+                            <Typography variant="caption" color="text.secondary">{t('craft.location.label')}</Typography>
                             <ToggleButtonGroup
                                 value={locationType} exclusive size="small" fullWidth
                                 onChange={(_, v) => { if (v) setLocationType(v); }}
                                 sx={{ mt: 0.5, mb: 2 }}
                             >
                                 <ToggleButton value="city" sx={{ fontSize: '0.7rem', gap: 0.5 }}>
-                                    <LocationCityIcon sx={{ fontSize: 14 }} /> Ville
+                                    <LocationCityIcon sx={{ fontSize: 14 }} /> {t('craft.location.city_short')}
                                 </ToggleButton>
                                 <ToggleButton value="hideout" sx={{ fontSize: '0.7rem', gap: 0.5 }}>
                                     <HomeIcon sx={{ fontSize: 14 }} /> HO
                                 </ToggleButton>
                                 <ToggleButton value="island" sx={{ fontSize: '0.7rem', gap: 0.5 }}>
-                                    <TerrainIcon sx={{ fontSize: 14 }} /> Île
+                                    <TerrainIcon sx={{ fontSize: 14 }} /> {t('craft.location.island_short')}
                                 </ToggleButton>
                             </ToggleButtonGroup>
 
                             {locationType === 'city' && (
                                 <FormControl fullWidth size="small" sx={{ mb: 2 }}>
-                                    <InputLabel>Ville</InputLabel>
-                                    <Select value={city} label="Ville"
+                                    <InputLabel>{t('craft.settings.city')}</InputLabel>
+                                    <Select value={city} label={t('craft.settings.city')}
                                         onChange={e => { setCity(e.target.value); fetchPrices(recipe); }}>
                                         {CITIES.map(c => <MenuItem key={c} value={c}>{c}</MenuItem>)}
                                     </Select>
@@ -349,10 +374,10 @@ const CraftDetail = () => {
 
                             {locationType === 'hideout' && (
                                 <TextField
-                                    label="% retour sans focus (HO)" type="number" size="small" fullWidth
+                                    label={t('craft.settings.ho_return')} type="number" size="small" fullWidth
                                     value={hoBaseReturn}
                                     onChange={e => setHoBaseReturn(Math.max(0, Math.min(80, Number(e.target.value))))}
-                                    helperText="Affiché in-game avant focus"
+                                    helperText={t('craft.settings.ho_return_hint_short')}
                                     sx={{ mb: 2 }}
                                     slotProps={{ input: { endAdornment: <InputAdornment position="end">%</InputAdornment> } }}
                                 />
@@ -360,7 +385,7 @@ const CraftDetail = () => {
 
                             {locationType === 'island' && (
                                 <Alert severity="info" sx={{ py: 0.5, mb: 2, fontSize: 12 }}>
-                                    Île : LPB base = 0%
+                                    {t('craft.location.island_info_short')}
                                 </Alert>
                             )}
 
@@ -371,7 +396,7 @@ const CraftDetail = () => {
                                 control={<Switch checked={premium} onChange={e => setPremium(e.target.checked)} size="small" color="warning" />}
                                 label={
                                     <Typography variant="body2" component="span">
-                                        Premium{' '}
+                                        {t('craft.settings.premium')}{' '}
                                         <Chip label={premium ? '6.5%' : '10.5%'} size="small"
                                             color={premium ? 'success' : 'default'}
                                             sx={{ height: 16, fontSize: 10 }} />
@@ -383,7 +408,7 @@ const CraftDetail = () => {
                                 control={<Switch checked={useFocus} onChange={e => setUseFocus(e.target.checked)} size="small" color="info" />}
                                 label={
                                     <Typography variant="body2" component="span">
-                                        Focus{' '}
+                                        {t('craft.settings.focus')}{' '}
                                         <Chip label="+59% LPB" size="small"
                                             color={useFocus ? 'info' : 'default'}
                                             sx={{ height: 16, fontSize: 10 }} />
@@ -394,17 +419,17 @@ const CraftDetail = () => {
 
                             {/* Daily bonus */}
                             <TextField
-                                label="Bonus journalier" type="number" size="small" fullWidth
+                                label={t('craft.settings.daily_bonus')} type="number" size="small" fullWidth
                                 value={dailyBonus}
                                 onChange={e => setDailyBonus(Math.max(0, Math.min(20, Number(e.target.value))))}
-                                helperText="0–20% LPB"
+                                helperText={t('craft.settings.daily_bonus_hint_short')}
                                 sx={{ mb: 2 }}
                                 slotProps={{ input: { endAdornment: <InputAdornment position="end">%</InputAdornment> } }}
                             />
 
                             {/* Quantity */}
                             <TextField
-                                label="Quantité" type="number" size="small" fullWidth
+                                label={t('craft.settings.quantity')} type="number" size="small" fullWidth
                                 value={quantity}
                                 onChange={e => setQuantity(Math.max(1, Math.min(1000, Number(e.target.value))))}
                                 sx={{ mb: 2 }}
@@ -414,10 +439,10 @@ const CraftDetail = () => {
 
                             {/* Spec slider for this category */}
                             <Typography variant="caption" color="text.secondary">
-                                Maîtrise {SPEC_BRANCH_LABELS[specBranch]} (Destiny Board)
+                                {t('craft.detail.spec_label', { branch: specBranchLabel })}
                             </Typography>
                             <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 0.5 }}>
-                                <Typography variant="body2">{SPEC_BRANCH_LABELS[specBranch]}</Typography>
+                                <Typography variant="body2">{specBranchLabel}</Typography>
                                 <Typography variant="body2" color="primary">{specializations[specBranch]}</Typography>
                             </Box>
                             <Slider
@@ -429,13 +454,14 @@ const CraftDetail = () => {
                             />
                             {calcData && (
                                 <Typography variant="caption" color="text.secondary">
-                                    Coût focus : <span style={{ color: '#60a5fa' }}>
-                                        {(focusCostMultiplier(specializations[specBranch] ?? 0) * 100).toFixed(1)}% du base
+                                    {t('craft.detail.focus_cost_pct')}{' '}
+                                    <span style={{ color: '#60a5fa' }}>
+                                        {(focusCostMultiplier(specializations[specBranch] ?? 0) * 100).toFixed(1)}% {t('craft.detail.of_base')}
                                     </span>
                                     <br />
-                                    Retour : {(calcData.returnRate * 100).toFixed(2)}%
-                                    {useFocus && <span style={{ color: '#60a5fa' }}> (focus)</span>}
-                                    {' / '}sans focus : {(rrFromLPB(calcData.lpbNoFocus) * 100).toFixed(2)}%
+                                    {t('craft.detail.return_rate')} {(calcData.returnRate * 100).toFixed(2)}%
+                                    {useFocus && <span style={{ color: '#60a5fa' }}> ({t('craft.settings.focus')})</span>}
+                                    {' / '}{t('craft.detail.without_focus')} {(rrFromLPB(calcData.lpbNoFocus) * 100).toFixed(2)}%
                                 </Typography>
                             )}
                         </CardContent>
@@ -450,26 +476,26 @@ const CraftDetail = () => {
                         <Box sx={{ mb: 3 }}>
                             <Grid2 container spacing={1.5}>
                                 <Grid2 size={{ xs: 6, sm: 3 }}>
-                                    <SummaryCard label="LPB total" value={`${calcData.lpb.toFixed(0)}%`}
-                                        sub={calcData.citySpecBonus > 0 ? `+${calcData.citySpecBonus}% spécialité ville` : null}
+                                    <SummaryCard label={t('craft.detail.lpb_total')} value={`${calcData.lpb.toFixed(0)}%`}
+                                        sub={calcData.citySpecBonus > 0 ? t('craft.detail.city_spec_bonus', { bonus: calcData.citySpecBonus }) : null}
                                     />
                                 </Grid2>
                                 <Grid2 size={{ xs: 6, sm: 3 }}>
-                                    <SummaryCard label="Taux de retour" value={`${(calcData.returnRate * 100).toFixed(2)}%`}
-                                        sub="RR = LPB / (100 + LPB)"
+                                    <SummaryCard label={t('craft.detail.return_rate_label')} value={`${(calcData.returnRate * 100).toFixed(2)}%`}
+                                        sub={t('craft.detail.rr_formula')}
                                     />
                                 </Grid2>
                                 <Grid2 size={{ xs: 6, sm: 3 }}>
-                                    <SummaryCard label="Taxe marché" value={`${(calcData.tax * 100).toFixed(1)}%`}
-                                        sub={premium ? 'Premium' : 'Non-premium'}
+                                    <SummaryCard label={t('craft.detail.market_tax')} value={`${(calcData.tax * 100).toFixed(1)}%`}
+                                        sub={premium ? t('craft.settings.premium') : t('craft.detail.non_premium')}
                                         color={premium ? '#4ade80' : '#f87171'}
                                     />
                                 </Grid2>
                                 <Grid2 size={{ xs: 6, sm: 3 }}>
                                     <SummaryCard
-                                        label={useFocus ? 'Focus consommé' : 'Focus (inactif)'}
+                                        label={useFocus ? t('craft.detail.focus_consumed') : t('craft.detail.focus_inactive')}
                                         value={useFocus ? `${fmt(calcData.focusCost)} F` : '—'}
-                                        sub={useFocus && recipe.focusCostBase ? `${fmt(recipe.focusCostBase)} / craft` : null}
+                                        sub={useFocus && recipe.focusCostBase ? t('craft.detail.focus_per_craft', { amount: fmt(recipe.focusCostBase) }) : null}
                                         color={useFocus ? '#60a5fa' : 'text.disabled'}
                                     />
                                 </Grid2>
@@ -479,18 +505,20 @@ const CraftDetail = () => {
 
                     {/* ── Ingredients table ── */}
                     <Typography variant="subtitle2" sx={{ fontFamily: 'Cinzel, serif', mb: 1.5, color: '#c9a84c' }}>
-                        Ingrédients
+                        {t('craft.detail.ingredients')}
                     </Typography>
                     <TableContainer component={Paper} sx={{ mb: 3, border: '1px solid rgba(201,168,76,0.15)' }}>
                         <Table size="small">
                             <TableHead>
                                 <TableRow sx={{ bgcolor: 'rgba(201,168,76,0.07)' }}>
-                                    <TableCell sx={{ fontWeight: 700 }}>Item</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: 700 }}>Qté</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: 700 }}>Prix unitaire</TableCell>
-                                    <TableCell align="right" sx={{ fontWeight: 700 }}>Sous-total</TableCell>
+                                    <TableCell sx={{ fontWeight: 700 }}>{t('craft.detail.ing_item')}</TableCell>
+                                    <TableCell align="right" sx={{ fontWeight: 700 }}>{t('craft.detail.ing_qty')}</TableCell>
+                                    <TableCell align="right" sx={{ fontWeight: 700 }}>{t('craft.detail.ing_unit_price')}</TableCell>
+                                    <TableCell align="right" sx={{ fontWeight: 700 }}>{t('craft.detail.ing_subtotal')}</TableCell>
                                     {calcData && useFocus && (
-                                        <TableCell align="right" sx={{ fontWeight: 700, color: '#60a5fa' }}>Retourné</TableCell>
+                                        <TableCell align="right" sx={{ fontWeight: 700, color: '#60a5fa' }}>
+                                            {t('craft.detail.ing_returned')}
+                                        </TableCell>
                                     )}
                                 </TableRow>
                             </TableHead>
@@ -511,7 +539,7 @@ const CraftDetail = () => {
                                                     <Typography variant="body2" fontWeight={600}>{ing.uniqueName}</Typography>
                                                     {ing.hasPrices === false && (
                                                         <Typography variant="caption" color="warning.main">
-                                                            Prix non disponible
+                                                            {t('craft.detail.price_unavailable')}
                                                         </Typography>
                                                     )}
                                                 </Box>
@@ -551,7 +579,7 @@ const CraftDetail = () => {
                                 {calcData && (
                                     <>
                                         <TableRow sx={{ bgcolor: 'rgba(201,168,76,0.04)', borderTop: '2px solid rgba(201,168,76,0.2)' }}>
-                                            <TableCell colSpan={3} sx={{ fontWeight: 700 }}>Coût total matières</TableCell>
+                                            <TableCell colSpan={3} sx={{ fontWeight: 700 }}>{t('craft.detail.total_material_cost')}</TableCell>
                                             <TableCell align="right" sx={{ fontWeight: 700 }}>
                                                 {fmt(calcData.materialCost)} Ag
                                             </TableCell>
@@ -560,7 +588,10 @@ const CraftDetail = () => {
                                         {useFocus && (
                                             <TableRow sx={{ bgcolor: 'rgba(96,165,250,0.04)' }}>
                                                 <TableCell colSpan={3} sx={{ color: '#60a5fa' }}>
-                                                    Retour focus ({(calcData.returnRate * 100).toFixed(2)}% · LPB {calcData.lpb.toFixed(0)}%)
+                                                    {t('craft.detail.focus_return_row', {
+                                                        rr: (calcData.returnRate * 100).toFixed(2),
+                                                        lpb: calcData.lpb.toFixed(0),
+                                                    })}
                                                 </TableCell>
                                                 <TableCell align="right" sx={{ color: '#60a5fa' }}>
                                                     −{fmt(calcData.totalSaved)} Ag
@@ -571,7 +602,7 @@ const CraftDetail = () => {
                                             </TableRow>
                                         )}
                                         <TableRow sx={{ bgcolor: 'rgba(201,168,76,0.06)' }}>
-                                            <TableCell colSpan={3} sx={{ fontWeight: 700 }}>Coût effectif</TableCell>
+                                            <TableCell colSpan={3} sx={{ fontWeight: 700 }}>{t('craft.table.effective_cost')}</TableCell>
                                             <TableCell align="right" sx={{ fontWeight: 700, color: '#c9a84c' }}>
                                                 {fmt(calcData.effectiveCost)} Ag
                                             </TableCell>
@@ -585,7 +616,7 @@ const CraftDetail = () => {
 
                     {/* ── Output item + P&L ── */}
                     <Typography variant="subtitle2" sx={{ fontFamily: 'Cinzel, serif', mb: 1.5, color: '#c9a84c' }}>
-                        Résultat de craft
+                        {t('craft.detail.craft_result')}
                     </Typography>
                     <Card sx={{ mb: 3, border: '1px solid rgba(201,168,76,0.2)' }}>
                         <CardContent sx={{ p: 0 }}>
@@ -603,11 +634,14 @@ const CraftDetail = () => {
                                         {recipe.name || recipe.uniqueName}
                                     </Typography>
                                     <Typography variant="caption" color="text.secondary">
-                                        {recipe.outputAmount > 1 ? `Produit ×${recipe.outputAmount}` : 'Produit ×1'}{quantity > 1 ? ` · Quantité ×${quantity}` : ''}
+                                        {recipe.outputAmount > 1
+                                            ? t('craft.detail.produced_multi', { amount: recipe.outputAmount })
+                                            : t('craft.detail.produced_one')}
+                                        {quantity > 1 ? ` · ${t('craft.detail.quantity_multi', { qty: quantity })}` : ''}
                                     </Typography>
                                 </Box>
                                 <Box sx={{ textAlign: 'right' }}>
-                                    <Typography variant="body2" color="text.secondary">Prix de vente</Typography>
+                                    <Typography variant="body2" color="text.secondary">{t('craft.detail.sell_price')}</Typography>
                                     <Typography variant="h6" fontWeight={700} sx={{ color: '#c9a84c' }}>
                                         {calcData?.sellPriceUnit > 0 ? `${fmt(calcData.sellPriceUnit)} Ag` : 'N/A'}
                                     </Typography>
@@ -624,10 +658,33 @@ const CraftDetail = () => {
                             {calcData && (
                                 <Box sx={{ p: 2 }}>
                                     {[
-                                        { label: 'Revenu brut', value: fmt(calcData.grossRevenue), color: '#c9a84c', sub: `${recipe.outputAmount * quantity} × ${fmt(calcData.sellPriceUnit)} Ag` },
-                                        { label: `Taxe marché (−${(calcData.tax * 100).toFixed(1)}%)`, value: `−${fmt(calcData.grossRevenue * calcData.tax)}`, color: '#f87171', sub: premium ? 'Premium : 6.5%' : 'Non-premium : 10.5%' },
-                                        { label: 'Revenu net', value: fmt(calcData.netRevenue), color: '#c9a84c', bold: true, divider: true },
-                                        { label: 'Coût effectif matières', value: `−${fmt(calcData.effectiveCost)}`, color: '#f87171', sub: useFocus ? `après retour ${(calcData.returnRate * 100).toFixed(2)}%` : 'Sans focus' },
+                                        {
+                                            label: t('craft.detail.gross_revenue'),
+                                            value: fmt(calcData.grossRevenue),
+                                            color: '#c9a84c',
+                                            sub: `${recipe.outputAmount * quantity} × ${fmt(calcData.sellPriceUnit)} Ag`,
+                                        },
+                                        {
+                                            label: t('craft.detail.market_tax_row', { pct: (calcData.tax * 100).toFixed(1) }),
+                                            value: `−${fmt(calcData.grossRevenue * calcData.tax)}`,
+                                            color: '#f87171',
+                                            sub: premium ? t('craft.detail.premium_tax') : t('craft.detail.non_premium_tax'),
+                                        },
+                                        {
+                                            label: t('craft.detail.net_revenue'),
+                                            value: fmt(calcData.netRevenue),
+                                            color: '#c9a84c',
+                                            bold: true,
+                                            divider: true,
+                                        },
+                                        {
+                                            label: t('craft.detail.effective_material_cost'),
+                                            value: `−${fmt(calcData.effectiveCost)}`,
+                                            color: '#f87171',
+                                            sub: useFocus
+                                                ? t('craft.detail.after_return', { rr: (calcData.returnRate * 100).toFixed(2) })
+                                                : t('craft.detail.without_focus'),
+                                        },
                                     ].map(row => (
                                         <React.Fragment key={row.label}>
                                             {row.divider && <Divider sx={{ my: 1.5 }} />}
@@ -654,11 +711,11 @@ const CraftDetail = () => {
                                             <Box>
                                                 <Typography variant="h6" fontWeight={700}
                                                     sx={{ color: profitColor(calcData.profit) }}>
-                                                    Bénéfice net
+                                                    {t('craft.detail.net_profit')}
                                                 </Typography>
                                                 {calcData.margin && (
                                                     <Typography variant="caption" sx={{ color: profitColor(calcData.profit) }}>
-                                                        {calcData.margin}% marge
+                                                        {t('craft.detail.margin', { pct: calcData.margin })}
                                                     </Typography>
                                                 )}
                                             </Box>
@@ -676,10 +733,10 @@ const CraftDetail = () => {
                                                 <FlashOnIcon sx={{ color: '#60a5fa' }} />
                                                 <Box>
                                                     <Typography variant="body1" fontWeight={700} sx={{ color: '#60a5fa' }}>
-                                                        SPF (Silver par Focus)
+                                                        {t('craft.detail.spf_label')}
                                                     </Typography>
                                                     <Typography variant="caption" color="text.secondary">
-                                                        {fmt(calcData.focusCost)} focus consommé
+                                                        {t('craft.detail.focus_consumed_amount', { amount: fmt(calcData.focusCost) })}
                                                     </Typography>
                                                 </Box>
                                             </Box>
@@ -692,7 +749,7 @@ const CraftDetail = () => {
 
                                     {!calcData.allPrices && (
                                         <Alert severity="warning" sx={{ mt: 1.5, py: 0.5, fontSize: 12 }}>
-                                            Prix incomplets — certains items n'ont pas de cotation sur ce marché.
+                                            {t('craft.detail.incomplete_prices')}
                                         </Alert>
                                     )}
                                 </Box>

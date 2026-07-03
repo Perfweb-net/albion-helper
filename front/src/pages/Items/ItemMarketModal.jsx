@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     Dialog, DialogTitle, DialogContent, Box, Typography, Button,
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
@@ -42,20 +43,23 @@ const buildHistoryChartData = (history) => {
 };
 
 const ItemMarketModal = ({ item, onClose }) => {
+    const { t } = useTranslation();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const [error, setError] = useState('');
+    const [errorSeverity, setErrorSeverity] = useState('error');
     const [quality, setQuality] = useState(1);
 
     const loadData = useCallback(async (q = quality) => {
         setLoading(true);
         setError('');
+        setErrorSeverity('error');
         try {
             const res = await api.get(`/items/${item.uniqueName}/market?quality=${q}`);
             setData(res.data);
         } catch {
-            setError('Impossible de charger les données de marché.');
+            setError(t('items.market_load_error'));
         } finally {
             setLoading(false);
         }
@@ -66,15 +70,17 @@ const ItemMarketModal = ({ item, onClose }) => {
     const handleRefresh = async () => {
         setRefreshing(true);
         setError('');
+        setErrorSeverity('error');
         try {
             const res = await api.post(`/items/${item.uniqueName}/market/refresh?quality=${quality}`);
             if (res.data.refreshBlocked) {
-                setError(`Actualisation bloquée — encore ${res.data.minutesLeft} min à attendre.`);
+                setErrorSeverity('warning');
+                setError(t('items.refresh_blocked', { minutes: res.data.minutesLeft }));
             } else {
                 setData(res.data);
             }
         } catch {
-            setError('Erreur lors de l\'actualisation.');
+            setError(t('items.refresh_error'));
         } finally {
             setRefreshing(false);
         }
@@ -98,13 +104,13 @@ const ItemMarketModal = ({ item, onClose }) => {
                     <Typography variant="caption" color="text.secondary">{item.uniqueName}</Typography>
                 </Box>
                 <FormControl size="small" sx={{ minWidth: 130, mr: 1 }}>
-                    <InputLabel>Qualité</InputLabel>
-                    <Select value={quality} label="Qualité" onChange={e => setQuality(e.target.value)}>
-                        <MenuItem value={1}>Normal</MenuItem>
-                        <MenuItem value={2}>Good</MenuItem>
-                        <MenuItem value={3}>Outstanding</MenuItem>
-                        <MenuItem value={4}>Excellent</MenuItem>
-                        <MenuItem value={5}>Masterpiece</MenuItem>
+                    <InputLabel>{t('items.quality_label')}</InputLabel>
+                    <Select value={quality} label={t('items.quality_label')} onChange={e => setQuality(e.target.value)}>
+                        <MenuItem value={1}>{t('items.quality_normal')}</MenuItem>
+                        <MenuItem value={2}>{t('items.quality_good')}</MenuItem>
+                        <MenuItem value={3}>{t('items.quality_outstanding')}</MenuItem>
+                        <MenuItem value={4}>{t('items.quality_excellent')}</MenuItem>
+                        <MenuItem value={5}>{t('items.quality_masterpiece')}</MenuItem>
                     </Select>
                 </FormControl>
                 <IconButton onClick={onClose}><CloseIcon /></IconButton>
@@ -119,10 +125,10 @@ const ItemMarketModal = ({ item, onClose }) => {
                             {data && (
                                 <Typography variant="caption" color="text.secondary" sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                                     <AccessTimeIcon sx={{ fontSize: 14 }} />
-                                    Mis à jour le {new Date(data.updatedAt).toLocaleString('fr-FR')}
+                                    {t('items.updated_at', { date: new Date(data.updatedAt).toLocaleString() })}
                                 </Typography>
                             )}
-                            <Tooltip title={data?.canRefresh ? 'Actualiser les prix' : `Disponible dans ${data?.minutesLeft} min`}>
+                            <Tooltip title={data?.canRefresh ? t('items.refresh_tooltip') : t('items.refresh_wait', { minutes: data?.minutesLeft })}>
                                 <span>
                                     <Button
                                         size="small"
@@ -132,28 +138,28 @@ const ItemMarketModal = ({ item, onClose }) => {
                                         disabled={refreshing || !data?.canRefresh}
                                         sx={{ ml: 'auto' }}
                                     >
-                                        {data?.canRefresh ? 'Mettre à jour' : `${data?.minutesLeft} min`}
+                                        {data?.canRefresh ? t('items.refresh_btn') : t('items.refresh_minutes', { minutes: data?.minutesLeft })}
                                     </Button>
                                 </span>
                             </Tooltip>
                         </Box>
 
-                        {error && <Alert severity={error.includes('bloquée') ? 'warning' : 'error'} sx={{ mb: 2 }} onClose={() => setError('')}>{error}</Alert>}
+                        {error && <Alert severity={errorSeverity} sx={{ mb: 2 }} onClose={() => setError('')}>{error}</Alert>}
 
                         {/* Tableau des prix par ville */}
                         <Typography variant="subtitle1" sx={{ fontFamily: 'Cinzel, serif', fontWeight: 600, mb: 1 }}>
-                            Prix par ville
+                            {t('items.prices_by_city')}
                         </Typography>
                         <TableContainer component={Paper} sx={{ mb: 3, border: '1px solid rgba(201,168,76,0.15)' }}>
                             <Table size="small">
                                 <TableHead>
                                     <TableRow>
-                                        <TableCell sx={{ fontWeight: 700 }}>Ville</TableCell>
-                                        <TableCell align="right" sx={{ color: '#4ade80', fontWeight: 700 }}>Vente min</TableCell>
-                                        <TableCell align="right" sx={{ color: '#4ade80', fontWeight: 700 }}>Vente max</TableCell>
-                                        <TableCell align="right" sx={{ color: '#f97316', fontWeight: 700 }}>Achat min</TableCell>
-                                        <TableCell align="right" sx={{ color: '#f97316', fontWeight: 700 }}>Achat max</TableCell>
-                                        <TableCell align="right" sx={{ fontWeight: 700, fontSize: 11 }}>Dernière MAJ</TableCell>
+                                        <TableCell sx={{ fontWeight: 700 }}>{t('items.col_city')}</TableCell>
+                                        <TableCell align="right" sx={{ color: '#4ade80', fontWeight: 700 }}>{t('items.col_sell_min')}</TableCell>
+                                        <TableCell align="right" sx={{ color: '#4ade80', fontWeight: 700 }}>{t('items.col_sell_max')}</TableCell>
+                                        <TableCell align="right" sx={{ color: '#f97316', fontWeight: 700 }}>{t('items.col_buy_min')}</TableCell>
+                                        <TableCell align="right" sx={{ color: '#f97316', fontWeight: 700 }}>{t('items.col_buy_max')}</TableCell>
+                                        <TableCell align="right" sx={{ fontWeight: 700, fontSize: 11 }}>{t('items.col_last_update')}</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -184,11 +190,11 @@ const ItemMarketModal = ({ item, onClose }) => {
 
                         {/* Graphique historique */}
                         <Typography variant="subtitle1" sx={{ fontFamily: 'Cinzel, serif', fontWeight: 600, mb: 1 }}>
-                            Historique des prix moyens
+                            {t('items.price_history_title')}
                         </Typography>
                         {chartData.length === 0 ? (
                             <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 3 }}>
-                                Pas d'historique disponible
+                                {t('items.no_history')}
                             </Typography>
                         ) : (
                             <ResponsiveContainer width="100%" height={280}>

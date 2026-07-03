@@ -1,4 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '../../api';
 import CircleIcon from '@mui/icons-material/Circle';
 import DomainIcon from '@mui/icons-material/Domain';
@@ -31,6 +32,7 @@ import {isTokenValid} from "../../components/PrivateRoute";
 import './Map.scss';
 
 const Map = () => {
+    const { t } = useTranslation();
     const [maps, setMaps] = useState([]);
     const [mapsFitered, setMapsFitered] = useState([]);
     const [search, setSearch] = useState('');
@@ -51,31 +53,31 @@ const Map = () => {
     }, [baseSearch]);
 
     const chestTypes = useMemo(() => ({
-        "Big Avalonian Chest": {color: "gold", fontSize: "large", info: "Grand Coffre Gold"},
-        "Avalonian Chest": {color: "gold", fontSize: "small", info: "Coffre Gold"},
-        "Big Group Chest": {color: "blue", fontSize: "large", info: "Coffre Bleu"},
-        "Big Solo Chest": {color: "green", fontSize: "large", info: "Grand Coffre Vert"},
-        "Solo Chest": {color: "green", fontSize: "small", info: "Coffre Vert"}
-    }), []);
+        "Big Avalonian Chest": {color: "gold", fontSize: "large", info: t('map.legend_chest_big_gold')},
+        "Avalonian Chest": {color: "gold", fontSize: "small", info: t('map.legend_chest_gold')},
+        "Big Group Chest": {color: "blue", fontSize: "large", info: t('map.legend_chest_blue')},
+        "Big Solo Chest": {color: "green", fontSize: "large", info: t('map.legend_chest_big_green')},
+        "Solo Chest": {color: "green", fontSize: "small", info: t('map.legend_chest_green')}
+    }), [t]);
 
     const mapTypes = useMemo(() => ({
-        "TUNNEL_ROYAL":{icon:<Crown/>, info:"Royal Bleu/Jaune"},
-        "TUNNEL_ROYAL_RED": {icon:<Crown color="red"/>, info:"Royal Rouge"},
+        "TUNNEL_ROYAL":{icon:<Crown/>, info:t('map.legend_royal')},
+        "TUNNEL_ROYAL_RED": {icon:<Crown color="red"/>, info:t('map.legend_royal_red')},
 
-        "TUNNEL_DEEP_RAID": {icon:<GroupsIcon sx={{color: "gold", fontSize: "large", background: "grey", padding: "3px"}}/>, info:"Portail Gold"},
-        "TUNNEL_DEEP": {icon:<Portal/>, info:"Retour bréci"},
+        "TUNNEL_DEEP_RAID": {icon:<GroupsIcon sx={{color: "gold", fontSize: "large", background: "grey", padding: "3px"}}/>, info:t('map.legend_portal_gold')},
+        "TUNNEL_DEEP": {icon:<Portal/>, info:t('map.legend_portal_back')},
 
-        "TUNNEL_LOW": {icon:<Tunnel color="green" width={20} height={20}/>, info:"Suite ava basse"},
-        "TUNNEL_MEDIUM": {icon:<Tunnel color="blue" width={20} height={20}/>, info:"Suite ava moyenne"},
-        "TUNNEL_HIGH": {icon:<Tunnel color="gold" width={20} height={20}/>, info:"Suite ava haute"},
+        "TUNNEL_LOW": {icon:<Tunnel color="green" width={20} height={20}/>, info:t('map.legend_ava_low')},
+        "TUNNEL_MEDIUM": {icon:<Tunnel color="blue" width={20} height={20}/>, info:t('map.legend_ava_medium')},
+        "TUNNEL_HIGH": {icon:<Tunnel color="gold" width={20} height={20}/>, info:t('map.legend_ava_high')},
 
-        "TUNNEL_BLACK_LOW": {icon:<HomeIcon sx={{color: "green", fontSize: "large"}}/>, info:"Suite bz basse"},
-        "TUNNEL_BLACK_MEDIUM": {icon:<HomeIcon sx={{color: "blue", fontSize: "large"}}/>, info:"Suite bz moyenne"},
-        "TUNNEL_BLACK_HIGH": {icon:<HomeIcon sx={{color: "gold", fontSize: "large"}}/>, info:"Suite bz haute"},
+        "TUNNEL_BLACK_LOW": {icon:<HomeIcon sx={{color: "green", fontSize: "large"}}/>, info:t('map.legend_bz_low')},
+        "TUNNEL_BLACK_MEDIUM": {icon:<HomeIcon sx={{color: "blue", fontSize: "large"}}/>, info:t('map.legend_bz_medium')},
+        "TUNNEL_BLACK_HIGH": {icon:<HomeIcon sx={{color: "gold", fontSize: "large"}}/>, info:t('map.legend_bz_high')},
 
-        "TUNNEL_HIDEOUT": {icon:<DomainIcon sx={{color: "green", fontSize: "large"}}/>, info:"HO"},
-        "TUNNEL_HIDEOUT_DEEP": {icon:<DomainIcon sx={{color: "gold", fontSize: "large"}}/>, info:"HO Deep"},
-    }), []);
+        "TUNNEL_HIDEOUT": {icon:<DomainIcon sx={{color: "green", fontSize: "large"}}/>, info:t('map.legend_ho')},
+        "TUNNEL_HIDEOUT_DEEP": {icon:<DomainIcon sx={{color: "gold", fontSize: "large"}}/>, info:t('map.legend_ho_deep')},
+    }), [t]);
 
     const filteredMapTypes = useMemo(() => {
         if (mapsFitered.length === 0) return mapTypes; // Si aucun filtre, on affiche tout
@@ -104,13 +106,13 @@ const Map = () => {
         HIDE: <PetsIcon sx={{ color: "peru" }} />,       // Peau
     };
 
-    // Mapping français pour les ressources
+    // Mapping i18n pour les ressources
     const resourceLabels = {
-        WOOD: 'Bois',
-        FIBER: 'Fibre',
-        ROCK: 'Pierre',
-        ORE: 'Minerai',
-        HIDE: 'Peau',
+        WOOD: t('map.resource_wood'),
+        FIBER: t('map.resource_fiber'),
+        ROCK: t('map.resource_rock'),
+        ORE: t('map.resource_ore'),
+        HIDE: t('map.resource_hide'),
     };
 
     const handleChange = (e) => {
@@ -156,10 +158,10 @@ const Map = () => {
             <Container maxWidth="lg" sx={{ py: 4 }}>
                 <Box sx={{ mb: 4, textAlign: 'center' }}>
                     <Typography variant="h3" fontWeight={700} gutterBottom>
-                        Cartes
+                        {t('map.title')}
                     </Typography>
                     <Typography variant="body1" color="text.secondary">
-                        Recherchez et explorez les cartes d'Albion Online
+                        {t('map.subtitle')}
                     </Typography>
                 </Box>
 
@@ -168,7 +170,7 @@ const Map = () => {
                         <Grid2 container spacing={3} sx={{ alignItems: 'center' }}>
                             <Grid2 size={{xs: 12, md: 8}}>
                                 <TextField
-                                    label="Rechercher une carte"
+                                    label={t('map.search_label')}
                                     variant="outlined"
                                     fullWidth
                                     value={search}
@@ -178,7 +180,7 @@ const Map = () => {
                                             handleSubmit();
                                         }
                                     }}
-                                    placeholder="Entrez au moins 3 caractères..."
+                                    placeholder={t('map.search_min_chars')}
                                 />
                             </Grid2>
 
@@ -192,7 +194,7 @@ const Map = () => {
                                     startIcon={<SearchIcon />}
                                     sx={{ py: 1.5 }}
                                 >
-                                    Rechercher
+                                    {t('common.search')}
                                 </Button>
                             </Grid2>
 
@@ -209,7 +211,7 @@ const Map = () => {
                                         }
                                         label={
                                             <Typography variant="body1" fontWeight={500}>
-                                                Afficher les coffres
+                                                {t('map.show_chests')}
                                             </Typography>
                                         }
                                     />
@@ -224,7 +226,7 @@ const Map = () => {
                                         }
                                         label={
                                             <Typography variant="body1" fontWeight={500}>
-                                                Afficher les ressources
+                                                {t('map.show_resources')}
                                             </Typography>
                                         }
                                     />
@@ -237,7 +239,7 @@ const Map = () => {
                     {mapsFitered.length > 0 && (
                         <Box sx={{ width: '100%' }}>
                             <Typography variant="h5" fontWeight={600} gutterBottom sx={{ mb: 3 }}>
-                                Cartes trouvées ({mapsFitered.length})
+                                {t('map.results_count', { count: mapsFitered.length })}
                             </Typography>
 
                             <Grid2 container spacing={3}>
@@ -439,7 +441,7 @@ const Map = () => {
 
                 <Paper sx={{ p: 4, mt: 4, borderRadius: 3 }}>
                     <Typography variant="h5" fontWeight={600} gutterBottom sx={{ mb: 3 }}>
-                        Légende
+                        {t('map.legend')}
                     </Typography>
                     <Grid2 container spacing={2}>
                         {/* Affichage des types de tunnels */}

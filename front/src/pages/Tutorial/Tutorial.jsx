@@ -21,7 +21,6 @@ const TOUR_STEPS = [
     {
         target: '.tutorial__header',
         content: 'Bienvenue sur Albion Helper ! Cet outil vous aide à explorer le monde d\'Albion Online.',
-        disableBeacon: true,
         placement: 'bottom',
     },
     {
@@ -54,7 +53,8 @@ const TOUR_STEPS = [
         content: 'Suivez ces 3 étapes simples pour démarrer votre aventure !',
         placement: 'top',
     },
-];
+// Affiche directement l'infobulle de chaque étape (react-joyride v3 : skipBeacon).
+].map((step) => ({ skipBeacon: true, ...step }));
 
 const Tutorial = () => {
     const { t } = useTranslation();

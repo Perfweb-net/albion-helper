@@ -8,9 +8,11 @@ import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import PersonIcon from "@mui/icons-material/Person";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import {isTokenValid} from "../../components/PrivateRoute";
+import { useTranslation } from 'react-i18next';
 import './Guild.scss';
 
 const Player = () => {  // Le nom du composant commence par une majuscule
+    const { t } = useTranslation();
     const [guild, setGuild] = useState('');
     const [members, setMembers] = useState('');
     const [overall, setOverall] = useState('')
@@ -56,7 +58,7 @@ const Player = () => {  // Le nom du composant commence par une majuscule
                 startIcon={<ArrowBackIcon/>}
                 sx={{ mb: 3 }}
             >
-                Retour
+                {t('common.back')}
             </Button>
             
             {guild && (
@@ -85,24 +87,24 @@ const Player = () => {  // Le nom du composant commence par une majuscule
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                                 <CalendarTodayIcon fontSize="small" color="action" />
                                                 <Typography variant="body2" color="text.secondary">
-                                                    Créée le {new Date(guild.Founded).toLocaleDateString('fr-FR')}
+                                                    {t('guild.founded_on', { date: new Date(guild.Founded).toLocaleDateString('fr-FR') })}
                                                 </Typography>
                                             </Box>
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                                 <PersonIcon fontSize="small" color="action" />
                                                 <Typography variant="body2" color="text.secondary">
-                                                    {guild.MemberCount} membres
+                                                    {t('guild.member_count', { count: guild.MemberCount })}
                                                 </Typography>
                                             </Box>
                                         </Box>
                                         {guild.FounderName && (
                                             <Box sx={{ mt: 2 }}>
-                                                <Typography 
-                                                    variant="body2" 
+                                                <Typography
+                                                    variant="body2"
                                                     color="text.secondary"
                                                     component="span"
                                                 >
-                                                    Créateur:{' '}
+                                                    {t('guild.founder')}:{' '}
                                                 </Typography>
                                                 <Typography 
                                                     variant="body2" 
@@ -132,45 +134,49 @@ const Player = () => {  // Le nom du composant commence par une majuscule
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 3 }}>
                                     <EmojiEventsIcon color="primary" />
                                     <Typography variant="h6" fontWeight={600}>
-                                        Statistiques
+                                        {t('guild.statistics')}
                                     </Typography>
                                 </Box>
                                 <Grid2 container spacing={2}>
                                     <Grid2 size={12}>
-                                        <Paper sx={{ p: 2, backgroundColor: 'primary.main', color: 'white' }}>
-                                            <Typography variant="body2" sx={{ opacity: 0.9 }}>Total Fame</Typography>
-                                            <Typography variant="h6" fontWeight={700}>
+                                        <Paper sx={{ p: 2, backgroundColor: 'rgba(201,168,76,0.18)', border: '1px solid rgba(201,168,76,0.4)' }}>
+                                            <Typography variant="body2" color="text.secondary">{t('guild.total_fame')}</Typography>
+                                            <Typography variant="h6" fontWeight={700} color="primary.main">
                                                 {overall.fame.toLocaleString()}
                                             </Typography>
                                         </Paper>
                                     </Grid2>
                                     <Grid2 size={6}>
-                                        <Paper sx={{ p: 2, backgroundColor: 'success.light', color: 'white' }}>
-                                            <Typography variant="body2" sx={{ opacity: 0.9 }}>Kill Fame</Typography>
-                                            <Typography variant="h6" fontWeight={700}>
+                                        <Paper sx={{ p: 2, backgroundColor: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.25)' }}>
+                                            <Typography variant="body2" color="text.secondary">{t('guild.kill_fame')}</Typography>
+                                            <Typography variant="h6" fontWeight={700} color="primary.main">
                                                 {guild.killFame.toLocaleString()}
                                             </Typography>
-                                            <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                                                {overall.kills} kills
+                                            <Typography variant="caption" color="text.secondary">
+                                                {t('guild.kills_count', { count: overall.kills })}
                                             </Typography>
                                         </Paper>
                                     </Grid2>
                                     <Grid2 size={6}>
-                                        <Paper sx={{ p: 2, backgroundColor: 'error.light', color: 'white' }}>
-                                            <Typography variant="body2" sx={{ opacity: 0.9 }}>Death Fame</Typography>
-                                            <Typography variant="h6" fontWeight={700}>
+                                        <Paper sx={{ p: 2, backgroundColor: 'rgba(155,59,59,0.15)', border: '1px solid rgba(155,59,59,0.35)' }}>
+                                            <Typography variant="body2" color="text.secondary">{t('guild.death_fame')}</Typography>
+                                            <Typography variant="h6" fontWeight={700} color="primary.main">
                                                 {guild.DeathFame.toLocaleString()}
                                             </Typography>
-                                            <Typography variant="caption" sx={{ opacity: 0.8 }}>
-                                                {overall.deaths} deaths
+                                            <Typography variant="caption" color="text.secondary">
+                                                {t('guild.deaths_count', { count: overall.deaths })}
                                             </Typography>
                                         </Paper>
                                     </Grid2>
                                     <Grid2 size={12}>
-                                        <Paper sx={{ p: 2, backgroundColor: 'info.main', color: 'white' }}>
-                                            <Typography variant="body2" sx={{ opacity: 0.9 }}>Ratio</Typography>
-                                            <Typography variant="h6" fontWeight={700}>
-                                                {Math.round(parseInt(guild.killFame) / parseInt(guild.DeathFame) * 100) / 100}
+                                        <Paper sx={{ p: 2, backgroundColor: 'rgba(201,168,76,0.1)', border: '1px solid rgba(201,168,76,0.25)' }}>
+                                            <Typography variant="body2" color="text.secondary">{t('guild.ratio')}</Typography>
+                                            <Typography variant="h6" fontWeight={700} color="primary.main">
+                                                {(() => {
+                                                    const k = parseInt(guild.killFame, 10);
+                                                    const d = parseInt(guild.DeathFame, 10);
+                                                    return d > 0 ? Math.round((k / d) * 100) / 100 : '—';
+                                                })()}
                                             </Typography>
                                         </Paper>
                                     </Grid2>
@@ -184,7 +190,7 @@ const Player = () => {  // Le nom du composant commence par une majuscule
                         <Card sx={{ height: '100%', boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.08)' }}>
                             <CardContent sx={{ p: 3 }}>
                                 <Typography variant="h6" fontWeight={600} gutterBottom sx={{ mb: 2 }}>
-                                    Membres ({members.length})
+                                    {t('guild.members_title', { count: members.length })}
                                 </Typography>
                                 
                                 <List>
@@ -226,7 +232,7 @@ const Player = () => {  // Le nom du composant commence par une majuscule
                                         fullWidth
                                         sx={{ mt: 2 }}
                                     >
-                                        {expanded ? 'Masquer' : `Afficher tous les ${members.length} membres`}
+                                        {expanded ? t('guild.hide_members') : t('guild.show_all_members', { count: members.length })}
                                     </Button>
                                 )}
                             </CardContent>
@@ -239,7 +245,7 @@ const Player = () => {  // Le nom du composant commence par une majuscule
                 <Card sx={{ mt: 3, boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.08)' }}>
                     <CardContent>
                         <Typography color="error" variant="h6">
-                            Erreur lors de la récupération des données
+                            {t('guild.error_fetch')}
                         </Typography>
                         <Typography color="error" variant="body2" sx={{ mt: 1 }}>
                             {error}

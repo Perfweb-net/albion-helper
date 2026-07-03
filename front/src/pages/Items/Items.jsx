@@ -33,7 +33,7 @@ const getLocalizedName = (item, lang) => {
 };
 
 const Items = () => {
-    const { i18n } = useTranslation();
+    const { t, i18n } = useTranslation();
     const lang = i18n.language?.split('-')[0] || 'en';
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedTier, setSelectedTier] = useState('');
@@ -62,7 +62,7 @@ const Items = () => {
             const res = await api.get(`/items/search?${params}`);
             setFilteredItems(res.data);
         } catch {
-            setError('Erreur lors de la recherche.');
+            setError(t('items.search_error'));
         } finally {
             setLoading(false);
         }
@@ -108,25 +108,25 @@ const Items = () => {
     };
 
     const getQualityLabel = (quality) => {
-        const labels = {
-            '0': 'Normal',
-            '1': 'Good',
-            '2': 'Outstanding',
-            '3': 'Excellent',
-            '4': 'Masterpiece',
-            '5': 'Artifact'
+        const keys = {
+            '0': 'items.quality_normal',
+            '1': 'items.quality_good',
+            '2': 'items.quality_outstanding',
+            '3': 'items.quality_excellent',
+            '4': 'items.quality_masterpiece',
+            '5': 'items.quality_artifact'
         };
-        return labels[quality] || 'Unknown';
+        return t(keys[quality] || 'items.quality_unknown');
     };
 
     return (
         <Container maxWidth="lg" sx={{ py: 4 }}>
             <Box sx={{ mb: 4, textAlign: 'center' }}>
                 <Typography variant="h3" fontWeight={700} gutterBottom>
-                    Recherche d'Items
+                    {t('items.title')}
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                    Recherchez des items d'Albion Online par nom, tier et qualité
+                    {t('items.subtitle')}
                 </Typography>
             </Box>
 
@@ -135,7 +135,7 @@ const Items = () => {
                     <Grid2 container spacing={3} sx={{ alignItems: 'center' }}>
                         <Grid2 size={{xs: 12, md: 5}}>
                             <TextField
-                                label="Nom de l'item"
+                                label={t('items.item_name_label')}
                                 variant="outlined"
                                 fullWidth
                                 value={searchTerm}
@@ -145,19 +145,19 @@ const Items = () => {
                                         handleSearch();
                                     }
                                 }}
-                                placeholder="Ex: Bag, Sword, Bow..."
+                                placeholder={t('items.item_name_placeholder')}
                             />
                         </Grid2>
 
                         <Grid2 size={{xs: 12, md: 3}}>
                             <FormControl fullWidth>
-                                <InputLabel>Tier</InputLabel>
+                                <InputLabel>{t('items.tier_label')}</InputLabel>
                                 <Select
                                     value={selectedTier}
                                     onChange={(e) => setSelectedTier(e.target.value)}
-                                    label="Tier"
+                                    label={t('items.tier_label')}
                                 >
-                                    <MenuItem value="">Tous</MenuItem>
+                                    <MenuItem value="">{t('items.tier_all')}</MenuItem>
                                     <MenuItem value="4">T4</MenuItem>
                                     <MenuItem value="5">T5</MenuItem>
                                     <MenuItem value="6">T6</MenuItem>
@@ -169,18 +169,18 @@ const Items = () => {
 
                         <Grid2 size={{xs: 12, md: 2}}>
                             <FormControl fullWidth>
-                                <InputLabel>Qualité</InputLabel>
+                                <InputLabel>{t('items.quality_label')}</InputLabel>
                                 <Select
                                     value={selectedQuality}
                                     onChange={(e) => setSelectedQuality(e.target.value)}
-                                    label="Qualité"
+                                    label={t('items.quality_label')}
                                 >
-                                    <MenuItem value="">Toutes</MenuItem>
-                                    <MenuItem value="1">Good</MenuItem>
-                                    <MenuItem value="2">Outstanding</MenuItem>
-                                    <MenuItem value="3">Excellent</MenuItem>
-                                    <MenuItem value="4">Masterpiece</MenuItem>
-                                    <MenuItem value="5">Artifact</MenuItem>
+                                    <MenuItem value="">{t('items.quality_all')}</MenuItem>
+                                    <MenuItem value="1">{t('items.quality_good')}</MenuItem>
+                                    <MenuItem value="2">{t('items.quality_outstanding')}</MenuItem>
+                                    <MenuItem value="3">{t('items.quality_excellent')}</MenuItem>
+                                    <MenuItem value="4">{t('items.quality_masterpiece')}</MenuItem>
+                                    <MenuItem value="5">{t('items.quality_artifact')}</MenuItem>
                                 </Select>
                             </FormControl>
                         </Grid2>
@@ -195,7 +195,7 @@ const Items = () => {
                                 startIcon={<SearchIcon />}
                                 sx={{ py: 1.5 }}
                             >
-                                Rechercher
+                                {t('common.search')}
                             </Button>
                         </Grid2>
                     </Grid2>
@@ -210,7 +210,7 @@ const Items = () => {
 
             {dbEmpty && (
                 <Alert severity="warning" sx={{ mb: 3 }}>
-                    La base de données d'items est vide. Rendez-vous dans le panel <strong>Administration</strong> pour synchroniser les items.
+                    {t('items.db_empty_message')} <strong>{t('nav.admin')}</strong> {t('items.db_empty_sync')}
                 </Alert>
             )}
 
@@ -223,7 +223,7 @@ const Items = () => {
             {!loading && filteredItems.length > 0 && (
                 <Box sx={{ width: '100%' }}>
                     <Typography variant="h5" fontWeight={600} gutterBottom sx={{ mb: 3 }}>
-                        Résultats ({filteredItems.length})
+                        {t('items.results_count', { count: filteredItems.length })}
                     </Typography>
 
                     <Grid2 container spacing={3}>
@@ -278,7 +278,7 @@ const Items = () => {
                                                 fullWidth
                                                 onClick={() => setSelectedItem({ uniqueName, name: itemName, iconUrl })}
                                             >
-                                                Voir les prix & historique
+                                                {t('items.view_prices_btn')}
                                             </Button>
 
                                         </CardContent>
@@ -294,10 +294,10 @@ const Items = () => {
                 <Card sx={{ boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.08)' }}>
                     <CardContent sx={{ p: 4, textAlign: 'center' }}>
                         <Typography variant="h6" color="text.secondary">
-                            Aucun résultat trouvé
+                            {t('items.no_results')}
                         </Typography>
                         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                            Essayez de modifier vos critères de recherche
+                            {t('items.no_results_hint')}
                         </Typography>
                     </CardContent>
                 </Card>

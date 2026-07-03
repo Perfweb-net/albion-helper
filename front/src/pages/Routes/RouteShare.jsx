@@ -37,10 +37,10 @@ const RouteShare = () => {
     if (gone) return (
         <Container maxWidth="sm" sx={{ mt: 8, textAlign: 'center' }}>
             <Alert severity="warning" sx={{ mb: 3 }}>
-                {t('routes.expired')} — ce lien n'est plus valide.
+                {t('routes.expired')} — {t('routes.link_invalid')}
             </Alert>
             <Button component={Link} to="/" startIcon={<HomeIcon />} variant="outlined">
-                Retour à l'accueil
+                {t('common.back')}
             </Button>
         </Container>
     );
@@ -95,13 +95,14 @@ const RouteShare = () => {
                                 <Typography variant="body1" sx={{ flex: 1, fontWeight: 500 }}>
                                     {zone.zoneName}
                                 </Typography>
-                                <Chip
+                                                <Chip
                                     icon={<AccessTimeIcon />}
-                                    label={`${zone.timerMinutes} min`}
+                                    label={`${zone.timerMinutes} ${t('routes.minutes')}`}
                                     size="small"
                                     variant="outlined"
                                     color="warning"
                                 />
+
                             </Box>
                         ))}
                     </Box>
@@ -110,10 +111,10 @@ const RouteShare = () => {
 
             <Box sx={{ mt: 3, textAlign: 'center' }}>
                 <Button component={Link} to="/register" variant="contained" sx={{ mr: 2 }}>
-                    Créer un compte
+                    {t('routes.create_account')}
                 </Button>
                 <Button component={Link} to="/login" variant="outlined">
-                    Se connecter
+                    {t('auth.login_button')}
                 </Button>
             </Box>
         </Container>

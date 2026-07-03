@@ -110,8 +110,8 @@ const Routes = () => {
     };
 
     const handleCreate = async () => {
-        if (!newRoute.name.trim()) { setFormError(t('routes.name_label') + ' requis'); return; }
-        if (newRoute.zones.some(z => !z.zoneName.trim())) { setFormError('Chaque zone doit avoir un nom'); return; }
+        if (!newRoute.name.trim()) { setFormError(t('routes.name_required')); return; }
+        if (newRoute.zones.some(z => !z.zoneName.trim())) { setFormError(t('routes.zone_name_required')); return; }
         setFormError('');
         setCreating(true);
         try {
@@ -183,12 +183,12 @@ const Routes = () => {
                             <Box key={idx} className="routes__zone-row">
                                 <Typography variant="body2" className="routes__zone-number">{idx + 1}</Typography>
                                 <ZoneAutocomplete
-                                    label="Zone"
+                                    label={t('routes.zone_label')}
                                     value={zone.zoneName}
                                     onChange={val => handleZoneChange(idx, 'zoneName', val)}
                                 />
                                 <TextField
-                                    label="h"
+                                    label={t('routes.hours')}
                                     type="number"
                                     value={zone.timerHours}
                                     onChange={e => handleZoneChange(idx, 'timerHours', Math.max(0, Math.min(23, parseInt(e.target.value) || 0)))}
@@ -197,7 +197,7 @@ const Routes = () => {
                                     sx={{ width: 64 }}
                                 />
                                 <TextField
-                                    label="min"
+                                    label={t('routes.minutes')}
                                     type="number"
                                     value={zone.timerMins}
                                     onChange={e => handleZoneChange(idx, 'timerMins', Math.max(0, Math.min(59, parseInt(e.target.value) || 0)))}
@@ -293,8 +293,8 @@ const Routes = () => {
                                                 />
                                                 <Typography variant="caption" color="text.secondary">
                                                     {zone.timerMinutes >= 60
-                                                        ? `${Math.floor(zone.timerMinutes / 60)}h ${zone.timerMinutes % 60 > 0 ? `${zone.timerMinutes % 60}min` : ''}`
-                                                        : `${zone.timerMinutes}min`}
+                                                        ? `${Math.floor(zone.timerMinutes / 60)}${t('routes.hours')} ${zone.timerMinutes % 60 > 0 ? `${zone.timerMinutes % 60}${t('routes.minutes')}` : ''}`
+                                                        : `${zone.timerMinutes}${t('routes.minutes')}`}
                                                 </Typography>
                                             </Box>
                                         ))}

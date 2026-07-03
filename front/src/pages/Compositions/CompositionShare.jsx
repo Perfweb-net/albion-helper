@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
     Box, Container, Typography, CircularProgress, Alert, Button, Chip, Tooltip
 } from '@mui/material';
@@ -11,15 +12,6 @@ import api from '../../api';
 import { exportCompositionAsJpeg } from './compositionExport';
 
 const SLOTS = ['weapon', 'offhand', 'head', 'armor', 'boots', 'cape', 'food', 'potion', 'mount'];
-const SLOT_LABELS = {
-    weapon: 'Arme', offhand: 'OH', head: 'Tête', armor: 'Armure',
-    boots: 'Bottes', cape: 'Cape', food: 'Food', potion: 'Potion', mount: 'Monture',
-};
-
-const VISIBILITY_CONFIG = {
-    url_only: { label: 'URL only', icon: <LinkIcon   sx={{ fontSize: 12 }} />, color: '#58a6ff' },
-    public:   { label: 'Public',   icon: <PublicIcon sx={{ fontSize: 12 }} />, color: '#3fb950' },
-};
 
 function SlotIcon({ item, size = 36 }) {
     if (!item) return (
@@ -39,6 +31,14 @@ function SlotIcon({ item, size = 36 }) {
 }
 
 function PlayerCard({ player, index }) {
+    const { t } = useTranslation();
+    const SLOT_LABELS = {
+        weapon: t('compositions.slot_weapon'), offhand: t('compositions.slot_offhand'),
+        head: t('compositions.slot_head'), armor: t('compositions.slot_armor'),
+        boots: t('compositions.slot_boots'), cape: t('compositions.slot_cape'),
+        food: t('compositions.slot_food'), potion: t('compositions.slot_potion'),
+        mount: t('compositions.slot_mount'),
+    };
     const isTwoHanded  = player.weapon?.twoHanded === true;
     const visibleSlots = SLOTS.filter(s => s !== 'offhand' || !isTwoHanded);
     const swapSlots    = visibleSlots.filter(s => player.swaps?.[s]);
@@ -70,6 +70,7 @@ function PlayerCard({ player, index }) {
 
 export default function CompositionShare() {
     const { token } = useParams();
+    const { t } = useTranslation();
     const [comp, setComp]           = useState(null);
     const [loading, setLoading]     = useState(true);
     const [error, setError]         = useState('');
@@ -78,9 +79,9 @@ export default function CompositionShare() {
     useEffect(() => {
         api.get(`/compositions/share/${token}`)
             .then(res => setComp(res.data))
-            .catch(() => setError('Composition introuvable ou non partagée.'))
+            .catch(() => setError(t('compositions.error_share_not_found')))
             .finally(() => setLoading(false));
-    }, [token]);
+    }, [token, t]);
 
     const handleExport = async () => {
         setExporting(true);
@@ -99,6 +100,10 @@ export default function CompositionShare() {
         </Container>
     );
 
+    const VISIBILITY_CONFIG = {
+        url_only: { label: t('compositions.visibility_url_only'), icon: <LinkIcon   sx={{ fontSize: 12 }} />, color: '#58a6ff' },
+        public:   { label: t('compositions.visibility_public'),   icon: <PublicIcon sx={{ fontSize: 12 }} />, color: '#3fb950' },
+    };
     const visCfg = VISIBILITY_CONFIG[comp.visibility];
 
     return (
@@ -108,8 +113,8 @@ export default function CompositionShare() {
                 <Typography variant="h4" sx={{ fontFamily: 'Cinzel, serif', color: '#c9a84c', flex: 1 }}>
                     {comp.name}
                 </Typography>
-                <Chip label={`par ${comp.owner}`} size="small" sx={{ bgcolor: '#21262d' }} />
-                <Chip label={`${comp.players.length} joueurs`} size="small" sx={{ bgcolor: '#21262d' }} />
+                <Chip label={t('compositions.by_owner', { owner: comp.owner })} size="small" sx={{ bgcolor: '#21262d' }} />
+                <Chip label={t('compositions.player_count', { count: comp.players.length })} size="small" sx={{ bgcolor: '#21262d' }} />
                 {visCfg && (
                     <Chip
                         icon={visCfg.icon}
@@ -124,7 +129,7 @@ export default function CompositionShare() {
                     onClick={handleExport}
                     disabled={exporting}
                 >
-                    Export JPEG
+                    {t('compositions.export_jpeg')}
                 </Button>
             </Box>
 

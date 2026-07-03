@@ -14,9 +14,11 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import GroupsIcon from "@mui/icons-material/Groups";
 import {isTokenValid} from "../../components/PrivateRoute";
+import { useTranslation } from 'react-i18next';
 import './Guilds.scss';
 
 const Guilds = () => {  // Le nom du composant commence par une majuscule
+    const { t } = useTranslation();
     const [pseudo, setPseudo] = useState('');
     const [guilds, setGuilds] = useState('');
     const navigate = useNavigate();
@@ -36,10 +38,10 @@ const Guilds = () => {  // Le nom du composant commence par une majuscule
         <Container maxWidth="lg" sx={{ py: 4 }}>
             <Box sx={{ mb: 4, textAlign: 'center' }}>
                 <Typography variant="h3" fontWeight={700} gutterBottom>
-                    Guildes
+                    {t('guilds.title')}
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                    Recherchez des guildes d'Albion Online
+                    {t('guilds.subtitle')}
                 </Typography>
             </Box>
 
@@ -48,7 +50,7 @@ const Guilds = () => {  // Le nom du composant commence par une majuscule
                     <Grid2 container spacing={3} sx={{ alignItems: 'center' }}>
                         <Grid2 size={{xs: 12, md: 10}}>
                             <TextField
-                                label="Rechercher une guilde"
+                                label={t('guilds.search_label')}
                                 variant="outlined"
                                 fullWidth
                                 value={pseudo}
@@ -58,7 +60,7 @@ const Guilds = () => {  // Le nom du composant commence par une majuscule
                                         handleSubmit();
                                     }
                                 }}
-                                placeholder="Entrez un nom de guilde..."
+                                placeholder={t('guilds.search_placeholder')}
                             />
                         </Grid2>
 
@@ -72,7 +74,7 @@ const Guilds = () => {  // Le nom du composant commence par une majuscule
                                 startIcon={<SearchIcon />}
                                 sx={{ py: 1.5 }}
                             >
-                                Rechercher
+                                {t('common.search')}
                             </Button>
                         </Grid2>
                     </Grid2>
@@ -82,7 +84,7 @@ const Guilds = () => {  // Le nom du composant commence par une majuscule
             {guilds && guilds.length > 0 && (
                 <Box sx={{ width: '100%' }}>
                     <Typography variant="h5" fontWeight={600} gutterBottom sx={{ mb: 3 }}>
-                        Guildes trouvées ({guilds.length})
+                        {t('guilds.results_count', { count: guilds.length })}
                     </Typography>
 
                     <Grid2 container spacing={3}>
