@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\SearchLog;
 use App\Service\GuildService;
+use App\Service\ServerRegion;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,11 +20,12 @@ class GuildController extends AbstractController
     }
 
     #[Route('/api/guilds/{id}', methods: ['GET'])]
-    public function getGuildData(string $id): JsonResponse
+    public function getGuildData(string $id, Request $request): JsonResponse
     {
-        $this->em->persist(new SearchLog('guild', $id));
+        $server = ServerRegion::fromRequest($request);
+        $this->em->persist(new SearchLog('guild', $id, $server));
         $this->em->flush();
-        $data = $this->guildService->getFullGuildData($id);
+        $data = $this->guildService->getFullGuildData($id, $server);
         return new JsonResponse(array_merge(['statut' => 'OK'], $data));
     }
 }

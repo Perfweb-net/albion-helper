@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ItemMarketDataRepository::class)]
 #[ORM\Table(name: 'item_market_data')]
-#[ORM\UniqueConstraint(name: 'uniq_market_item_quality', columns: ['unique_name', 'quality'])]
+#[ORM\UniqueConstraint(name: 'uniq_market_item_quality_server', columns: ['unique_name', 'quality', 'server'])]
 class ItemMarketData
 {
     #[ORM\Id]
@@ -20,6 +20,9 @@ class ItemMarketData
 
     #[ORM\Column(type: 'smallint')]
     private int $quality = 1;
+
+    #[ORM\Column(length: 20)]
+    private string $server = 'europe';
 
     #[ORM\Column(type: 'json')]
     private array $prices = [];
@@ -40,6 +43,8 @@ class ItemMarketData
     public function setUniqueName(string $v): self { $this->uniqueName = $v; return $this; }
     public function getQuality(): int { return $this->quality; }
     public function setQuality(int $v): self { $this->quality = $v; return $this; }
+    public function getServer(): string { return $this->server; }
+    public function setServer(string $v): self { $this->server = $v; return $this; }
     public function getPrices(): array { return $this->prices; }
     public function setPrices(array $v): self { $this->prices = $v; return $this; }
     public function getHistory(): array { return $this->history; }

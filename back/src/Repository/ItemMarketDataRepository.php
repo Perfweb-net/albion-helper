@@ -13,8 +13,8 @@ class ItemMarketDataRepository extends ServiceEntityRepository
         parent::__construct($registry, ItemMarketData::class);
     }
 
-    public function findByItemAndQuality(string $uniqueName, int $quality): ?ItemMarketData
+    public function findByItemQualityServer(string $uniqueName, int $quality, string $server): ?ItemMarketData
     {
-        return $this->findOneBy(['uniqueName' => $uniqueName, 'quality' => $quality]);
+        return $this->findOneBy(['uniqueName' => $uniqueName, 'quality' => $quality, 'server' => $server]);
     }
 }

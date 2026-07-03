@@ -6,20 +6,19 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class GuildService
 {
-    private const BASE_URL = 'https://gameinfo-ams.albiononline.com/api/gameinfo/guilds/';
-
     public function __construct(
         private readonly HttpClientInterface $client
     ) {
     }
 
-    public function getFullGuildData(string $id): array
+    public function getFullGuildData(string $id, ?string $server = null): array
     {
+        $base = ServerRegion::gameinfo($server) . 'guilds/';
         $responses = [
-            'info' => $this->client->request('GET', self::BASE_URL . $id),
-            'members' => $this->client->request('GET', self::BASE_URL . $id . '/members'),
-            'data' => $this->client->request('GET', self::BASE_URL . $id . '/data'),
-            'top' => $this->client->request('GET', self::BASE_URL . $id . '/top'),
+            'info' => $this->client->request('GET', $base . $id),
+            'members' => $this->client->request('GET', $base . $id . '/members'),
+            'data' => $this->client->request('GET', $base . $id . '/data'),
+            'top' => $this->client->request('GET', $base . $id . '/top'),
         ];
 
         return [

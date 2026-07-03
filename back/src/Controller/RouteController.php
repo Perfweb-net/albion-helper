@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\GameRoute;
 use App\Entity\RouteZone;
 use App\Repository\GameRouteRepository;
+use App\Service\ServerRegion;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,10 +20,13 @@ class RouteController extends AbstractController
     ) {}
 
     #[Route('/api/routes', methods: ['GET'])]
-    public function list(): JsonResponse
+    public function list(Request $request): JsonResponse
     {
         $user = $this->getUser();
-        $routes = $this->routeRepository->findBy(['user' => $user]);
+        $routes = $this->routeRepository->findBy([
+            'user' => $user,
+            'server' => ServerRegion::fromRequest($request),
+        ]);
 
         return new JsonResponse(array_map(fn($r) => $this->serialize($r), $routes));
     }
@@ -44,6 +48,7 @@ class RouteController extends AbstractController
         $route = new GameRoute();
         $route->setName(substr($data['name'], 0, 100));
         $route->setUser($this->getUser());
+        $route->setServer(ServerRegion::fromRequest($request));
 
         foreach ($zones as $i => $zoneData) {
             $zone = new RouteZone();
@@ -98,6 +103,7 @@ class RouteController extends AbstractController
         return [
             'id' => $route->getId(),
             'name' => $route->getName(),
+            'server' => $route->getServer(),
             'shareToken' => $route->getShareToken(),
             'createdAt' => $route->getCreatedAt()->format(\DateTimeInterface::ATOM),
             'expiresAt' => $route->getExpiresAt()->format(\DateTimeInterface::ATOM),

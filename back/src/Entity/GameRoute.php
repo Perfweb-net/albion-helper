@@ -22,6 +22,9 @@ class GameRoute
     #[ORM\Column(length: 64, unique: true)]
     private string $shareToken = '';
 
+    #[ORM\Column(length: 20)]
+    private string $server = 'europe';
+
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
@@ -50,6 +53,9 @@ class GameRoute
     public function setName(string $name): self { $this->name = $name; return $this; }
 
     public function getShareToken(): string { return $this->shareToken; }
+
+    public function getServer(): string { return $this->server; }
+    public function setServer(string $server): self { $this->server = $server; return $this; }
 
     public function getUser(): User { return $this->user; }
     public function setUser(User $user): self { $this->user = $user; return $this; }

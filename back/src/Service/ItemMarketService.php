@@ -10,8 +10,6 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
 class ItemMarketService
 {
     private const CITIES = 'Caerleon,Bridgewatch,Fort Sterling,Lymhurst,Martlock,Thetford,Brecilien,Black Market';
-    private const PRICES_URL = 'https://www.albion-online-data.com/api/v2/stats/prices/%s.json?locations=%s&qualities=%d';
-    private const HISTORY_URL = 'https://www.albion-online-data.com/api/v2/stats/history/%s.json?locations=%s&qualities=%d&time-scale=24';
 
     public function __construct(
         private readonly HttpClientInterface $client,
@@ -19,40 +17,46 @@ class ItemMarketService
         private readonly ItemMarketDataRepository $repo
     ) {}
 
-    public function getMarketData(string $uniqueName, int $quality = 1): array
+    public function getMarketData(string $uniqueName, int $quality = 1, ?string $server = null): array
     {
-        $record = $this->repo->findByItemAndQuality($uniqueName, $quality);
+        $server = ServerRegion::normalize($server);
+        $record = $this->repo->findByItemQualityServer($uniqueName, $quality, $server);
 
         if (!$record) {
-            $record = $this->fetch($uniqueName, $quality);
+            $record = $this->fetch($uniqueName, $quality, $server);
         }
 
         return $this->serialize($record);
     }
 
-    public function refreshMarketData(string $uniqueName, int $quality = 1): array
+    public function refreshMarketData(string $uniqueName, int $quality = 1, ?string $server = null): array
     {
-        $record = $this->repo->findByItemAndQuality($uniqueName, $quality);
+        $server = ServerRegion::normalize($server);
+        $record = $this->repo->findByItemQualityServer($uniqueName, $quality, $server);
 
         if ($record && !$record->canRefresh()) {
             return array_merge($this->serialize($record), ['refreshBlocked' => true, 'minutesLeft' => $record->minutesUntilRefresh()]);
         }
 
-        $record = $this->fetch($uniqueName, $quality, $record);
+        $record = $this->fetch($uniqueName, $quality, $server, $record);
         return $this->serialize($record);
     }
 
-    private function fetch(string $uniqueName, int $quality, ?ItemMarketData $record = null): ItemMarketData
+    private function fetch(string $uniqueName, int $quality, string $server, ?ItemMarketData $record = null): ItemMarketData
     {
-        $cities = self::CITIES;
+        $cities = urlencode(self::CITIES);
+        $base = ServerRegion::market($server);
+        $pricesUrl = sprintf('%sprices/%s.json?locations=%s&qualities=%d', $base, $uniqueName, $cities, $quality);
+        $historyUrl = sprintf('%shistory/%s.json?locations=%s&qualities=%d&time-scale=24', $base, $uniqueName, $cities, $quality);
 
-        $pricesResp  = $this->client->request('GET', sprintf(self::PRICES_URL, $uniqueName, urlencode($cities), $quality));
-        $historyResp = $this->client->request('GET', sprintf(self::HISTORY_URL, $uniqueName, urlencode($cities), $quality));
+        $pricesResp  = $this->client->request('GET', $pricesUrl);
+        $historyResp = $this->client->request('GET', $historyUrl);
 
         if (!$record) {
             $record = new ItemMarketData();
             $record->setUniqueName($uniqueName);
             $record->setQuality($quality);
+            $record->setServer($server);
         }
 
         $record->setPrices($pricesResp->toArray(false));
@@ -70,6 +74,7 @@ class ItemMarketService
         return [
             'uniqueName'   => $record->getUniqueName(),
             'quality'      => $record->getQuality(),
+            'server'       => $record->getServer(),
             'prices'       => $record->getPrices(),
             'history'      => $record->getHistory(),
             'updatedAt'    => $record->getUpdatedAt()->format('c'),

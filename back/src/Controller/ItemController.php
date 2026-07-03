@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\ItemRepository;
 use App\Service\ItemMarketService;
+use App\Service\ServerRegion;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -65,19 +66,20 @@ class ItemController extends AbstractController
     public function market(string $uniqueName, Request $request): JsonResponse
     {
         $quality = max(1, min(5, (int) $request->query->get('quality', 1)));
-        return new JsonResponse($this->marketService->getMarketData($uniqueName, $quality));
+        return new JsonResponse($this->marketService->getMarketData($uniqueName, $quality, ServerRegion::fromRequest($request)));
     }
 
     #[Route('/api/items/{uniqueName}/market/refresh', methods: ['POST'], requirements: ['uniqueName' => '[A-Za-z0-9_@]+'])]
     public function refreshMarket(string $uniqueName, Request $request): JsonResponse
     {
         $quality = max(1, min(5, (int) $request->query->get('quality', 1)));
-        return new JsonResponse($this->marketService->refreshMarketData($uniqueName, $quality));
+        return new JsonResponse($this->marketService->refreshMarketData($uniqueName, $quality, ServerRegion::fromRequest($request)));
     }
 
     #[Route('/api/items/market/batch', methods: ['POST'])]
     public function marketBatch(Request $request): JsonResponse
     {
+        $server = ServerRegion::fromRequest($request);
         $data = json_decode($request->getContent(), true);
         $items = array_unique(array_slice($data['items'] ?? [], 0, 60));
         $quality = max(1, min(5, (int) ($data['quality'] ?? 1)));
@@ -85,7 +87,7 @@ class ItemController extends AbstractController
         foreach ($items as $uniqueName) {
             if (!preg_match('/^[A-Za-z0-9_@]+$/', $uniqueName)) continue;
             try {
-                $result[$uniqueName] = $this->marketService->getMarketData($uniqueName, $quality);
+                $result[$uniqueName] = $this->marketService->getMarketData($uniqueName, $quality, $server);
             } catch (\Throwable) {
                 $result[$uniqueName] = null;
             }
