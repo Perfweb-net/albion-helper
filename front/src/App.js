@@ -21,6 +21,7 @@ import CraftDetail from "./pages/Craft/CraftDetail";
 import Compositions from "./pages/Compositions/Compositions";
 import CompositionEditor from "./pages/Compositions/CompositionEditor";
 import CompositionShare from "./pages/Compositions/CompositionShare";
+import Battles from "./pages/Battles/Battles";
 
 const App = () => {
     // Vérifie si l'utilisateur est authentifié
@@ -96,6 +97,10 @@ const App = () => {
                     <Route
                         path="/compositions/:id"
                         element={<PrivateRoute element={<CompositionEditor/>} isAuthenticated={isAuthenticated}/>}
+                    />
+                    <Route
+                        path="/battles"
+                        element={<PrivateRoute element={<Battles/>} isAuthenticated={isAuthenticated}/>}
                     />
                     <Route
                         path="/admin"
