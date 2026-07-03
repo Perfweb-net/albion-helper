@@ -12,6 +12,8 @@ todo/
 /*.png
 /*.jpg
 /exported-jpeg-dataurl.txt
+/audit-screenshots/
+.DS_Store
 
 # Rapports de couverture
 front/coverage*/
