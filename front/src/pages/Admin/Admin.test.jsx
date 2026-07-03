@@ -19,7 +19,13 @@ jest.mock('../../i18n', () => {
         getFixedT: jest.fn(() => (key) => key),
         availableLanguages: [{ code: 'fr', label: 'Français' }, { code: 'en', label: 'English' }],
     };
-    return { default: i18nMock, availableLanguages: [{ code: 'fr', label: 'Français' }, { code: 'en', label: 'English' }] };
+    const languages = [{ code: 'fr', label: 'Français', reference: true }, { code: 'en', label: 'English', reference: false }];
+    return {
+        default: i18nMock,
+        availableLanguages: languages,
+        // Fonction simple (pas un jest.fn) pour survivre à resetMocks: true de CRA.
+        fetchAvailableLanguages: () => Promise.resolve(languages),
+    };
 });
 // t et i18n doivent être stables entre les renders (comme le vrai i18next),
 // sinon le useCallback([t]) de fetchData change à chaque render → boucle de fetch infinie
@@ -89,7 +95,7 @@ test('opens add language dialog on button click', async () => {
     renderAdmin();
     await waitFor(() => expect(screen.queryByRole('progressbar')).not.toBeInTheDocument());
     fireEvent.click(screen.getByRole('button', { name: 'admin.add_language' }));
-    expect(screen.getByLabelText(/Code de langue/i)).toBeInTheDocument();
+    expect(screen.getByLabelText('admin.language_code_label')).toBeInTheDocument();
 });
 
 test('shows error for invalid language code', async () => {
@@ -97,10 +103,12 @@ test('shows error for invalid language code', async () => {
     await waitFor(() => expect(screen.queryByRole('progressbar')).not.toBeInTheDocument());
     fireEvent.click(screen.getByRole('button', { name: 'admin.add_language' }));
 
-    const input = screen.getByLabelText(/Code de langue/i);
+    const input = screen.getByLabelText('admin.language_code_label');
     fireEvent.change(input, { target: { value: 'invalid-code!!!' } });
-    fireEvent.click(screen.getByRole('button', { name: /Télécharger template/i }));
-    expect(screen.getByText(/Code invalide/i)).toBeInTheDocument();
+    // Le bouton d'ouverture et le bouton de validation partagent le label admin.add_language : on prend celui du dialogue.
+    const submit = screen.getAllByRole('button', { name: 'admin.add_language' });
+    fireEvent.click(submit[submit.length - 1]);
+    expect(screen.getByText('admin.language_code_invalid')).toBeInTheDocument();
 });
 
 test('shows error for duplicate language code', async () => {
@@ -108,16 +116,17 @@ test('shows error for duplicate language code', async () => {
     await waitFor(() => expect(screen.queryByRole('progressbar')).not.toBeInTheDocument());
     fireEvent.click(screen.getByRole('button', { name: 'admin.add_language' }));
 
-    const input = screen.getByLabelText(/Code de langue/i);
+    const input = screen.getByLabelText('admin.language_code_label');
     fireEvent.change(input, { target: { value: 'fr' } });
-    fireEvent.click(screen.getByRole('button', { name: /Télécharger template/i }));
-    expect(screen.getByText(/existe déjà/i)).toBeInTheDocument();
+    const submit = screen.getAllByRole('button', { name: 'admin.add_language' });
+    fireEvent.click(submit[submit.length - 1]);
+    expect(screen.getByText('admin.language_already_exists')).toBeInTheDocument();
 });
 
 test('sync items calls API', async () => {
     renderAdmin();
     await waitFor(() => expect(screen.queryByRole('progressbar')).not.toBeInTheDocument());
-    fireEvent.click(screen.getByRole('button', { name: /sync items/i }));
+    fireEvent.click(screen.getByRole('button', { name: 'admin.sync_items_from_api' }));
     await waitFor(() => expect(api.post).toHaveBeenCalledWith('/admin/sync-items'));
 });
 
