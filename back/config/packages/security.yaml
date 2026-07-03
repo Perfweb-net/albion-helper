@@ -42,6 +42,7 @@ security:
         - { path: ^/api/routes/share/, roles: PUBLIC_ACCESS }
         - { path: ^/api/compositions/share/, roles: PUBLIC_ACCESS }
         - { path: ^/api/proxy/icon/, roles: PUBLIC_ACCESS }
+        - { path: ^/api/locales, roles: PUBLIC_ACCESS }
         - { path: ^/api/admin, roles: ROLE_ADMIN }
         - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
