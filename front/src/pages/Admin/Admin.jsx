@@ -19,10 +19,12 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import TranslateIcon from '@mui/icons-material/Translate';
 import DownloadIcon from '@mui/icons-material/Download';
 import AddIcon from '@mui/icons-material/Add';
+import EditIcon from '@mui/icons-material/Edit';
 import { useTranslation } from 'react-i18next';
-import { availableLanguages } from '../../i18n';
+import { availableLanguages, fetchAvailableLanguages } from '../../i18n';
 import frTranslation from '../../locales/fr/translation.json';
 import api from '../../api';
+import LanguageEditor from './LanguageEditor';
 import './Admin.scss';
 
 const StatCard = ({ icon, label, value, color }) => (
@@ -52,6 +54,15 @@ const Admin = () => {
     const [langDialog, setLangDialog] = useState(false);
     const [newLangCode, setNewLangCode] = useState('');
     const [langCodeError, setLangCodeError] = useState('');
+    const [languages, setLanguages] = useState(availableLanguages);
+    const [addingLang, setAddingLang] = useState(false);
+    const [editLang, setEditLang] = useState(null);
+
+    const loadLanguages = useCallback(() => {
+        fetchAvailableLanguages().then(setLanguages);
+    }, []);
+
+    useEffect(() => { loadLanguages(); }, [loadLanguages]);
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -125,20 +136,30 @@ const Admin = () => {
         URL.revokeObjectURL(url);
     };
 
-    const handleAddLanguage = () => {
+    const handleAddLanguage = async () => {
         const code = newLangCode.trim().toLowerCase();
         if (!/^[a-z]{2}(-[a-z]{2})?$/i.test(code)) {
-            setLangCodeError('Code invalide (ex : de, es, pt-BR)');
+            setLangCodeError(t('admin.language_code_invalid'));
             return;
         }
-        if (availableLanguages.some(l => l.code === code)) {
-            setLangCodeError(`La langue "${code}" existe déjà`);
+        if (languages.some(l => l.code === code)) {
+            setLangCodeError(t('admin.language_already_exists', { code }));
             return;
         }
-        handleDownloadTemplate(code);
-        setLangDialog(false);
-        setNewLangCode('');
-        setLangCodeError('');
+        setAddingLang(true);
+        try {
+            // Crée le fichier de langue côté serveur (toutes les clés clonées depuis fr).
+            await api.post('/admin/locales', { code });
+            setLangDialog(false);
+            setNewLangCode('');
+            setLangCodeError('');
+            loadLanguages();
+            setEditLang(code); // ouvre directement l'éditeur pour traduire
+        } catch (e) {
+            setLangCodeError(e.response?.data?.error || t('common.error'));
+        } finally {
+            setAddingLang(false);
+        }
     };
 
     if (loading) return (
@@ -174,7 +195,7 @@ const Admin = () => {
                         icon={<PersonAddIcon fontSize="large" />}
                         label={t('admin.new_today')}
                         value={stats?.newToday}
-                        color="#4caf50"
+                        color="#e8c96b"
                     />
                 </Grid2>
                 <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
@@ -182,7 +203,7 @@ const Admin = () => {
                         icon={<RouteIcon fontSize="large" />}
                         label={t('admin.active_routes')}
                         value={stats?.activeRoutes}
-                        color="#2196f3"
+                        color="#c9a84c"
                     />
                 </Grid2>
                 <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
@@ -190,7 +211,7 @@ const Admin = () => {
                         icon={<RouteIcon fontSize="large" />}
                         label={t('admin.total_routes')}
                         value={stats?.totalRoutes}
-                        color="#9c27b0"
+                        color="#8b6914"
                     />
                 </Grid2>
                 <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
@@ -198,7 +219,7 @@ const Admin = () => {
                         icon={<SearchIcon fontSize="large" />}
                         label={t('admin.player_searches')}
                         value={stats?.playerSearches}
-                        color="#ff9800"
+                        color="#e8c96b"
                     />
                 </Grid2>
                 <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
@@ -206,13 +227,13 @@ const Admin = () => {
                         icon={<GroupsIcon fontSize="large" />}
                         label={t('admin.guild_searches')}
                         value={stats?.guildSearches}
-                        color="#f44336"
+                        color="#9b3b3b"
                     />
                 </Grid2>
             </Grid2>
 
             <Typography variant="h5" className="admin__section-title" gutterBottom>
-                Synchronisation des items
+                {t('admin.items_sync')}
             </Typography>
 
             <Card sx={{ mb: 5, border: '1px solid rgba(201,168,76,0.2)' }}>
@@ -225,7 +246,7 @@ const Admin = () => {
                                     <Typography variant="h5" sx={{ fontFamily: 'Cinzel, serif', fontWeight: 700 }}>
                                         {itemCounts.items.toLocaleString()}
                                     </Typography>
-                                    <Typography variant="body2" color="text.secondary">items en base</Typography>
+                                    <Typography variant="body2" color="text.secondary">{t('admin.items_in_db')}</Typography>
                                 </Box>
                             </Box>
                         </Grid2>
@@ -238,7 +259,7 @@ const Admin = () => {
                                     disabled={syncingItems}
                                     fullWidth
                                 >
-                                    {syncingItems ? 'Synchronisation…' : 'Sync items depuis API'}
+                                    {syncingItems ? t('admin.syncing') : t('admin.sync_items_from_api')}
                                 </Button>
                             </Box>
                         </Grid2>
@@ -246,7 +267,7 @@ const Admin = () => {
 
                     {syncResult && (
                         <Alert severity="success" sx={{ mt: 2 }} onClose={() => setSyncResult(null)}>
-                            {`✓ ${syncResult.inserted} ajoutés, ${syncResult.updated} mis à jour — ${syncResult.total} items au total`}
+                            {t('admin.sync_result', { inserted: syncResult.inserted, updated: syncResult.updated, total: syncResult.total })}
                         </Alert>
                     )}
                 </CardContent>
@@ -263,19 +284,26 @@ const Admin = () => {
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
                                 <TranslateIcon sx={{ color: '#c9a84c', fontSize: 32 }} />
                                 <Typography variant="h6" sx={{ fontFamily: 'Cinzel, serif' }}>
-                                    Langues disponibles ({availableLanguages.length})
+                                    {t('admin.available_languages', { count: languages.length })}
                                 </Typography>
                             </Box>
                             <List dense disablePadding>
-                                {availableLanguages.map(lang => (
+                                {languages.map(lang => (
                                     <ListItem key={lang.code} disableGutters>
                                         <ListItemText
                                             primary={lang.label}
-                                            secondary={lang.code}
+                                            secondary={lang.reference ? `${lang.code} · ${t('admin.reference')}` : lang.code}
                                             primaryTypographyProps={{ fontSize: '0.9rem' }}
                                         />
                                         <ListItemSecondaryAction>
-                                            <Tooltip title="Télécharger le template de traduction">
+                                            {!lang.reference && (
+                                                <Tooltip title={t('admin.edit_translations_tooltip')}>
+                                                    <IconButton size="small" onClick={() => setEditLang(lang.code)}>
+                                                        <EditIcon fontSize="small" />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            )}
+                                            <Tooltip title={t('admin.download_translation')}>
                                                 <IconButton size="small" onClick={() => handleDownloadTemplate(lang.code)}>
                                                     <DownloadIcon fontSize="small" />
                                                 </IconButton>
@@ -287,13 +315,13 @@ const Admin = () => {
                         </Grid2>
                         <Grid2 size={{ xs: 12, md: 6 }}>
                             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                                Pour ajouter une nouvelle langue :
+                                {t('admin.add_language_intro')}
                             </Typography>
                             <Box component="ol" sx={{ pl: 2, m: 0, '& li': { mb: 1, fontSize: '0.85rem', color: 'text.secondary' } }}>
-                                <li>Cliquez sur <strong>Ajouter une langue</strong> et entrez le code ISO 639-1.</li>
-                                <li>Le template JSON (clés vides) sera téléchargé automatiquement.</li>
-                                <li>Traduisez les valeurs et placez le fichier dans <code>src/locales/&lt;code&gt;/translation.json</code>.</li>
-                                <li>Relancez le build : <code>npm run build</code></li>
+                                <li>{t('admin.add_language_step1_pre')} <strong>{t('admin.add_language')}</strong> {t('admin.add_language_step1_post')}</li>
+                                <li>{t('admin.add_language_step2')}</li>
+                                <li>{t('admin.add_language_step3')}</li>
+                                <li>{t('admin.add_language_step4')}</li>
                             </Box>
                             <Button
                                 variant="outlined"
@@ -366,7 +394,7 @@ const Admin = () => {
                 <DialogTitle sx={{ fontFamily: 'Cinzel, serif' }}>{t('admin.confirm_delete')}</DialogTitle>
                 <DialogContent>
                     <Typography>
-                        Supprimer l'utilisateur <strong>{deleteDialog?.username}</strong> ?
+                        {t('admin.confirm_delete_user_pre')} <strong>{deleteDialog?.username}</strong> {t('admin.confirm_delete_user_post')}
                     </Typography>
                 </DialogContent>
                 <DialogActions>
@@ -379,13 +407,12 @@ const Admin = () => {
                 <DialogTitle sx={{ fontFamily: 'Cinzel, serif' }}>{t('admin.add_language')}</DialogTitle>
                 <DialogContent>
                     <DialogContentText sx={{ mb: 2 }}>
-                        Entrez le code ISO 639-1 de la nouvelle langue (ex : <code>de</code>, <code>es</code>, <code>pt-BR</code>).
-                        Un fichier template JSON sera téléchargé.
+                        {t('admin.add_language_dialog_hint')}
                     </DialogContentText>
                     <TextField
                         autoFocus
-                        label="Code de langue"
-                        placeholder="ex : de"
+                        label={t('admin.language_code_label')}
+                        placeholder={t('admin.language_code_placeholder')}
                         value={newLangCode}
                         onChange={e => { setNewLangCode(e.target.value); setLangCodeError(''); }}
                         error={!!langCodeError}
@@ -399,11 +426,23 @@ const Admin = () => {
                     <Button onClick={() => { setLangDialog(false); setNewLangCode(''); setLangCodeError(''); }}>
                         {t('common.cancel')}
                     </Button>
-                    <Button onClick={handleAddLanguage} variant="contained" startIcon={<DownloadIcon />}>
-                        Télécharger template
+                    <Button
+                        onClick={handleAddLanguage}
+                        variant="contained"
+                        disabled={addingLang}
+                        startIcon={addingLang ? <CircularProgress size={16} color="inherit" /> : <AddIcon />}
+                    >
+                        {t('admin.add_language')}
                     </Button>
                 </DialogActions>
             </Dialog>
+
+            <LanguageEditor
+                open={!!editLang}
+                langCode={editLang}
+                onClose={() => setEditLang(null)}
+                onSaved={loadLanguages}
+            />
         </Container>
     );
 };
