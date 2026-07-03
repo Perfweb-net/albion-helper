@@ -54,4 +54,28 @@ class ItemRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    /**
+     * Noms localisés pour une liste d'uniqueNames.
+     * @param string[] $uniqueNames
+     * @return array<string,array> uniqueName => localizedNames
+     */
+    public function localizedNamesFor(array $uniqueNames): array
+    {
+        if (!$uniqueNames) {
+            return [];
+        }
+        $rows = $this->createQueryBuilder('i')
+            ->select('i.uniqueName', 'i.localizedNames')
+            ->where('i.uniqueName IN (:names)')
+            ->setParameter('names', array_values(array_unique($uniqueNames)))
+            ->getQuery()
+            ->getArrayResult();
+
+        $map = [];
+        foreach ($rows as $row) {
+            $map[$row['uniqueName']] = $row['localizedNames'] ?? [];
+        }
+        return $map;
+    }
 }

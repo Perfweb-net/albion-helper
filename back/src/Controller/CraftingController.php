@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\CraftingRecipe;
 use App\Entity\CraftingRecipeIngredient;
 use App\Repository\CraftingRecipeRepository;
+use App\Repository\ItemRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,8 +14,17 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CraftingController extends AbstractController
 {
+    /** Mapping code i18n -> clé de noms localisés de l'API Albion. */
+    private const LANG_MAP = [
+        'fr' => 'FR-FR', 'en' => 'EN-US', 'de' => 'DE-DE', 'es' => 'ES-ES',
+        'pt' => 'PT-BR', 'ru' => 'RU-RU', 'it' => 'IT-IT', 'pl' => 'PL-PL',
+        'zh' => 'ZH-CN', 'ko' => 'KO-KR', 'ja' => 'JA-JP', 'tr' => 'TR-TR',
+        'ar' => 'AR-SA', 'id' => 'ID-ID',
+    ];
+
     public function __construct(
         private readonly CraftingRecipeRepository $repo,
+        private readonly ItemRepository $itemRepo,
         private readonly EntityManagerInterface $em
     ) {}
 
@@ -26,17 +36,35 @@ class CraftingController extends AbstractController
             ? $this->repo->findByCategory($category)
             : $this->repo->findAllWithIngredients();
 
-        return new JsonResponse(array_map([$this, 'serialize'], $recipes));
+        $langKey = self::LANG_MAP[$request->query->get('lang', 'en')] ?? 'EN-US';
+
+        // Noms localisés des recettes + ingrédients en un seul appel
+        $uniqueNames = [];
+        foreach ($recipes as $r) {
+            $uniqueNames[] = $r->getUniqueName();
+            foreach ($r->getIngredients() as $i) {
+                $uniqueNames[] = $i->getUniqueName();
+            }
+        }
+        $names = $this->itemRepo->localizedNamesFor($uniqueNames);
+
+        return new JsonResponse(array_map(fn($r) => $this->serialize($r, $names, $langKey), $recipes));
     }
 
     #[Route('/api/crafting/recipes/{id}', methods: ['GET'])]
-    public function show(int $id): JsonResponse
+    public function show(int $id, Request $request): JsonResponse
     {
         $recipe = $this->repo->find($id);
         if (!$recipe) {
             return new JsonResponse(['error' => 'Not found'], 404);
         }
-        return new JsonResponse($this->serialize($recipe));
+        $langKey = self::LANG_MAP[$request->query->get('lang', 'en')] ?? 'EN-US';
+        $uniqueNames = [$recipe->getUniqueName()];
+        foreach ($recipe->getIngredients() as $i) {
+            $uniqueNames[] = $i->getUniqueName();
+        }
+        $names = $this->itemRepo->localizedNamesFor($uniqueNames);
+        return new JsonResponse($this->serialize($recipe, $names, $langKey));
     }
 
     #[Route('/api/crafting/recipes', methods: ['POST'])]
@@ -105,12 +133,19 @@ class CraftingController extends AbstractController
         return $recipe;
     }
 
-    private function serialize(CraftingRecipe $r): array
+    /**
+     * @param array<string,array> $names   uniqueName => localizedNames
+     * @param string              $langKey clé de langue (ex. EN-US)
+     */
+    private function serialize(CraftingRecipe $r, array $names = [], string $langKey = 'EN-US'): array
     {
+        $localized = fn(string $u, ?string $fallback) =>
+            $names[$u][$langKey] ?? $names[$u]['EN-US'] ?? $fallback ?? $u;
+
         return [
             'id'            => $r->getId(),
             'uniqueName'    => $r->getUniqueName(),
-            'name'          => $r->getName(),
+            'name'          => $localized($r->getUniqueName(), $r->getName()),
             'category'      => $r->getCategory(),
             'subcategory'   => $r->getSubcategory(),
             'tier'          => $r->getTier(),
@@ -119,6 +154,7 @@ class CraftingController extends AbstractController
             'bonusCity'     => $r->getBonusCity(),
             'ingredients'   => array_map(fn($i) => [
                 'uniqueName' => $i->getUniqueName(),
+                'name'       => $localized($i->getUniqueName(), null),
                 'amount'     => $i->getAmount(),
             ], $r->getIngredients()->toArray()),
         ];
