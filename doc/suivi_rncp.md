@@ -1,5 +1,5 @@
 # Suivi RNCP39583 — Albion Helper
-> Fichier de suivi UNIQUE de la certification. Mis à jour le 2026-06-12.
+> Fichier de suivi UNIQUE de la certification. Mis à jour le 2026-07-06.
 > Contient **toutes** les compétences et tous les livrables officiels, point par point.
 > ☑ = vérifié dans le repo le 12/06 · ☐ = à faire · ⚠️ ÉLIM = compétence éliminatoire (une seule non-acquise = bloc invalidé)
 
@@ -13,14 +13,17 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 
 - Bloc validé si **≥ 50% des compétences acquises** ET **aucune éliminatoire non-acquise**
 - La certification = validation des **4 blocs**
-- Dépôt obligatoire sur **DigiformaCertif** dans les délais, sinon bloc invalidé automatiquement
+- Dépôt obligatoire sur **DigiformaCertif** (https://ynov.mycertif.app) dans les délais — livrables **ET** supports de présentation — sinon bloc invalidé automatiquement
+- **Rattrapage** : accessible uniquement si **moins de 50 % des blocs sont invalidés** (donc 1 bloc raté max)
+- **Diplôme/titre prérequis** : à transmettre au campus dès la rentrée, sinon **non-présentation au jury de certification** (modalités p. « Conseils ») — vérifier que c'est fait
+- ⚠️ Le planning officiel (modalités) mentionne une fenêtre **17–21/08/2026 (S34)** en plus du 01–29/09 pour l'oral Bloc 3, « selon le campus » — **confirmer la date exacte avec le campus** (si août : la préparation Bloc 3 devient urgente dès juillet)
 
 | Bloc | Épreuve | Date | Urgence |
 |---|---|---|---|
-| Bloc 2 | Dossier écrit 30p max + code source | **08–19/06/2026** | 🚨 **J-7** |
-| Bloc 4 | Dossier écrit 20p max | 20–24/07/2026 | 🟠 |
-| Bloc 3 | Oral 45' (30'+15') + démo live | 01–29/09/2026 | 🟡 |
-| Bloc 1 | Oral 30' (20'+10') | Rentrée oct. 2026 | 🟡 |
+| Bloc 2 | Dossier écrit 30p max + code source | **08–19/06/2026** | ✅ échéance passée — **confirmer que le dépôt DigiformaCertif a bien été fait** |
+| Bloc 4 | Dossier écrit 20p max | **20–24/07/2026** | 🚨 **J-14** |
+| Bloc 3 | Oral 45' (30'+15') + démo live | **17–21/08 ou 01–29/09 selon campus** | 🟠 rien commencé |
+| Bloc 1 | Oral 30' (20'+10') | Rentrée oct. 2026 | 🟡 rien commencé |
 
 ---
 
@@ -122,6 +125,7 @@ Critère officiel : « les mesures couvrent les 10 failles OWASP » + « référ
 - [x] Sonde applicative : endpoint `/api/health` public (statut DB + API Albion)
 - [x] Canal Monolog `incident` dédié (dev + prod)
 - [ ] Sonde externe : créer le monitor UptimeRobot sur https://albion-back.perfweb.net/api/health (5 min, mot-clé OK, alerte e-mail) + **insérer la capture dans le dossier §3.4** ; sonde interne cron prête : installer `deploy/healthcheck-probe.sh` dans la crontab du VPS (*/5)
+- [ ] 🚨 **BLOQUANT découvert le 06/07** : `/api/health` renvoie **404 en production** — le code déployé date d'avant le 12/06 (le job CI `deploy` n'a jamais tourné : secrets GitHub absents, et `deploy.sh` tire `master` alors que la branche par défaut distante est `main`). **Avant UptimeRobot** : ① pousser develop→master (`git push origin develop:master`), ② créer les secrets GitHub Actions OU se connecter en SSH au VPS et lancer `deploy/deploy.sh` à la main, ③ vérifier `curl https://albion-back.perfweb.net/api/health` → 200 `"status":"OK"`
 - [x] Indicateurs définis avec cibles : dispo ≥99%, réponse <1s, détection ≤5 min, 5xx <1% (dossier Bloc 4 §3.1)
 - [x] Système décrit avec schéma : 2 sondes (UptimeRobot + cron interne avec anti-spam et e-mail de rétablissement), /api/health détaillé, signalements, journaux (dossier Bloc 4 §3)
 
@@ -157,137 +161,109 @@ Critère officiel : « les mesures couvrent les 10 failles OWASP » + « référ
 
 ---
 
-# BLOC 3 — Coordonner et piloter le projet 🟡 (oral 01–29/09)
+# BLOC 3 — Coordonner et piloter le projet 🟡 (oral 17–21/08 ou 01–29/09 selon campus)
+
+> **06/07** : support de présentation v1 complet généré → `dossier/Support_Bloc3_Albion_Helper.html` (ouvrir dans un navigateur, flèches pour naviguer, P pour imprimer/PDF). Couvre les 14 points du règlement + script de démo en annexe A. **À relire, personnaliser et répéter.**
 
 ## Compétences
 
 ### C3.1 — Planification ⚠️ ÉLIM
-- [ ] Méthodologie justifiée avec bénéfices attendus (Agile/Scrum/Kanban/V — adapter au solo)
-- [ ] Planning détaillé découpé en phases/tâches/lots (Gantt, PERT ou rétroplanning), outil argumenté et compatible avec la méthodologie
-- [ ] Ressources nécessaires identifiées (humaines, financières, matérielles)
-- [ ] Tâches assignées selon les compétences (matrice RACI/RASCI — adapter au solo), prise en compte du handicap
+- [x] Méthodologie justifiée avec bénéfices attendus : Kanban adapté solo (support v1, slide 3) — à relire
+- [x] Planning détaillé découpé en phases/lots : rétroplanning 6 phases + Gantt calé sur les vraies dates git (support v1, slide 4) — à relire
+- [x] Ressources nécessaires identifiées (humaines, financières, matérielles) : support v1, slide 5 — à relire
+- [x] Tâches assignées selon les compétences : matrice RACI adaptée solo + prise en compte handicap (support v1, slide 8) — à relire
 
 ### C3.2.1 — Pilotage et indicateurs ⚠️ ÉLIM
-- [ ] Outil de suivi de projet en adéquation avec la méthodologie (GitHub Projects, Trello…)
-- [ ] Indicateurs mesurables et quantifiables : avancement, coûts, délais, risques, RH
-- [ ] Tableau de bord présentable au jury
+- [ ] **Outil de suivi à matérialiser** : créer le tableau GitHub Projects (kanban Backlog/À faire/En cours/Recette/Fait) et y reporter les lots réels — le support (slide 6) le présente, il faut que le tableau existe pour l'oral (~30 min)
+- [x] Indicateurs mesurables et quantifiables : avancement, coûts, délais, risques, RH (support v1, slide 6)
+- [ ] Tableau de bord présentable au jury (GitHub Projects + dernier run CI ouverts en direct — cf. annexe B du support)
 
 ### C3.2.2 — Arbitrages
-- [ ] Un cas d'arbitrage : problématique + conséquences + options possibles + décision argumentée (outil d'aide à la décision type logigramme)
+- [x] Cas d'arbitrage rédigé : stockage JWT localStorage vs cookie httpOnly — problématique, options chiffrées, logigramme, décision argumentée (support v1, slide 7)
 
 ### C3.3.1 — Management d'équipe
-- [ ] Affectation des missions réalisée au cours du projet
-- [ ] Style(s) managérial(aux) identifié(s) et décrit(s) (directif, persuasif, participatif, délégatif — adapter : auto-pilotage)
-- [ ] Outils de communication utilisés + leurs objectifs (prise en compte handicap, charge répartie)
-- [ ] Analyse critique d'une situation managériale + recommandations
+- [x] Affectation des missions : casquettes × créneaux + délégation à l'outillage (support v1, slide 8)
+- [x] Styles managériaux : les 4 styles mappés sur le contexte solo (support v1, slide 9)
+- [x] Outils de communication + objectifs, handicap pris en compte (support v1, slide 10)
+- [x] Analyse critique d'une situation managériale : recette tardive de juin → recommandations appliquées (support v1, slide 9)
 
 ### C3.3.2 — Compétences de l'équipe
-- [ ] Grille d'évaluation des compétences (actuelles vs à acquérir) commentée
-- [ ] Plan de développement des compétences détaillé + formations préconisées (modalités adaptées au handicap)
+- [x] Grille d'évaluation des compétences (7 lignes, initial/requis/atteint, commentée) — support v1, slide 11
+- [x] Plan de développement des compétences + formations préconisées, modalités adaptées au handicap — support v1, slide 12
 
 ### C3.4.1 — Comptes rendus et validation client
-- [ ] Comptes rendus d'évolutions et améliorations, clairs et ordonnés
-- [ ] Planification des points de validation réalisés
-- [ ] Indicateurs de satisfaction définis et cohérents
+- [x] Comptes rendus d'évolutions : CHANGELOG v1.0→v3.0 + commits conventionnels + dossiers de jalon (support v1, slide 13)
+- [x] Planification des points de validation réalisés (tableau daté, support v1, slide 13)
+- [x] Indicateurs de satisfaction définis et cohérents (support v1, slide 14)
 
 ### C3.4.2 — Démonstration du logiciel ⚠️ ÉLIM
-- [x] Le logiciel est utilisable (app fonctionnelle, bugs critiques de juin corrigés)
-- [ ] Script de démo reprenant les fonctionnalités attendues (inscription → connexion → dashboard → recherches → carte → route partagée → composition → craft → admin)
-- [ ] Environnement de démo stable : back déployé, données préchargées, répétition la veille
-- [ ] Vocabulaire adapté à une présentation client (pas de « JWT », « API », « localhost »)
-- [ ] La démo aboutit à une validation (conclusion orientée commanditaire)
+- [x] Le logiciel est utilisable (app fonctionnelle ; tests re-vérifiés verts le 06/07 : PHPUnit OK, Jest 95/95)
+- [x] Script de démo détaillé en 10 étapes, vocabulaire commanditaire (support v1, annexe A)
+- [ ] **Environnement de démo stable : la PROD N'EST PAS À JOUR** (déployée avant le 12/06, cf. bloquant Bloc 4) — redéployer, précharger les données, répéter la veille (check-list en annexe B du support)
+- [x] Vocabulaire adapté client : intégré au script (annexe A)
+- [ ] La démo aboutit à une validation : conclusion orientée commanditaire écrite (slide 15 + étape 10 du script) — à répéter à l'oral
 
 ## Livrable Bloc 3 — présentation orale 45' (liste officielle du règlement)
 
-- [ ] 1. Présentation de la méthodologie choisie
-- [ ] 2. Planning détaillé du projet
-- [ ] 3. Ressources nécessaires
-- [ ] 4. Outil de suivi de projet
-- [ ] 5. Un cas d'arbitrage rencontré
-- [ ] 6. Affectation des missions
-- [ ] 7. Style managérial / styles managériaux utilisés
-- [ ] 8. Outils de communication + objectifs
-- [ ] 9. Évaluation des besoins en compétences (grille)
-- [ ] 10. Plan de développement des compétences
-- [ ] 11. Comptes rendus sur les évolutions et améliorations
-- [ ] 12. Planification des points de validation réalisés
-- [ ] 13. Indicateurs de satisfaction mis en place
-- [ ] 14. Démonstration des fonctionnalités devant le jury
-- [ ] Support de présentation (30' + 15' d'échanges)
+Les 14 points sont couverts par `dossier/Support_Bloc3_Albion_Helper.html` (v1 du 06/07). Reste à faire :
+- [ ] Relire/personnaliser le support (vérifier les chiffres, ajouter des captures GitHub Projects et CI)
+- [ ] Créer le tableau GitHub Projects réel (cf. C3.2.1)
+- [ ] Redéployer la prod (cf. bloquant Bloc 4) + préparer les données de démo
+- [ ] Répétition chronométrée (30' + démo ~8')
+- [ ] **Déposer le support sur DigiformaCertif avant l'échéance** (date exacte de l'oral à confirmer avec le campus : 17–21/08 ou 01–29/09)
 
 ---
 
 # BLOC 1 — Cadrer le projet 🟡 (oral rentrée oct.)
 
+> **06/07** : support de présentation v1 complet généré → `dossier/Support_Bloc1_Albion_Helper.html` (navigateur, flèches, P pour imprimer/PDF). Couvre les 17 points du règlement + timing d'oral en annexe. **À relire, personnaliser et répéter.** Point d'attention : le commanditaire est présenté comme « une communauté/guilde de joueurs » — vérifier que cette fiction cadre avec ce qui a été dit au campus.
+
 ## Compétences
 
 ### C1.1.1 — Cartographie des parties prenantes ⚠️ ÉLIM
-- [ ] Acteurs identifiés : développeurs, architectes, administrateurs, clients, acteurs externes
-- [ ] Rôles et niveaux d'implication ; futurs utilisateurs identifiés et détaillés
+- [x] Acteurs identifiés (commanditaire, joueurs, dev, admins, éditeur du jeu, hébergeur, YNOV) + rôles, implication, lecture pouvoir×intérêt — support v1, slide 3 — à relire
 
 ### C1.1.2 — Analyse de la demande
-- [ ] Besoins et attentes des parties prenantes recensés (entretien d'explicitation, état des lieux)
-- [ ] Objectifs et enjeux définis par partie prenante ; problématique client identifiée ; pistes de solutions cohérentes
+- [x] Besoins par partie prenante (état des lieux + entretiens d'usage), objectifs, enjeux, problématique, 3 pistes de solutions dont celle retenue — support v1, slides 2 & 4
 
 ### C1.2.1 — Opportunités et menaces
-- [ ] SWOT (ou outil équivalent) : impact environnemental, sécurité, points de vigilance, opportunités, interactions avec d'autres projets
+- [x] SWOT complet + points de vigilance (impact environnemental, sécurité, interactions avec l'API du jeu) — support v1, slide 5
 
 ### C1.2.2 — Faisabilité technique ⚠️ ÉLIM
-- [ ] Démarche d'audit documentée et argumentée
-- [ ] Étude technique : langages, bases de données, architecture existante, état des applications
-- [ ] Contraintes techniques et financières (hébergement, OS, volume de données, nb utilisateurs, délais, budget)
-- [ ] Avis critique sur la faisabilité
+- [x] Démarche d'audit en 3 volets (fonctionnel, API du jeu, infra) — support v1, slide 6
+- [x] Diagnostic infrastructures existantes + contraintes techniques et financières (hébergement, volumétrie, délais, budget) — support v1, slide 7
+- [x] Avis critique sur la faisabilité (faisable sous 3 conditions) — support v1, slide 7
 
 ### C1.2.3 — Cartographie des risques
-- [ ] Risques techniques et fonctionnels cartographiés et priorisés (perte de données, interruption, dégradation, sécurité)
-- [ ] Référentiel d'évaluation des risques + suivi des incidents
-- [ ] Indicateurs de contrôle explicités
+- [x] 6 risques priorisés (probabilité × impact) avec mesures — support v1, slide 8
+- [x] Référentiel d'évaluation (seuils de criticité) + suivi des incidents (registre réel BUG-001→013) — support v1, slide 9
+- [x] Indicateurs de contrôle explicités (6 indicateurs chiffrés) — support v1, slide 9
 
 ### C1.3.1 — Veille technologique
-- [ ] Méthodologie de recherche + principales sources consultées
-- [ ] Outils de veille expliqués (automatisation, salons, réseaux pro) + bénéfices attendus
-- [ ] Évolutions classifiées et justifiées (impact métier et environnemental)
+- [x] Méthodologie 3 niveaux + sources + outils + bénéfices + preuve d'efficacité (migration 7.4 LTS déclenchée par la veille) — support v1, slide 10
 
 ### C1.3.2 — Étude comparative des solutions ⚠️ ÉLIM
-- [ ] Analyse comparative (Symfony vs Laravel/Node, React vs Vue/Angular, JWT vs sessions…)
-- [ ] Avantages/inconvénients en termes de : sécurité, environnements systèmes, réseaux, accessibilité, impact environnemental
-- [ ] Choix retenus justifiés + ressources matérielles/techniques identifiées
+- [x] Comparatif 4 briques (Symfony/Laravel/Node, React/Vue/Angular, JWT/sessions, PostgreSQL/MySQL/Mongo) sur les 5 critères exigés (sécurité, systèmes, réseaux, accessibilité, impact env.) + ressources identifiées — support v1, slide 11
 
 ### C1.4.1 — Charge de travail ⚠️ ÉLIM
-- [ ] Diagramme de fonctionnalités ou cahier des charges fonctionnel (fonctions recensées, hiérarchisées)
-- [ ] Charge exprimée en jours-homme ; outil d'analyse fonctionnelle explicité ; UX prise en compte
+- [x] Diagramme de fonctionnalités hiérarchisé MoSCoW (F1→F6) + méthode d'analyse + UX prise en compte — support v1, slide 12
+- [x] Charge en jours-homme par lot (85 + réserve 10 % ≈ 94 j-h), méthode par analogie, cohérence avec le réalisé — support v1, slide 13
 
 ### C1.4.2 — Estimation des coûts
-- [ ] Estimation cohérente avec la charge ; budget prévisionnel par postes (licences, développement, infrastructures…)
+- [x] Budget prévisionnel par postes (dev 37,6 k€ au TJM 400 €, infra 270 €/2 ans, licences 0 €) — support v1, slide 13
 
 ### C1.5 — Architecture logicielle
-- [ ] Schémas légendés (méthode de modélisation justifiée : UML, C4, Merise…)
-- [ ] Architecture maintenable, sécurisée, extensible ; interactions explicitées ; impact environnemental pris en compte (ex : bilan carbone)
+- [x] Schéma C4 niveau conteneurs, méthode justifiée (vs UML), propriétés maintenable/sécurisée/extensible/sobre — support v1, slide 14 — envisager un vrai schéma C4 contexte en plus
 
 ### C1.6 — Préconisations au client ⚠️ ÉLIM
-- [ ] Axes de solutions préconisés + arguments répondant à la problématique
-- [ ] Discours vulgarisé, objections traitées, supports de communication adaptés
+- [x] Préconisation en 3 temps, discours vulgarisé, 4 objections traitées — support v1, slide 15
 
 ## Livrable Bloc 1 — présentation orale 30' (liste officielle du règlement)
 
-- [ ] 1. Cartographie des parties prenantes
-- [ ] 2. Analyse de la demande, objectifs et enjeux par partie prenante
-- [ ] 3. Cartographie des opportunités et menaces
-- [ ] 4. Démarche d'audit mise en œuvre
-- [ ] 5. Diagnostic des infrastructures existantes
-- [ ] 6. Cartographie des risques techniques et fonctionnels
-- [ ] 7. Référentiel d'évaluation des risques et de suivi des incidents
-- [ ] 8. Indicateurs de contrôle
-- [ ] 9. Méthodologie de recherche + principales sources consultées
-- [ ] 10. Sources d'information et outils de veille
-- [ ] 11. Étude comparative des solutions techniques
-- [ ] 12. Ressources matérielles/techniques nécessaires
-- [ ] 13. Diagramme de fonctionnalités ou cahier des charges fonctionnel
-- [ ] 14. Estimation de la charge de travail
-- [ ] 15. Estimation des coûts + budget prévisionnel
-- [ ] 16. Schémas de l'architecture logicielle proposée
-- [ ] 17. Préconisation des axes de solutions + arguments
-- [ ] Support de présentation (20' + 10' d'échanges)
+Les 17 points sont couverts par `dossier/Support_Bloc1_Albion_Helper.html` (v1 du 06/07, mapping point→slide dans le support). Reste à faire :
+- [ ] Relire/personnaliser (chiffres de charge et TJM à assumer à l'oral ; valider la présentation du commanditaire)
+- [ ] Répétition chronométrée 20' (timing proposé en annexe du support)
+- [ ] **Déposer le support sur DigiformaCertif avant l'échéance** (date exacte : rentrée octobre, à confirmer)
 
 ---
 
@@ -314,5 +290,12 @@ Bonus audit dépendances : **Symfony 7.2 (EOL) → 7.4.13 LTS** (`composer audit
 - **Dossier** — rédiger la justification localStorage (mitigations : TTL 1 h + rotation refresh) dans la section sécurité.
 - **npm audit (front)** — 57 vulnérabilités restantes, toutes dans la chaîne de build `react-scripts` (outillage de dev, non exposé en production) : documenter comme risque accepté dans le dossier ; migration hors CRA (Vite) en axe d'amélioration (C4.3.1).
 - ~~Hook pre-commit~~ — réparé le 12/06 (lint depuis la racine du dépôt, grep sécurité affiné sur des patterns non ambigus).
-- **GitHub** — passer la branche par défaut de `main` à `master` (Settings → Branches), puis supprimer `main` : `git push origin --delete main`.
+- **GitHub** — la branche par défaut distante est toujours `main` (vérifié le 06/07 via `git ls-remote`) alors que `deploy.sh` et le job CI déploient `master`, et que le travail se fait sur `develop` (22 commits d'avance sur `origin/master`). Aligner : passer la défaut à `master` (Settings → Branches), pousser `develop`→`master`, puis supprimer `main`.
 - **Secrets GitHub Actions à créer** (Settings → Secrets and variables → Actions) pour le déploiement : `SSH_HOST`, `SSH_USER`, `SSH_PRIVATE_KEY`, `DEPLOY_PATH` (chemin du projet sur le serveur), `SSH_PORT` (optionnel, défaut 22).
+
+# 🔎 Constats de la session du 06/07/2026
+
+1. **Prod obsolète (bloquant Bloc 4 et démo Bloc 3)** : `curl https://albion-back.perfweb.net/api/health` → **404** (page d'erreur Symfony). Le back tourne mais sur du code d'avant le 12/06 : le déploiement continu n'a jamais été exécuté (secrets absents + `master` jamais poussée). Détail des étapes dans C4.1.2.
+2. **Tests re-vérifiés** : back PHPUnit ✅ (exit 0, quelques dépréciations sans gravité), front Jest ✅ 95/95 — la base reste saine après les 33 commits de fonctionnalités de juin-juillet (i18n, multi-serveur, batailles, stats PvP).
+3. **Supports d'oraux générés** : `dossier/Support_Bloc3_Albion_Helper.html` (14 points + script de démo) et `dossier/Support_Bloc1_Albion_Helper.html` (17 points + timing). À relire/personnaliser, puis à déposer sur DigiformaCertif.
+4. **À vérifier côté administratif (hors repo)** : confirmation du dépôt Bloc 2 du 19/06, transmission du diplôme prérequis au campus, date exacte de l'oral Bloc 3 (17–21/08 ou 01–29/09). Le connecteur Gmail de Claude est expiré (ré-autoriser sur claude.ai pour que je puisse vérifier les mails).

@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bloc 3 — Pilotage du projet Albion Helper — RNCP39583</title>
+<style>
+  :root{
+    --gold:#b8860b; --gold-light:#e8c766; --ink:#1d1a14; --muted:#6b6357;
+    --bg:#faf7f0; --card:#ffffff; --line:#e3dcc9; --ok:#2e7d32; --warn:#c62828;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:"Avenir Next","Segoe UI",system-ui,sans-serif;background:var(--ink);color:var(--ink)}
+  .slide{display:none;width:100vw;height:100vh;padding:4.5vh 6vw;background:var(--bg);
+         flex-direction:column;overflow:auto}
+  .slide.active{display:flex}
+  .slide.title{justify-content:center;background:linear-gradient(160deg,#221d12 0%,#3a2f17 60%,#584416 100%);color:#f5edd8}
+  .slide.title h1{font-size:3.2rem;color:var(--gold-light);margin-bottom:1rem}
+  .slide.title .sub{font-size:1.35rem;opacity:.9;margin-bottom:2.5rem}
+  .slide.title .meta{font-size:1.05rem;opacity:.75;line-height:1.8}
+  .kicker{font-size:.85rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:.4rem}
+  h2{font-size:2rem;margin-bottom:1.4rem;border-bottom:3px solid var(--gold);padding-bottom:.5rem}
+  h3{font-size:1.15rem;margin:.9rem 0 .45rem;color:var(--gold)}
+  p,li{font-size:1.06rem;line-height:1.55}
+  ul{padding-left:1.3rem;margin:.3rem 0 .8rem}
+  li{margin:.3rem 0}
+  strong{color:#7a5a08}
+  table{border-collapse:collapse;width:100%;margin:.7rem 0;background:var(--card);font-size:.98rem}
+  th,td{border:1px solid var(--line);padding:.5rem .7rem;text-align:left;vertical-align:top;line-height:1.4}
+  th{background:#f1e9d2;font-weight:700}
+  .cols{display:flex;gap:2.2rem}.cols>div{flex:1}
+  .card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);
+        border-radius:6px;padding: .9rem 1.1rem;margin:.55rem 0}
+  .ok{color:var(--ok);font-weight:700}.ko{color:var(--warn);font-weight:700}
+  .badge{display:inline-block;background:#f1e9d2;border:1px solid var(--gold);color:#7a5a08;
+         border-radius:12px;padding:.05rem .6rem;font-size:.82rem;font-weight:700;margin-right:.3rem}
+  .gantt{margin:.8rem 0}
+  .gantt .row{display:flex;align-items:center;margin:.32rem 0;font-size:.92rem}
+  .gantt .lbl{width:15.5rem;flex:none;padding-right:.7rem;text-align:right;color:var(--muted)}
+  .gantt .track{flex:1;background:#efe9da;border-radius:4px;height:1.45rem;position:relative}
+  .gantt .bar{position:absolute;top:0;height:100%;border-radius:4px;background:var(--gold);
+              color:#fff;font-size:.74rem;line-height:1.45rem;padding-left:.45rem;white-space:nowrap;overflow:visible}
+  .gantt .bar.alt{background:#8a6d1d}
+  .flow{display:flex;flex-wrap:wrap;gap:.45rem;align-items:center;margin:.6rem 0}
+  .flow .step{background:var(--card);border:1.5px solid var(--gold);border-radius:6px;padding:.45rem .7rem;font-size:.92rem;font-weight:600}
+  .flow .arr{color:var(--gold);font-weight:700}
+  .foot{position:fixed;bottom:1.1vh;right:2vw;font-size:.8rem;color:#9a917e;z-index:5}
+  .note{font-size:.9rem;color:var(--muted);font-style:italic;margin-top:auto;padding-top:.8rem}
+  .annexe h2{border-color:#999}
+  .annexe .kicker{color:#777}
+  @media print{
+    body{background:#fff}
+    .slide{display:flex !important;height:auto;min-height:100vh;page-break-after:always}
+    .foot{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- 1. TITRE -->
+<section class="slide title active">
+  <h1>Albion Helper</h1>
+  <div class="sub">Bloc 3 — Coordonner et piloter un projet de développement d'applications logicielles</div>
+  <div class="meta">
+    Pierre Saugues — M2 Expert en développement full-stack, YNOV<br>
+    Titre RNCP39583 « Expert en développement logiciel » — Épreuve orale (30' + 15' d'échanges)<br>
+    Septembre 2026
+  </div>
+</section>
+
+<!-- 2. CONTEXTE -->
+<section class="slide">
+  <div class="kicker">Contexte</div>
+  <h2>Le projet en une slide</h2>
+  <div class="cols">
+    <div>
+      <p><strong>Albion Helper</strong> est une application web compagnon du jeu <em>Albion Online</em> : elle centralise pour les joueurs et les guildes les informations dispersées de l'univers du jeu.</p>
+      <h3>Fonctionnalités livrées</h3>
+      <ul>
+        <li>Recherche de joueurs, guildes et batailles ; statistiques PvP</li>
+        <li>Carte interactive des zones et itinéraires partagés</li>
+        <li>Éditeur de compositions d'équipe ; calculateur de craft avec prix du marché</li>
+        <li>Back-office d'administration, multi-langue, multi-serveur (Amériques / Europe / Asie)</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Chiffres clés</h3>
+      <table>
+        <tr><td>Durée du projet</td><td><strong>Fév. 2025 → Sept. 2026</strong></td></tr>
+        <tr><td>API REST Symfony 7.4</td><td>13 contrôleurs, 14 entités Doctrine</td></tr>
+        <tr><td>Front React 19</td><td>15 pages, i18n 3+ langues</td></tr>
+        <tr><td>Tests automatisés</td><td>PHPUnit + Jest, 100 % verts en CI</td></tr>
+        <tr><td>Recette</td><td>26 scénarios — 26/26 PASS</td></tr>
+        <tr><td>Versions livrées</td><td>v1.0 → v3.0 (CHANGELOG tenu)</td></tr>
+      </table>
+    </div>
+  </div>
+  <p class="note">Particularité assumée du projet : une équipe d'une personne. Chaque outil de pilotage présenté a été choisi puis adapté à ce contexte — et je montrerai comment il se transpose à une équipe.</p>
+</section>
+
+<!-- 3. MÉTHODOLOGIE -->
+<section class="slide">
+  <div class="kicker">1 · Méthodologie choisie</div>
+  <h2>Kanban, adapté au développeur solo</h2>
+  <div class="cols">
+    <div>
+      <h3>Pourquoi Kanban plutôt que Scrum ou cycle en V ?</h3>
+      <ul>
+        <li><strong>Flux continu</strong> : disponibilité variable (formation + alternance) → des sprints à capacité fixe auraient été artificiels</li>
+        <li><strong>Cérémonies inutiles en solo</strong> (daily, rétro d'équipe) : Kanban n'en impose pas</li>
+        <li><strong>Cycle en V écarté</strong> : le périmètre dépend d'une API tierce (Albion) qui évolue — il fallait pouvoir re-prioriser</li>
+        <li>Colonnes : <em>Backlog → À faire → En cours (WIP = 2) → Recette → Fait</em></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Bénéfices attendus — et constatés</h3>
+      <ul>
+        <li><strong>Limite de travail en cours (WIP 2)</strong> : aucune fonctionnalité commencée n'a été abandonnée</li>
+        <li><strong>Priorisation permanente</strong> : re-priorisation sécurité en juin 2026 absorbée sans casser de planning</li>
+        <li><strong>Visualisation du flux</strong> : goulots visibles (ex. : la recette groupée en fin de bloc 2 → corrigé en recettant au fil de l'eau ensuite)</li>
+      </ul>
+      <div class="card">Cadence de livraison calée sur des <strong>jalons imposés</strong> (échéances de certification) : le rétroplanning fixe les dates, Kanban gère le flux entre deux jalons.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. PLANNING -->
+<section class="slide">
+  <div class="kicker">2 · Planning détaillé</div>
+  <h2>Rétroplanning en 6 phases, calé sur les jalons</h2>
+  <div class="gantt">
+    <div class="row"><div class="lbl">Phase 1 — Cadrage & socle technique</div><div class="track"><div class="bar" style="left:0%;width:9%">fév. 2025</div></div></div>
+    <div class="row"><div class="lbl">Phase 2 — Fonctionnalités cœur</div><div class="track"><div class="bar alt" style="left:6%;width:30%">2025 : auth, joueurs, guildes, carte</div></div></div>
+    <div class="row"><div class="lbl">Phase 3 — Fonctionnalités avancées</div><div class="track"><div class="bar" style="left:33%;width:24%">routes, compos, craft, admin</div></div></div>
+    <div class="row"><div class="lbl">Phase 4 — Qualité, sécurité, recette</div><div class="track"><div class="bar alt" style="left:60%;width:12%">juin 2026 · jalon Bloc 2 ✓</div></div></div>
+    <div class="row"><div class="lbl">Phase 5 — i18n & multi-serveur</div><div class="track"><div class="bar" style="left:72%;width:11%">juil. 2026</div></div></div>
+    <div class="row"><div class="lbl">Phase 6 — Supervision & maintenance</div><div class="track"><div class="bar alt" style="left:80%;width:19%">juil.–sept. · jalons Blocs 4 & 3</div></div></div>
+  </div>
+  <div class="cols">
+    <div>
+      <h3>Construction du planning</h3>
+      <ul>
+        <li><strong>Rétroplanning</strong> : on part des jalons non négociables (dépôts DigiformaCertif : 19/06, 24/07, oral sept.) et on remonte</li>
+        <li>Chaque phase découpée en <strong>lots livrables</strong> (cartes Kanban), estimés en jours-homme</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Outil : GitHub Projects (+ jalons Git)</h3>
+      <ul>
+        <li>Compatible Kanban nativement (tableau à colonnes), <strong>lié aux commits et aux issues</strong> — la carte se ferme avec le code qui la réalise</li>
+        <li>Gratuit, hébergé avec le code : un seul outil pour le suivi et les sources</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 5. RESSOURCES -->
+<section class="slide">
+  <div class="kicker">3 · Ressources nécessaires</div>
+  <h2>Ressources humaines, matérielles et financières</h2>
+  <div class="cols">
+    <div>
+      <h3>Humaines</h3>
+      <ul>
+        <li>1 développeur full-stack (moi), portant <strong>6 casquettes</strong> : back, front, ops/CI, QA, sécurité, documentation</li>
+        <li>Parties prenantes mobilisées : joueurs testeurs (recette d'usage), encadrants YNOV (jalons)</li>
+      </ul>
+      <h3>Matérielles & logicielles</h3>
+      <ul>
+        <li>Poste de développement macOS</li>
+        <li>VPS de production (perfweb.net) : Nginx, PHP-FPM, PostgreSQL</li>
+        <li>GitHub (sources, CI/CD, Dependabot, Projects) — offre gratuite</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Financières (budget annuel réel)</h3>
+      <table>
+        <tr><th>Poste</th><th>Coût</th></tr>
+        <tr><td>VPS de production</td><td>~120 € / an</td></tr>
+        <tr><td>Nom de domaine</td><td>~15 € / an</td></tr>
+        <tr><td>Outillage (GitHub, UptimeRobot, i18n)</td><td>0 € (offres gratuites)</td></tr>
+        <tr><td>Licences logicielles</td><td>0 € (stack 100 % open source)</td></tr>
+        <tr><td><strong>Total infrastructure</strong></td><td><strong>~135 € / an</strong></td></tr>
+      </table>
+      <div class="card">Le coût réel du projet est la <strong>charge de développement</strong> (~80 j-h — valorisée ≈ 32 k€ au TJM junior de 400 €) : c'est elle que le pilotage protège.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. OUTIL DE SUIVI + INDICATEURS -->
+<section class="slide">
+  <div class="kicker">4 · Outil de suivi & indicateurs</div>
+  <h2>Un tableau de bord adossé à GitHub</h2>
+  <div class="cols">
+    <div>
+      <h3>Suivi opérationnel — GitHub Projects</h3>
+      <ul>
+        <li>Tableau Kanban : chaque fonctionnalité / bug = une carte, liée à ses commits</li>
+        <li>Historique Git en <strong>Conventional Commits</strong> (<code>feat:</code>, <code>fix:</code>, <code>test:</code>…) : le journal de bord du projet, exploitable pour mesurer l'avancement par type d'activité</li>
+        <li>CI GitHub Actions : chaque poussée de code re-valide l'ensemble des tests</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Indicateurs mesurables et quantifiables</h3>
+      <table>
+        <tr><th>Axe</th><th>Indicateur</th><th>Valeur / cible</th></tr>
+        <tr><td>Avancement</td><td>Scénarios de recette PASS</td><td class="ok">26 / 26</td></tr>
+        <tr><td>Qualité</td><td>Tests CI verts</td><td class="ok">100 %</td></tr>
+        <tr><td>Délais</td><td>Jalons certification tenus</td><td class="ok">Bloc 2 & 4 déposés à date</td></tr>
+        <tr><td>Coûts</td><td>Budget infra consommé</td><td class="ok">135 € / 150 € prévus</td></tr>
+        <tr><td>Risques</td><td>Vulnérabilités critiques ouvertes</td><td class="ok">0 (composer audit)</td></tr>
+        <tr><td>RH</td><td>Charge consommée vs estimée</td><td>~80 j-h / 85 estimés</td></tr>
+      </table>
+    </div>
+  </div>
+  <p class="note">Démonstration à l'oral : tableau GitHub Projects + dernier run de CI affichés en direct.</p>
+</section>
+
+<!-- 7. ARBITRAGE -->
+<section class="slide">
+  <div class="kicker">5 · Un cas d'arbitrage rencontré</div>
+  <h2>Où stocker le jeton d'authentification ?</h2>
+  <p><strong>Problématique</strong> (juin 2026, revue de sécurité du bloc 2) : le jeton JWT était conservé dans le <code>localStorage</code> du navigateur — vulnérable en cas de faille XSS. L'alternative « cookie httpOnly » est plus sûre sur ce point, mais imposait de refondre l'authentification côté API et côté front à J-10 du dépôt.</p>
+  <div class="cols">
+    <div>
+      <h3>Options évaluées</h3>
+      <table>
+        <tr><th></th><th>localStorage + mitigations</th><th>Cookie httpOnly</th></tr>
+        <tr><td>Risque XSS</td><td>Réduit (TTL 1 h, rotation)</td><td class="ok">Neutralisé</td></tr>
+        <tr><td>Risque CSRF</td><td class="ok">Nul</td><td>À traiter (token anti-CSRF)</td></tr>
+        <tr><td>Coût</td><td class="ok">1 j-h</td><td class="ko">4–5 j-h + re-recette complète</td></tr>
+        <tr><td>Risque planning</td><td class="ok">Aucun</td><td class="ko">Menace le jalon du 19/06</td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Outil d'aide à la décision</h3>
+      <div class="flow">
+        <span class="step">Risque exploitable aujourd'hui ?</span><span class="arr">→ non (aucune XSS connue, CSP en place)</span>
+      </div>
+      <div class="flow">
+        <span class="step">Mitigation < 20 % du coût de la refonte ?</span><span class="arr">→ oui</span>
+      </div>
+      <div class="flow">
+        <span class="step">Jalon menacé par la refonte ?</span><span class="arr">→ oui</span>
+      </div>
+      <div class="card"><strong>Décision</strong> : conserver localStorage <em>avec mitigations immédiates</em> (TTL du jeton 1 h, rotation des refresh tokens à usage unique, en-têtes CSP) ; <strong>inscrire la migration httpOnly au backlog</strong> comme axe d'amélioration documenté (dossier Bloc 2 §7.1). Le jalon a été tenu, le risque résiduel est tracé et accepté en connaissance de cause.</div>
+    </div>
+  </div>
+</section>
+
+<!-- 8. AFFECTATION DES MISSIONS -->
+<section class="slide">
+  <div class="kicker">6 · Affectation des missions</div>
+  <h2>Matrice de responsabilités (RACI adapté au solo)</h2>
+  <p>En solo, « affecter les missions » = affecter <strong>des casquettes à des créneaux</strong>, et déléguer à l'outillage ce qui peut l'être. Les parties prenantes gardent leur rôle RACI.</p>
+  <table>
+    <tr><th>Mission</th><th>Réalise (R)</th><th>Approuve (A)</th><th>Consulté (C)</th><th>Informé (I)</th></tr>
+    <tr><td>Développement back / front</td><td>Moi (casquettes dev)</td><td>Moi</td><td>Documentation officielle, communauté</td><td>—</td></tr>
+    <tr><td>Intégration & déploiement continus</td><td><strong>Délégué : GitHub Actions</strong></td><td>Moi</td><td>—</td><td>Moi (notifications)</td></tr>
+    <tr><td>Veille sécurité des dépendances</td><td><strong>Délégué : Dependabot</strong></td><td>Moi</td><td>Avis CVE</td><td>Moi</td></tr>
+    <tr><td>Recette fonctionnelle</td><td>Moi (casquette QA, créneau dédié)</td><td>Moi</td><td>Joueurs testeurs</td><td>—</td></tr>
+    <tr><td>Validation des jalons certification</td><td>Moi</td><td>Jury / campus YNOV</td><td>Encadrants</td><td>—</td></tr>
+  </table>
+  <div class="card"><strong>Règle d'hygiène adoptée</strong> : ne jamais porter deux casquettes en même temps — les créneaux « QA » (recette, audit) sont séparés des créneaux « dev », pour garder un regard critique sur mon propre code. Prise en compte du handicap : le mode 100 % asynchrone et écrit de cette organisation la rend directement compatible avec des aménagements (rythme, accessibilité des outils).</div>
+</section>
+
+<!-- 9. STYLE MANAGÉRIAL -->
+<section class="slide">
+  <div class="kicker">7 · Style(s) managérial(aux)</div>
+  <h2>De l'auto-management aux quatre styles classiques</h2>
+  <div class="cols">
+    <div>
+      <h3>Les styles mobilisés dans le projet</h3>
+      <ul>
+        <li><span class="badge">Directif</span> envers moi-même sur les <strong>normes non négociables</strong> : Conventional Commits, hook pre-commit (lint + contrôles sécurité), tests obligatoires avant fusion</li>
+        <li><span class="badge">Délégatif</span> envers l'<strong>outillage</strong> : CI, Dependabot, sondes de supervision — objectifs fixés, exécution autonome, contrôle par les alertes</li>
+        <li><span class="badge">Participatif</span> avec les <strong>utilisateurs</strong> : les retours des joueurs ont priorisé le multi-serveur et l'i18n</li>
+        <li><span class="badge">Persuasif</span> : posture prévue vers le commanditaire (justifier les choix — cf. cas d'arbitrage)</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Analyse critique d'une situation</h3>
+      <div class="card">
+        <strong>Situation</strong> : en juin 2026, la recette complète a été exécutée en une seule fois en fin de bloc — 3 anomalies découvertes tardivement (BUG-011 à 013), corrigées dans l'urgence le jour même.<br><br>
+        <strong>Analyse</strong> : défaut de management de mon propre planning — la casquette QA était sous-dotée en créneaux ; en équipe, cela équivaut à négliger un collaborateur.<br><br>
+        <strong>Recommandations appliquées</strong> : recette au fil de l'eau à chaque lot (phases 5–6), et créneau QA hebdomadaire sanctuarisé. En équipe : un rôle QA identifié dès le début, associé aux revues.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10. COMMUNICATION -->
+<section class="slide">
+  <div class="kicker">8 · Outils de communication</div>
+  <h2>Outils de communication et leurs objectifs</h2>
+  <table>
+    <tr><th>Outil</th><th>Public</th><th>Objectif</th></tr>
+    <tr><td>Git / Conventional Commits</td><td>Développeurs (futurs contributeurs, jury)</td><td>Tracer <strong>chaque évolution</strong> avec son intention (feat/fix/docs) — journal de bord technique lisible sans contexte</td></tr>
+    <tr><td>CHANGELOG.md (versions sémantiques)</td><td>Utilisateurs & commanditaire</td><td>Communiquer les évolutions <strong>en langage fonctionnel</strong>, version par version</td></tr>
+    <tr><td>GitHub (issues, PR, Projects)</td><td>Équipe projet</td><td>Discussion asynchrone contextualisée sur le code ; décisions archivées et retrouvables</td></tr>
+    <tr><td>E-mail</td><td>Campus, jury, alertes de supervision</td><td>Communication formelle et jalons ; canal des alertes d'indisponibilité</td></tr>
+    <tr><td>Discord (communauté de jeu)</td><td>Joueurs testeurs</td><td>Recueillir les besoins et retours d'usage réels</td></tr>
+  </table>
+  <div class="card"><strong>Objectif transverse</strong> : tout passe à l'écrit et à l'asynchrone. Bénéfices : charge de communication répartie (pas de réunionite), historique complet, et <strong>accessibilité</strong> — un membre d'équipe en situation de handicap (auditif notamment) a accès à 100 % de l'information du projet sans aménagement supplémentaire.</div>
+</section>
+
+<!-- 11. GRILLE DE COMPÉTENCES -->
+<section class="slide">
+  <div class="kicker">9 · Évaluation des besoins en compétences</div>
+  <h2>Grille d'évaluation des compétences</h2>
+  <p>Auto-évaluation en début de projet (fév. 2025) vs besoins identifiés — échelle 1 (novice) à 4 (autonome expert).</p>
+  <table>
+    <tr><th>Compétence</th><th>Niveau initial</th><th>Requis projet</th><th>Niveau atteint</th><th>Commentaire</th></tr>
+    <tr><td>PHP / Symfony (API REST, Doctrine)</td><td>2</td><td>3</td><td class="ok">3–4</td><td>Consolidé par la migration 7.2 → 7.4 LTS menée seul</td></tr>
+    <tr><td>React (hooks, context, i18n)</td><td>2</td><td>3</td><td class="ok">3</td><td>i18n et thème sombre ajoutés en autonomie</td></tr>
+    <tr><td>Sécurité applicative (OWASP)</td><td>1</td><td>3</td><td class="ok">3</td><td><strong>Écart le plus fort</strong> → plan de développement dédié</td></tr>
+    <tr><td>CI/CD (GitHub Actions)</td><td>1</td><td>2</td><td class="ok">3</td><td>Pipeline complet tests + déploiement</td></tr>
+    <tr><td>Supervision / exploitation</td><td>1</td><td>2</td><td class="ok">2</td><td>Sondes + alerting mis en place (bloc 4)</td></tr>
+    <tr><td>Gestion de projet</td><td>1</td><td>2</td><td class="ok">2–3</td><td>Kanban + rétroplanning tenus sur 18 mois</td></tr>
+    <tr><td>Accessibilité (RGAA)</td><td>1</td><td>2</td><td>2</td><td>Audits outillés menés ; expertise à approfondir</td></tr>
+  </table>
+</section>
+
+<!-- 12. PLAN DE DÉVELOPPEMENT DES COMPÉTENCES -->
+<section class="slide">
+  <div class="kicker">10 · Plan de développement des compétences</div>
+  <h2>Combler les écarts : formations réalisées et préconisées</h2>
+  <table>
+    <tr><th>Écart identifié</th><th>Action de formation</th><th>Modalité</th><th>Échéance</th></tr>
+    <tr><td>Sécurité OWASP (1→3)</td><td>OWASP Top 10 : documentation officielle + mise en pratique par audit du projet, faille par faille</td><td>Auto-formation guidée + application immédiate</td><td class="ok">Réalisé (juin 2026)</td></tr>
+    <tr><td>Symfony avancé</td><td>SymfonyCasts (sécurité, rate limiting, messenger)</td><td>E-learning</td><td class="ok">Réalisé au fil du projet</td></tr>
+    <tr><td>Accessibilité RGAA (2→3)</td><td>Formation RGAA 4.1 (Access42 ou équivalent) + audits outillés réguliers</td><td>Formation courte certifiante</td><td>2026-2027</td></tr>
+    <tr><td>Outillage front moderne</td><td>Migration CRA → Vite (chantier concret du backlog)</td><td>Apprentissage par le projet</td><td>2027 (axe d'amélioration C4.3.1)</td></tr>
+    <tr><td>Exploitation avancée</td><td>Conteneurisation de la production (Docker → orchestration)</td><td>E-learning + lab</td><td>2027</td></tr>
+  </table>
+  <div class="card"><strong>Principe du plan</strong> : chaque formation est adossée à un chantier réel du projet (apprentissage par la pratique), avec un livrable vérifiable. Les modalités e-learning asynchrones sont par nature adaptables à une situation de handicap (rythme, sous-titrage, supports écrits).</div>
+</section>
+
+<!-- 13. COMPTES RENDUS -->
+<section class="slide">
+  <div class="kicker">11 · Comptes rendus des évolutions</div>
+  <h2>Rendre compte : trois niveaux de lecture</h2>
+  <div class="cols">
+    <div>
+      <h3>1. CHANGELOG versionné (commanditaire)</h3>
+      <ul>
+        <li><strong>v1.0.0</strong> — socle : auth, joueurs, guildes, carte</li>
+        <li><strong>v2.0.0</strong> — admin, routes partagées, compositions, craft, thème sombre, tutoriel, i18n</li>
+        <li><strong>v2.1.0</strong> — campagne de correctifs sécurité (BUG-001 → 010)</li>
+        <li><strong>v3.0.0</strong> — multi-serveur, batailles, stats PvP, langues gérées par l'admin</li>
+      </ul>
+      <h3>2. Historique Git conventionnel (équipe)</h3>
+      <p>Chaque commit indique son type et son périmètre — l'historique <em>est</em> le compte rendu détaillé, ordonné et daté.</p>
+    </div>
+    <div>
+      <h3>3. Dossiers de jalon (certification)</h3>
+      <p>Dossiers Bloc 2 et Bloc 4 : état complet du projet aux jalons de juin et juillet 2026 (recette, registre d'anomalies, audits).</p>
+      <h3>Points de validation planifiés et réalisés</h3>
+      <table>
+        <tr><th>Point de validation</th><th>Date</th><th>Résultat</th></tr>
+        <tr><td>Recette complète 26 scénarios</td><td>12/06/2026</td><td class="ok">26/26 PASS</td></tr>
+        <tr><td>Audit sécurité OWASP + correctifs</td><td>12/06/2026</td><td class="ok">0 advisory composer</td></tr>
+        <tr><td>Audit accessibilité (Lighthouse, axe-core)</td><td>12/06/2026</td><td class="ok">93–100 / corrections faites</td></tr>
+        <tr><td>Dépôt Bloc 2 (code + dossier)</td><td>19/06/2026</td><td class="ok">Jalon tenu</td></tr>
+        <tr><td>Dépôt Bloc 4 (dossier MCO)</td><td>24/07/2026</td><td class="ok">Jalon tenu</td></tr>
+        <tr><td>Démo commanditaire (ce jury)</td><td>Sept. 2026</td><td>Objectif : validation</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 14. INDICATEURS DE SATISFACTION -->
+<section class="slide">
+  <div class="kicker">12 · Indicateurs de satisfaction</div>
+  <h2>Mesurer la satisfaction du commanditaire et des utilisateurs</h2>
+  <table>
+    <tr><th>Indicateur</th><th>Pourquoi il est cohérent</th><th>Mesure / cible</th></tr>
+    <tr><td>Taux de réussite de la recette</td><td>La recette encode les attentes fonctionnelles du commanditaire</td><td class="ok">26/26 scénarios PASS</td></tr>
+    <tr><td>Disponibilité du service</td><td>Première cause d'insatisfaction d'un outil communautaire : qu'il soit hors ligne</td><td>≥ 99 % (supervision UptimeRobot + sonde interne)</td></tr>
+    <tr><td>Temps de réponse API</td><td>Confort d'usage en session de jeu</td><td>&lt; 1 s (mesuré par la supervision)</td></tr>
+    <tr><td>Qualité perçue de l'interface</td><td>Score objectif proxy de l'expérience utilisateur</td><td class="ok">Lighthouse 93–100 selon les pages</td></tr>
+    <tr><td>Anomalies signalées par les utilisateurs</td><td>Mesure directe de l'insatisfaction résiduelle</td><td>Registre : 13 bugs consignés, 100 % traités</td></tr>
+    <tr><td>Adoption des nouveautés</td><td>Les évolutions demandées (multi-serveur, langues) sont-elles utilisées ?</td><td>Journal des recherches (SearchLog) par serveur/langue</td></tr>
+  </table>
+</section>
+
+<!-- 15. DÉMONSTRATION -->
+<section class="slide">
+  <div class="kicker">13 · Démonstration</div>
+  <h2>Démonstration de la dernière version</h2>
+  <p>Parcours utilisateur complet, sur l'application en production, du premier contact jusqu'aux fonctions d'administration :</p>
+  <div class="flow">
+    <span class="step">1 · Découverte & inscription</span><span class="arr">→</span>
+    <span class="step">2 · Connexion & tableau de bord</span><span class="arr">→</span>
+    <span class="step">3 · Recherche joueur & stats PvP</span><span class="arr">→</span>
+    <span class="step">4 · Guildes & batailles</span><span class="arr">→</span>
+  </div>
+  <div class="flow">
+    <span class="step">5 · Carte interactive</span><span class="arr">→</span>
+    <span class="step">6 · Itinéraire partagé (lien public)</span><span class="arr">→</span>
+    <span class="step">7 · Composition d'équipe</span><span class="arr">→</span>
+    <span class="step">8 · Calculateur de craft</span><span class="arr">→</span>
+    <span class="step">9 · Multi-langue / multi-serveur & administration</span>
+  </div>
+  <div class="cols" style="margin-top:.8rem">
+    <div>
+      <h3>Conditions de la démo</h3>
+      <ul>
+        <li>Application <strong>en production</strong>, données réelles préchargées</li>
+        <li>Plan B assumé : environnement local identique prêt à basculer</li>
+        <li>Répétition générale effectuée la veille</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Objectif</h3>
+      <div class="card">Montrer que la dernière version est <strong>fonctionnelle, fiable et utilisable</strong> par un joueur non technicien — et obtenir la <strong>validation du commanditaire</strong> avant livraison. <em>(Script détaillé pas-à-pas : annexe A.)</em></div>
+    </div>
+  </div>
+</section>
+
+<!-- 16. CONCLUSION -->
+<section class="slide">
+  <div class="kicker">Conclusion</div>
+  <h2>Ce que le pilotage a produit</h2>
+  <ul>
+    <li><strong>Tous les jalons de certification tenus</strong>, malgré une re-priorisation sécurité majeure en cours de route — c'est le rétroplanning + Kanban qui l'ont absorbée</li>
+    <li>Un projet <strong>traçable de bout en bout</strong> : chaque évolution a sa carte, son commit typé, sa ligne de CHANGELOG et son scénario de recette</li>
+    <li>Des <strong>indicateurs chiffrés</strong> à chaque niveau : avancement, qualité, délais, coûts, risques, satisfaction</li>
+    <li>Une organisation solo <strong>conçue pour passer à l'échelle</strong> : les casquettes deviennent des rôles, les créneaux deviennent des personnes, les outils restent</li>
+  </ul>
+  <div class="card" style="margin-top:1rem">Le logiciel présenté aujourd'hui est en production, supervisé, maintenu — et la démonstration qui suit vise votre validation en tant que commanditaire.</div>
+  <p class="note">Merci — place aux questions (15 minutes).</p>
+</section>
+
+<!-- ANNEXE A : SCRIPT DE DÉMO -->
+<section class="slide annexe">
+  <div class="kicker">Annexe A (notes candidat — non projetée)</div>
+  <h2>Script de démonstration détaillé (~8 minutes)</h2>
+  <table>
+    <tr><th style="width:3%">#</th><th style="width:22%">Étape</th><th>Actions & discours (vocabulaire commanditaire — jamais « JWT », « API », « localhost »)</th></tr>
+    <tr><td>1</td><td>Accueil public</td><td>Ouvrir la page d'accueil en production. « Voici ce que découvre un joueur : l'outil est utilisable immédiatement, dans sa langue » — montrer le sélecteur de langue (FR → EN) et le sélecteur de serveur de jeu (Europe → Amériques).</td></tr>
+    <tr><td>2</td><td>Inscription</td><td>Créer un compte de démo neuf (identifiants préparés). Montrer le message d'erreur si mot de passe trop court : « l'application guide l'utilisateur ». Valider.</td></tr>
+    <tr><td>3</td><td>Connexion + tableau de bord</td><td>Se connecter. « Le tableau de bord centralise ses raccourcis et l'accompagne — un tutoriel de prise en main est proposé au premier accès. »</td></tr>
+    <tr><td>4</td><td>Recherche joueur</td><td>Rechercher un joueur connu (préparer le nom). Ouvrir sa fiche : équipement, statistiques de combat (victoires, défaites, rapport de session). « Ces données étaient dispersées sur plusieurs sites ; elles sont réunies ici. »</td></tr>
+    <tr><td>5</td><td>Guildes & batailles</td><td>Ouvrir une guilde, puis l'historique de batailles : détail d'une bataille. « Un chef de guilde prépare ainsi ses stratégies. »</td></tr>
+    <tr><td>6</td><td>Carte & itinéraire partagé</td><td>Ouvrir la carte, naviguer entre zones. Créer un itinéraire, générer le lien de partage, l'ouvrir en fenêtre privée : « le destinataire n'a pas besoin de compte — le partage est le cœur de l'usage en guilde ».</td></tr>
+    <tr><td>7</td><td>Composition d'équipe</td><td>Ouvrir une composition préparée, montrer l'éditeur (rôles, équipements). « L'outil de préparation d'équipe avant une bataille. »</td></tr>
+    <tr><td>8</td><td>Calculateur de craft</td><td>Choisir un objet, montrer le calcul de rentabilité avec les prix du marché du serveur sélectionné, et l'infobulle expliquant les prix indisponibles (cas support du bloc 4). « L'application dit aussi <em>pourquoi</em> une donnée manque. »</td></tr>
+    <tr><td>9</td><td>Administration</td><td>Se connecter en administrateur : tableau de bord (statistiques d'usage), gestion des utilisateurs, gestion des langues de l'interface. « Le commanditaire administre son outil sans intervention technique. »</td></tr>
+    <tr><td>10</td><td>Conclusion</td><td>« Version en production, supervisée 24h/24 avec alerte en cas d'indisponibilité, maintenue et documentée. Je vous propose de valider cette version pour livraison. »</td></tr>
+  </table>
+</section>
+
+<!-- ANNEXE B : CHECKLIST AVANT ORAL -->
+<section class="slide annexe">
+  <div class="kicker">Annexe B (notes candidat — non projetée)</div>
+  <h2>Préparation matérielle de l'oral</h2>
+  <ul>
+    <li>La veille : répétition générale chronométrée (30' + démo 8') ; vérifier la production (supervision au vert) ; recharger les données de démo (joueur, guilde, composition, itinéraire)</li>
+    <li>Comptes préparés : identifiants de démo neufs pour l'inscription en direct + compte admin + compte utilisateur standard</li>
+    <li>Plan B : environnement local lancé avant l'oral (base pré-remplie), onglets ouverts en arrière-plan</li>
+    <li>Ouvrir avant de commencer : ce support, l'application (accueil), GitHub Projects (tableau), dernier run de CI, CHANGELOG</li>
+    <li>Dépôt DigiformaCertif : ce support déposé <strong>avant l'échéance</strong> (livrable + support obligatoires)</li>
+  </ul>
+</section>
+
+<div class="foot"><span id="pg"></span> — ← → pour naviguer · P pour imprimer</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];let i=0;
+  function show(n){slides[i].classList.remove('active');i=(n+slides.length)%slides.length;
+    slides[i].classList.add('active');document.getElementById('pg').textContent=(i+1)+' / '+slides.length;}
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')show(i+1);
+    if(e.key==='ArrowLeft'||e.key==='PageUp')show(i-1);
+    if(e.key==='Home')show(0);if(e.key==='End')show(slides.length-1);
+    if(e.key==='p'||e.key==='P')window.print();});
+  document.addEventListener('click',e=>{if(!window.getSelection().toString())show(i+1)});
+  show(0);
+</script>
+</body>
+</html>

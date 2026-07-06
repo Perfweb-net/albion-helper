@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bloc 1 — Cadrage du projet Albion Helper — RNCP39583</title>
+<style>
+  :root{
+    --gold:#b8860b; --gold-light:#e8c766; --ink:#1d1a14; --muted:#6b6357;
+    --bg:#faf7f0; --card:#ffffff; --line:#e3dcc9; --ok:#2e7d32; --warn:#c62828;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:"Avenir Next","Segoe UI",system-ui,sans-serif;background:var(--ink);color:var(--ink)}
+  .slide{display:none;width:100vw;height:100vh;padding:4.5vh 6vw;background:var(--bg);
+         flex-direction:column;overflow:auto}
+  .slide.active{display:flex}
+  .slide.title{justify-content:center;background:linear-gradient(160deg,#221d12 0%,#3a2f17 60%,#584416 100%);color:#f5edd8}
+  .slide.title h1{font-size:3.2rem;color:var(--gold-light);margin-bottom:1rem}
+  .slide.title .sub{font-size:1.35rem;opacity:.9;margin-bottom:2.5rem}
+  .slide.title .meta{font-size:1.05rem;opacity:.75;line-height:1.8}
+  .kicker{font-size:.85rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:700;margin-bottom:.4rem}
+  h2{font-size:1.95rem;margin-bottom:1.2rem;border-bottom:3px solid var(--gold);padding-bottom:.5rem}
+  h3{font-size:1.12rem;margin:.8rem 0 .4rem;color:var(--gold)}
+  p,li{font-size:1.04rem;line-height:1.52}
+  ul{padding-left:1.3rem;margin:.3rem 0 .7rem}
+  li{margin:.28rem 0}
+  strong{color:#7a5a08}
+  table{border-collapse:collapse;width:100%;margin:.6rem 0;background:var(--card);font-size:.95rem}
+  th,td{border:1px solid var(--line);padding:.45rem .65rem;text-align:left;vertical-align:top;line-height:1.4}
+  th{background:#f1e9d2;font-weight:700}
+  .cols{display:flex;gap:2rem}.cols>div{flex:1}
+  .card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--gold);
+        border-radius:6px;padding:.85rem 1.05rem;margin:.5rem 0}
+  .ok{color:var(--ok);font-weight:700}.ko{color:var(--warn);font-weight:700}
+  .swot{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.5rem 0}
+  .swot>div{border-radius:6px;padding:.7rem .9rem;font-size:.95rem}
+  .swot h4{margin-bottom:.3rem;font-size:1rem}
+  .swot .s{background:#e8f2e6;border:1px solid #bcd8b7}.swot .w{background:#fdeeee;border:1px solid #e8bcbc}
+  .swot .o{background:#e9f0f8;border:1px solid #b9cde6}.swot .t{background:#fdf3e2;border:1px solid #e6cf9d}
+  .tree{font-size:.92rem;line-height:1.6;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:.8rem 1rem;font-family:ui-monospace,Menlo,monospace;white-space:pre}
+  .arch{display:flex;gap:.8rem;align-items:stretch;margin:.7rem 0;flex-wrap:wrap}
+  .arch .box{background:var(--card);border:2px solid var(--gold);border-radius:8px;padding:.7rem .9rem;font-size:.9rem;text-align:center;flex:1;min-width:9rem}
+  .arch .box small{display:block;color:var(--muted);margin-top:.25rem;font-size:.78rem}
+  .arch .link{align-self:center;color:var(--gold);font-weight:700;font-size:1.1rem}
+  .badge{display:inline-block;background:#f1e9d2;border:1px solid var(--gold);color:#7a5a08;
+         border-radius:12px;padding:.05rem .6rem;font-size:.82rem;font-weight:700;margin-right:.3rem}
+  .foot{position:fixed;bottom:1.1vh;right:2vw;font-size:.8rem;color:#9a917e;z-index:5}
+  .note{font-size:.9rem;color:var(--muted);font-style:italic;margin-top:auto;padding-top:.7rem}
+  .annexe h2{border-color:#999}.annexe .kicker{color:#777}
+  @media print{
+    body{background:#fff}
+    .slide{display:flex !important;height:auto;min-height:100vh;page-break-after:always}
+    .foot{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- 1. TITRE -->
+<section class="slide title active">
+  <h1>Albion Helper</h1>
+  <div class="sub">Bloc 1 — Cadrer un projet de développement d'applications logicielles</div>
+  <div class="meta">
+    Pierre Saugues — M2 Expert en développement full-stack, YNOV<br>
+    Titre RNCP39583 « Expert en développement logiciel » — Épreuve orale (20' + 10' d'échanges)<br>
+    Octobre 2026
+  </div>
+</section>
+
+<!-- 2. LA DEMANDE -->
+<section class="slide">
+  <div class="kicker">Contexte de la demande</div>
+  <h2>Le problème à résoudre</h2>
+  <div class="cols">
+    <div>
+      <p><em>Albion Online</em> est un MMORPG où l'information est stratégique : équipement des adversaires, prix du marché, itinéraires, préparation des batailles.</p>
+      <div class="card"><strong>Problématique du commanditaire</strong> (une communauté de joueurs / guilde) : ces informations existent mais sont <strong>éclatées entre plusieurs sites tiers</strong>, souvent en anglais uniquement, sans partage possible entre membres, et sans outil couvrant les trois serveurs mondiaux du jeu.</div>
+      <p style="margin-top:.6rem"><strong>La demande</strong> : « un outil unique, dans notre langue, où la guilde prépare et partage tout ce dont elle a besoin en session de jeu. »</p>
+    </div>
+    <div>
+      <h3>Périmètre proposé au cadrage</h3>
+      <ul>
+        <li>Recherche joueurs / guildes / batailles + statistiques</li>
+        <li>Carte des zones et itinéraires <strong>partageables</strong></li>
+        <li>Compositions d'équipe et calculateur d'artisanat (prix marché)</li>
+        <li>Multi-langue, multi-serveur, administrable sans technicien</li>
+      </ul>
+      <h3>Atout décisif identifié dès le cadrage</h3>
+      <p>L'éditeur du jeu (Sandbox Interactive) expose une <strong>API de données publique et gratuite</strong> — le projet est possible sans partenariat commercial.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. PARTIES PRENANTES (ÉLIM) -->
+<section class="slide">
+  <div class="kicker">1 · Cartographie des parties prenantes</div>
+  <h2>Acteurs, rôles et niveaux d'implication</h2>
+  <table>
+    <tr><th>Acteur</th><th>Rôle dans le projet</th><th>Implication</th><th>Attentes principales</th></tr>
+    <tr><td><strong>Commanditaire</strong> — communauté / guilde</td><td>Exprime le besoin, valide les livraisons</td><td>Forte — décisionnaire</td><td>Outil fiable, simple, disponible</td></tr>
+    <tr><td><strong>Utilisateurs finaux</strong> — joueurs (du débutant au chef de guilde)</td><td>Utilisent l'app, remontent les retours</td><td>Forte — quotidienne</td><td>Rapidité, langue native, aucune installation</td></tr>
+    <tr><td><strong>Développeur / architecte</strong> (moi)</td><td>Conçoit, développe, exploite</td><td>Forte — permanente</td><td>Stack maintenable, périmètre réaliste</td></tr>
+    <tr><td><strong>Administrateurs</strong> de l'outil</td><td>Gèrent utilisateurs, langues, contenus</td><td>Moyenne — régulière</td><td>Back-office sans compétence technique</td></tr>
+    <tr><td><strong>Sandbox Interactive</strong> (éditeur du jeu) — acteur externe</td><td>Fournit l'API de données publique</td><td>Faible mais <strong>critique</strong> (dépendance)</td><td>Respect des conditions d'usage de l'API</td></tr>
+    <tr><td><strong>Hébergeur</strong> (VPS perfweb.net) — acteur externe</td><td>Infrastructure de production</td><td>Faible — contractuelle</td><td>—</td></tr>
+    <tr><td><strong>YNOV / jury</strong></td><td>Cadre pédagogique, jalons de validation</td><td>Moyenne — aux jalons</td><td>Conformité au référentiel, preuves</td></tr>
+  </table>
+  <p class="note">Lecture pouvoir × intérêt : le commanditaire et les utilisateurs pilotent le périmètre ; Sandbox Interactive a peu d'intérêt pour le projet mais un pouvoir de blocage total (API) → risque suivi en cartographie des risques.</p>
+</section>
+
+<!-- 4. ANALYSE DE LA DEMANDE -->
+<section class="slide">
+  <div class="kicker">2 · Analyse de la demande</div>
+  <h2>Objectifs et enjeux par partie prenante</h2>
+  <table>
+    <tr><th>Partie prenante</th><th>Besoins recensés (état des lieux + entretiens)</th><th>Objectifs</th><th>Enjeux</th></tr>
+    <tr><td>Commanditaire (guilde)</td><td>Centraliser l'info, partager des itinéraires et compositions entre membres</td><td>1 outil unique remplaçant 4 sites tiers</td><td>Cohésion et efficacité de la guilde en jeu</td></tr>
+    <tr><td>Joueurs</td><td>Consulter vite (en session), dans leur langue, sur leur serveur</td><td>Réponse &lt; 1 s, interface FR/EN/…, 3 serveurs</td><td>Adoption — un outil lent ou anglophone ne sera pas utilisé</td></tr>
+    <tr><td>Administrateurs</td><td>Gérer comptes et langues sans développeur</td><td>Back-office complet</td><td>Autonomie du commanditaire après livraison</td></tr>
+    <tr><td>Développeur</td><td>Périmètre finançable et maintenable en solo</td><td>Stack unifiée, coûts ~0 licence</td><td>Viabilité long terme du service</td></tr>
+  </table>
+  <div class="card"><strong>Pistes de solutions envisagées au cadrage</strong> : ① application web sur mesure (front + API) — ② surcouche/plugin d'un site existant — ③ bot Discord. Le bot ne couvre ni carte ni compositions ; la surcouche crée une dépendance à un tiers non contractuel. <strong>→ Piste retenue : application web sur mesure</strong>, validée par l'étude comparative (slide 12) et l'estimation budgétaire (slide 16).</div>
+</section>
+
+<!-- 5. SWOT -->
+<section class="slide">
+  <div class="kicker">3 · Opportunités et menaces</div>
+  <h2>Analyse SWOT du projet</h2>
+  <div class="swot">
+    <div class="s"><h4>Forces (interne)</h4>
+      • Stack maîtrisée et 100 % open source (coût licences nul)<br>
+      • API du jeu gratuite et documentée<br>
+      • Développeur = joueur : connaissance métier directe</div>
+    <div class="w"><h4>Faiblesses (interne)</h4>
+      • Équipe d'une personne (bus factor = 1)<br>
+      • Budget infrastructure minimal (VPS mutualisé)<br>
+      • Compétence sécurité à construire (identifiée au cadrage)</div>
+    <div class="o"><h4>Opportunités (externe)</h4>
+      • Aucun outil concurrent multilingue + multi-serveur + partage<br>
+      • Communauté active = testeurs et prescripteurs gratuits<br>
+      • Synergie possible avec d'autres outils communautaires (API ouverte à terme)</div>
+    <div class="t"><h4>Menaces (externe)</h4>
+      • <strong>Dépendance à l'API de l'éditeur</strong> (changement de conditions, panne)<br>
+      • Exposition web publique = surface d'attaque (sécurité dès la conception)<br>
+      • Désintérêt du jeu à long terme (marché de niche)</div>
+  </div>
+  <div class="card"><strong>Points de vigilance transverses</strong> : impact environnemental maîtrisé dès la conception (hébergement mutualisé, cache des appels à l'API du jeu → moins de requêtes réseau, pas de service surdimensionné) ; interactions avec les projets existants limitées à la consommation de l'API publique dans le respect de ses conditions.</div>
+</section>
+
+<!-- 6. DÉMARCHE D'AUDIT -->
+<section class="slide">
+  <div class="kicker">4 · Démarche d'audit</div>
+  <h2>Audit de l'existant : démarche mise en œuvre</h2>
+  <div class="cols">
+    <div>
+      <h3>Méthode (3 volets)</h3>
+      <ul>
+        <li><strong>État des lieux fonctionnel</strong> : inventaire des outils utilisés par la communauté (sites de statistiques, cartes en ligne, tableurs partagés, Discord) — grille : fonction couverte / langue / serveurs / partage</li>
+        <li><strong>Audit technique de l'API du jeu</strong> : essais outillés des points d'accès (format des données, latence, limites de débit, absence d'authentification requise)</li>
+        <li><strong>Audit de l'infrastructure cible</strong> : capacités du VPS existant (versions PHP disponibles, PostgreSQL, mémoire, HTTPS)</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Constats structurants</h3>
+      <ul>
+        <li>4 outils tiers nécessaires pour couvrir le besoin — <strong>aucun ne partage</strong> de contenu entre joueurs, aucun n'est multilingue</li>
+        <li>API du jeu : gratuite, JSON, sans clé — mais <strong>sans garantie de service</strong> → imposera cache + supervision</li>
+        <li>Prix de marché parfois absents sur certains serveurs (donnée communautaire) → à gérer dans l'UX dès la conception</li>
+        <li>VPS existant suffisant pour la volumétrie visée (voir slide 7)</li>
+      </ul>
+    </div>
+  </div>
+  <p class="note">Chaque constat d'audit alimente directement une décision de cadrage : cache → architecture ; absence de partage → fonctionnalité différenciante ; API sans garantie → cartographie des risques.</p>
+</section>
+
+<!-- 7. DIAGNOSTIC INFRASTRUCTURES -->
+<section class="slide">
+  <div class="kicker">5 · Diagnostic des infrastructures existantes</div>
+  <h2>Infrastructure disponible vs besoins du projet</h2>
+  <table>
+    <tr><th>Élément existant</th><th>État constaté</th><th>Adéquation au besoin</th></tr>
+    <tr><td>VPS mutualisé (perfweb.net)</td><td>Linux, Nginx, PHP-FPM 8.2+, HTTPS (Let's Encrypt)</td><td class="ok">Suffisant — API PHP moderne exécutable sans changement</td></tr>
+    <tr><td>Base de données</td><td>PostgreSQL disponible sur le serveur</td><td class="ok">Adapté (relationnel, volumétrie faible)</td></tr>
+    <tr><td>Poste de développement</td><td>macOS + Docker</td><td class="ok">Environnements de dev/test isolés et reproductibles</td></tr>
+    <tr><td>Chaîne de livraison</td><td><span class="ko">Inexistante</span> au cadrage</td><td>À construire : dépôt Git + intégration et déploiement continus</td></tr>
+    <tr><td>Supervision</td><td><span class="ko">Inexistante</span> au cadrage</td><td>À construire (traitée au bloc 4 : sondes + alertes)</td></tr>
+  </table>
+  <h3>Contraintes techniques et financières relevées</h3>
+  <ul>
+    <li><strong>Hébergement</strong> : VPS mutualisé ~10 €/mois — pas de budget pour du cloud managé → architecture sobre obligatoire</li>
+    <li><strong>Volumétrie</strong> : cible ~200 utilisateurs actifs (une communauté), pics en soirée ; données locales &lt; 1 Go — pas de besoin de montée en charge horizontale</li>
+    <li><strong>Délais</strong> : jalons de certification imposés (juin–oct. 2026) → périmètre découpé en lots priorisés</li>
+    <li><strong>Budget</strong> : quasi nul en licences → open source exclusivement</li>
+  </ul>
+  <div class="card"><strong>Avis critique sur la faisabilité</strong> : projet <span class="ok">faisable</span> dans les contraintes, <em>à condition de</em> : ① mettre en cache les données de l'API du jeu (sobriété + résilience), ② limiter le périmètre v1 aux fonctions à plus forte valeur (partage, recherche), ③ automatiser tests et déploiement dès le départ pour compenser l'équipe réduite.</div>
+</section>
+
+<!-- 8. RISQUES -->
+<section class="slide">
+  <div class="kicker">6 · Cartographie des risques</div>
+  <h2>Risques techniques et fonctionnels, priorisés</h2>
+  <table>
+    <tr><th>#</th><th>Risque</th><th>Prob.</th><th>Impact</th><th>Criticité</th><th>Mesures décidées au cadrage</th></tr>
+    <tr><td>R1</td><td>Indisponibilité / changement de l'API du jeu</td><td>Moyenne</td><td>Fort</td><td class="ko">Élevée</td><td>Cache local des données, dégradation gracieuse (messages explicites), supervision de l'API dans la sonde de santé</td></tr>
+    <tr><td>R2</td><td>Compromission de comptes / attaque web (auth, injection, XSS)</td><td>Moyenne</td><td>Fort</td><td class="ko">Élevée</td><td>Revue OWASP Top 10 systématique, authentification à jetons courts, ORM exclusivement, limitation de débit</td></tr>
+    <tr><td>R3</td><td>Perte de données (VPS unique)</td><td>Faible</td><td>Fort</td><td>Moyenne</td><td>Sauvegardes régulières de la base, migrations versionnées (reconstruction possible)</td></tr>
+    <tr><td>R4</td><td>Interruption de service (déploiement raté, panne)</td><td>Moyenne</td><td>Moyen</td><td>Moyenne</td><td>Déploiement automatisé et testé, supervision avec alerte ≤ 5 min, procédure de retour arrière</td></tr>
+    <tr><td>R5</td><td>Dégradation des performances (appels API en cascade)</td><td>Moyenne</td><td>Moyen</td><td>Moyenne</td><td>Cache, pagination, indicateur temps de réponse &lt; 1 s supervisé</td></tr>
+    <tr><td>R6</td><td>Bus factor = 1 (développeur unique)</td><td>Faible</td><td>Fort</td><td>Moyenne</td><td>Documentation systématique (manuels), historique Git conventionnel, architecture standard du framework</td></tr>
+  </table>
+</section>
+
+<!-- 9. RÉFÉRENTIEL RISQUES + INDICATEURS -->
+<section class="slide">
+  <div class="kicker">7 & 8 · Référentiel d'évaluation & indicateurs de contrôle</div>
+  <h2>Évaluer les risques, suivre les incidents, contrôler</h2>
+  <div class="cols">
+    <div>
+      <h3>Référentiel d'évaluation des risques</h3>
+      <ul>
+        <li>Criticité = <strong>probabilité × impact</strong> (échelles 1–3), réévaluée à chaque jalon</li>
+        <li>Seuils : criticité ≥ 6 → mesure préventive obligatoire avant mise en production ; 3–4 → mesure planifiée ; &lt; 3 → surveillance</li>
+      </ul>
+      <h3>Suivi des incidents (appliqué ensuite en blocs 2 et 4)</h3>
+      <ul>
+        <li>Registre unique des anomalies : fiche normalisée 11 champs (reproduction obligatoire), qualification gravité / priorité</li>
+        <li>Cycle : consignation → qualification → correctif → re-test → clôture tracée</li>
+        <li>Preuve d'usage réel : 13 anomalies consignées et traitées sur le projet</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Indicateurs de contrôle définis au cadrage</h3>
+      <table>
+        <tr><th>Indicateur</th><th>Cible</th><th>Contrôle</th></tr>
+        <tr><td>Disponibilité du service</td><td>≥ 99 %</td><td>Sonde externe 5 min</td></tr>
+        <tr><td>Temps de réponse</td><td>&lt; 1 s</td><td>Supervision continue</td></tr>
+        <tr><td>Détection d'incident</td><td>≤ 5 min</td><td>Alerte e-mail automatique</td></tr>
+        <tr><td>Erreurs serveur (5xx)</td><td>&lt; 1 %</td><td>Journaux dédiés incidents</td></tr>
+        <tr><td>Vulnérabilités critiques ouvertes</td><td>0</td><td>Audit dépendances hebdo (automatisé)</td></tr>
+        <tr><td>Régressions</td><td>0 livraison si tests rouges</td><td>Intégration continue bloquante</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 10. VEILLE -->
+<section class="slide">
+  <div class="kicker">9 & 10 · Veille technologique</div>
+  <h2>Méthodologie de veille, sources et outils</h2>
+  <div class="cols">
+    <div>
+      <h3>Méthodologie de recherche</h3>
+      <ul>
+        <li><strong>Veille passive automatisée</strong> (quotidienne) : alertes de sécurité et de versions poussées vers moi</li>
+        <li><strong>Veille active ciblée</strong> (hebdomadaire) : blogs et notes de versions des technologies du projet</li>
+        <li><strong>Veille exploratoire</strong> (mensuelle + événements) : conférences en ligne, meetups, retours d'expérience</li>
+      </ul>
+      <h3>Principales sources consultées</h3>
+      <ul>
+        <li>Blogs et notes de versions officiels Symfony / React ; SymfonyCasts</li>
+        <li>Bulletins sécurité : OWASP, advisories GitHub, CVE</li>
+        <li>Communautés : forum développeurs Albion Online (API), dépôts GitHub des outils communautaires</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Outils de veille et bénéfices</h3>
+      <table>
+        <tr><th>Outil</th><th>Bénéfice attendu</th></tr>
+        <tr><td>Dependabot (automatisation)</td><td>Vulnérabilités et mises à jour détectées sans effort — délai de réaction en heures</td></tr>
+        <tr><td>Flux RSS / newsletters (Symfony Weekly, This Week in React)</td><td>Panorama hebdomadaire à coût fixe (30 min)</td></tr>
+        <tr><td>GitHub Watch sur les dépôts clés</td><td>Anticiper les changements de l'API du jeu et des bibliothèques critiques</td></tr>
+        <tr><td>Conférences (SymfonyLive, meetups en ligne)</td><td>Signaux faibles et retours d'expérience</td></tr>
+      </table>
+      <div class="card"><strong>Preuve d'efficacité</strong> : la veille a déclenché la migration Symfony 7.2 (fin de vie) → 7.4 LTS et la correction d'une CVE critique <em>avant</em> la mise en production — évolutions classées par impact métier (sécurité d'abord) et environnemental (LTS = moins de migrations).</div>
+    </div>
+  </div>
+</section>
+
+<!-- 11. ÉTUDE COMPARATIVE (ÉLIM) -->
+<section class="slide">
+  <div class="kicker">11 · Étude comparative des solutions techniques</div>
+  <h2>Comparatif multi-critères et choix d'architecture</h2>
+  <table>
+    <tr><th>Brique</th><th>Options étudiées</th><th>Sécurité</th><th>Écosystème & maintenabilité</th><th>Accessibilité</th><th>Impact env. / système</th><th>Choix</th></tr>
+    <tr><td>Back-end</td><td><strong>Symfony</strong> vs Laravel vs Node/Express</td><td>Composant sécurité mature, advisories suivies, ORM anti-injection</td><td>LTS 4 ans, structure imposée (reprise facile), compétence existante</td><td>—</td><td>PHP-FPM sobre sur VPS mutualisé, pas de processus résident</td><td><span class="badge">Symfony 7 LTS</span></td></tr>
+    <tr><td>Front-end</td><td><strong>React</strong> vs Vue vs Angular</td><td>Échappement XSS par défaut</td><td>1er écosystème (MUI, i18next), viabilité long terme</td><td>MUI : composants ARIA prêts</td><td>Rendu client + build statique servi par Nginx (cache)</td><td><span class="badge">React 19 + MUI</span></td></tr>
+    <tr><td>Authentification</td><td><strong>JWT</strong> vs sessions serveur</td><td>Sans état, jetons courts + rotation ; CSRF non applicable</td><td>Adapté à une API consommée par un front séparé</td><td>—</td><td>Pas de stockage session serveur (VPS modeste)</td><td><span class="badge">JWT</span></td></tr>
+    <tr><td>Base de données</td><td><strong>PostgreSQL</strong> vs MySQL vs MongoDB</td><td>Robustesse, droits fins</td><td>Données relationnelles (recettes, zones, routes) — Doctrine natif</td><td>—</td><td>Déjà installé sur le VPS (0 ressource ajoutée)</td><td><span class="badge">PostgreSQL</span></td></tr>
+  </table>
+  <p class="note">Ressources matérielles/techniques découlant du choix : VPS existant (Nginx + PHP-FPM + PostgreSQL), Docker en développement, GitHub pour sources + CI/CD — aucune acquisition nécessaire.</p>
+</section>
+
+<!-- 12. DIAGRAMME DE FONCTIONNALITÉS (ÉLIM C1.4.1) -->
+<section class="slide">
+  <div class="kicker">12 · Diagramme de fonctionnalités</div>
+  <h2>Fonctions recensées et hiérarchisées (MoSCoW)</h2>
+  <div class="cols">
+    <div>
+<div class="tree">ALBION HELPER
+├── F1 Compte & accès            [MUST]
+│   ├── F1.1 Inscription / connexion
+│   ├── F1.2 Profil utilisateur
+│   └── F1.3 Administration (rôles)
+├── F2 Recherche & consultation  [MUST]
+│   ├── F2.1 Joueurs + statistiques PvP
+│   ├── F2.2 Guildes & alliances
+│   └── F2.3 Batailles
+├── F3 Carte & itinéraires       [MUST]
+│   ├── F3.1 Carte interactive des zones
+│   └── F3.2 Itinéraires partagés (lien public)
+├── F4 Préparation de jeu        [SHOULD]
+│   ├── F4.1 Compositions d'équipe
+│   └── F4.2 Calculateur de craft (prix marché)
+├── F5 Confort d'usage           [SHOULD]
+│   ├── F5.1 Multi-langue · F5.2 Multi-serveur
+│   └── F5.3 Thème sombre · tutoriel
+└── F6 Ouverture                 [COULD → backlog]
+    └── F6.1 API publique, application mobile</div>
+    </div>
+    <div>
+      <h3>Méthode d'analyse fonctionnelle</h3>
+      <ul>
+        <li>Recensement par <strong>entretiens d'usage</strong> avec les joueurs + état des lieux des outils tiers (audit)</li>
+        <li>Hiérarchisation <strong>MoSCoW</strong> : Must = remplace les outils tiers ; Should = différenciateurs ; Could = après v1</li>
+        <li><strong>UX prise en compte</strong> dès le cadrage : consultation en session de jeu → réponse rapide, tutoriel de prise en main, thème sombre (usage nocturne), langue native, partage sans compte pour le destinataire</li>
+      </ul>
+      <div class="card">Ce découpage F1→F5 est devenu le backlog Kanban du projet — chaque fonction terminale correspond à un lot livré et recetté (26 scénarios de recette).</div>
+    </div>
+  </div>
+</section>
+
+<!-- 13. CHARGE (ÉLIM) -->
+<section class="slide">
+  <div class="kicker">13 · Estimation de la charge de travail</div>
+  <h2>Charge exprimée en jours-homme</h2>
+  <div class="cols">
+    <div>
+      <table>
+        <tr><th>Lot</th><th>Contenu</th><th>Charge</th></tr>
+        <tr><td>Cadrage & socle</td><td>Étude, maquettes, environnements, CI</td><td>10 j-h</td></tr>
+        <tr><td>F1 Compte & accès</td><td>Auth JWT, profils, admin</td><td>12 j-h</td></tr>
+        <tr><td>F2 Recherche</td><td>Joueurs, guildes, batailles, intégration API jeu</td><td>15 j-h</td></tr>
+        <tr><td>F3 Carte & itinéraires</td><td>Carte, zones, partage public</td><td>12 j-h</td></tr>
+        <tr><td>F4 Préparation</td><td>Compositions, craft + prix</td><td>12 j-h</td></tr>
+        <tr><td>F5 Confort</td><td>i18n, multi-serveur, thème, tutoriel</td><td>8 j-h</td></tr>
+        <tr><td>Qualité & sécurité</td><td>Harnais de tests, revue OWASP, audits, recette</td><td>10 j-h</td></tr>
+        <tr><td>Documentation & MCO</td><td>Manuels, supervision, correctifs</td><td>6 j-h</td></tr>
+        <tr><td><strong>Total</strong></td><td>+ réserve pour aléas 10 %</td><td><strong>85 → ~94 j-h</strong></td></tr>
+      </table>
+    </div>
+    <div>
+      <h3>Méthode d'estimation</h3>
+      <ul>
+        <li><strong>Estimation par analogie</strong> lot par lot (référence : réalisations antérieures de formation), affinée par découpage en tâches ≤ 2 jours</li>
+        <li>Réserve pour aléas de 10 % — consommée notamment par la campagne sécurité de juin 2026</li>
+        <li>Charge étalée sur ~18 mois à temps partiel (formation) — cohérente avec le réalisé constaté (~80 j-h)</li>
+      </ul>
+      <h3>Estimation des coûts & budget prévisionnel</h3>
+      <table>
+        <tr><th>Poste</th><th>Montant</th></tr>
+        <tr><td>Développement : 94 j-h × 400 € (TJM junior)</td><td>37 600 €</td></tr>
+        <tr><td>Infrastructure (VPS + domaine, 2 ans)</td><td>270 €</td></tr>
+        <tr><td>Licences & outillage (open source, offres gratuites)</td><td>0 €</td></tr>
+        <tr><td><strong>Budget prévisionnel total</strong></td><td><strong>≈ 38 k€</strong> (valorisation)</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 14. ARCHITECTURE -->
+<section class="slide">
+  <div class="kicker">14 · Architecture logicielle proposée</div>
+  <h2>Schéma d'architecture (modèle C4 — niveau conteneurs)</h2>
+  <div class="arch">
+    <div class="box">🧑‍💻 Joueur<small>navigateur web</small></div>
+    <div class="link">→ HTTPS</div>
+    <div class="box">Front React 19<small>build statique servi par Nginx · MUI · i18n</small></div>
+    <div class="link">→ JSON / JWT</div>
+    <div class="box">API REST Symfony 7 LTS<small>Contrôleur → Service → Repository → Entité</small></div>
+    <div class="link">→</div>
+    <div class="box">PostgreSQL<small>utilisateurs, routes, compos, cache marché</small></div>
+  </div>
+  <div class="arch">
+    <div class="box" style="max-width:30%">API publique Albion Online<small>joueurs, guildes, batailles, prix — consommée avec cache local</small></div>
+    <div class="link">← appels sortants contrôlés (anti-SSRF, cache)</div>
+    <div class="box" style="max-width:30%">Supervision<small>sonde externe + sonde interne → alertes e-mail</small></div>
+  </div>
+  <div class="cols">
+    <div>
+      <h3>Justification de la modélisation</h3>
+      <p><strong>C4 retenu</strong> (vs UML complet) : lisible par le commanditaire non technicien au niveau contexte, précis pour l'équipe au niveau conteneurs/composants — adapté à un cadrage à double audience.</p>
+    </div>
+    <div>
+      <h3>Propriétés visées</h3>
+      <ul>
+        <li><strong>Maintenable</strong> : couches strictes, conventions du framework</li>
+        <li><strong>Sécurisée</strong> : API sans état, JWT courts, ORM, appels sortants verrouillés</li>
+        <li><strong>Extensible</strong> : nouvelles fonctions = nouveaux contrôleurs/services sans refonte (prouvé : multi-serveur ajouté en 2 semaines)</li>
+        <li><strong>Sobre</strong> : cache des données du jeu, build statique, un seul VPS — impact environnemental minimisé</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 15. PRÉCONISATIONS (ÉLIM) -->
+<section class="slide">
+  <div class="kicker">15 · Préconisations au client</div>
+  <h2>Axes de solutions préconisés — l'argumentaire</h2>
+  <div class="cols">
+    <div>
+      <h3>Ce que je préconise (discours commanditaire)</h3>
+      <div class="card">« Je vous recommande une <strong>application web sur mesure</strong>, accessible sans installation depuis n'importe quel navigateur, construite en trois temps :<br><br>
+      <strong>① D'abord l'essentiel</strong> — retrouver en un seul endroit, dans votre langue, ce que vous cherchez aujourd'hui sur quatre sites : joueurs, guildes, batailles, carte.<br>
+      <strong>② Ensuite ce qui n'existe nulle part</strong> — partager un itinéraire ou une composition d'équipe par un simple lien, même à un joueur sans compte.<br>
+      <strong>③ Enfin l'autonomie</strong> — un espace d'administration pour gérer vous-mêmes les membres et les langues, sans dépendre d'un développeur. »</div>
+    </div>
+    <div>
+      <h3>Objections anticipées et réponses</h3>
+      <table>
+        <tr><th>Objection</th><th>Réponse</th></tr>
+        <tr><td>« Et si le site du jeu coupe ses données ? »</td><td>Les données sont mises en réserve chez nous : l'outil continue d'afficher les dernières informations connues et vous prévient</td></tr>
+        <tr><td>« Combien ça coûte à faire vivre ? »</td><td>~135 €/an d'hébergement — le reste est automatisé (mises à jour surveillées, alertes en cas de panne)</td></tr>
+        <tr><td>« Nos comptes sont-ils en sécurité ? »</td><td>Revue de sécurité selon le référentiel professionnel OWASP à chaque livraison, mots de passe chiffrés, accès administrateur cloisonné</td></tr>
+        <tr><td>« Pourquoi pas une appli mobile ? »</td><td>Le site s'adapte déjà au mobile ; une application native reste possible plus tard car toutes les données passent par une interface réutilisable</td></tr>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- 16. CONCLUSION -->
+<section class="slide">
+  <div class="kicker">Conclusion</div>
+  <h2>Un cadrage qui s'est vérifié dans les faits</h2>
+  <ul>
+    <li>Le périmètre <strong>Must/Should cadré a été intégralement livré</strong> (26 scénarios de recette validés) — le cadrage était réaliste</li>
+    <li>Les risques identifiés au cadrage <strong>se sont produits</strong> (prix manquants sur l'API, vulnérabilités de dépendances) et <strong>les mesures prévues les ont absorbés</strong> (cache + UX, veille + migration LTS)</li>
+    <li>Le budget est tenu : ~80 j-h consommés pour 85 estimés (+ réserve), 135 €/an d'infrastructure</li>
+    <li>L'architecture proposée a prouvé son extensibilité : multi-serveur et multi-langue ajoutés sans refonte</li>
+  </ul>
+  <div class="card" style="margin-top:1rem">Le cadrage n'était pas un exercice théorique : chacune de ses décisions se retrouve dans l'application en production présentée aux blocs 2, 3 et 4.</div>
+  <p class="note">Merci — place aux questions (10 minutes).</p>
+</section>
+
+<!-- ANNEXE -->
+<section class="slide annexe">
+  <div class="kicker">Annexe (notes candidat — non projetée)</div>
+  <h2>Préparation de l'oral Bloc 1</h2>
+  <ul>
+    <li>Timing cible (20') : contexte 2' · parties prenantes + demande 3' · SWOT + audit + infra 4' · risques + indicateurs 3' · veille 2' · comparatif 2' · fonctionnalités + charge + budget 3' · architecture + préconisations + conclusion 3'</li>
+    <li>5 compétences éliminatoires à verrouiller : parties prenantes (slide 3), faisabilité (slide 7), étude comparative (slide 11), charge (slide 13), préconisations (slide 15) — ne jamais les sacrifier au chronomètre</li>
+    <li>Posture : parler « au commanditaire » (vulgarisé) sur les slides 2, 15, 16 ; technique assumée sur 11 et 14</li>
+    <li>Dépôt DigiformaCertif : ce support déposé avant l'échéance</li>
+  </ul>
+</section>
+
+<div class="foot"><span id="pg"></span> — ← → pour naviguer · P pour imprimer</div>
+
+<script>
+  const slides=[...document.querySelectorAll('.slide')];let i=0;
+  function show(n){slides[i].classList.remove('active');i=(n+slides.length)%slides.length;
+    slides[i].classList.add('active');document.getElementById('pg').textContent=(i+1)+' / '+slides.length;}
+  document.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' '||e.key==='PageDown')show(i+1);
+    if(e.key==='ArrowLeft'||e.key==='PageUp')show(i-1);
+    if(e.key==='Home')show(0);if(e.key==='End')show(slides.length-1);
+    if(e.key==='p'||e.key==='P')window.print();});
+  document.addEventListener('click',e=>{if(!window.getSelection().toString())show(i+1)});
+  show(0);
+</script>
+</body>
+</html>
