@@ -2,6 +2,22 @@
 
 All notable changes to the Albion Helper project will be documented in this file.
 
+## [3.0.0] - 2026-07-03
+### Added
+- **Multi-serveur :** support des trois serveurs de jeu (Americas, Europe, Asia) — sélecteur dans l'en-tête, tous les endpoints back paramétrés par serveur.
+- **Statistiques PvP joueur :** kills, morts et rapport de session sur la fiche joueur.
+- **Batailles :** recherche par guilde/alliance et page de détail d'une bataille.
+- **Craft localisé :** noms d'objets traduits dans les recettes de craft.
+- **Langues d'interface dynamiques :** gestion des langues depuis le back office (activation, templates de traduction téléchargeables) et internationalisation des dernières pages restantes — l'interface est désormais 100 % i18n.
+
+### Changed
+- **Thème visuel :** thème sombre « fantasy » (palette dorée) appliqué à toute l'interface.
+- **Build :** build de production v3 du front.
+
+### Fixed
+- **CORS / sécurité :** ajustements pour le multi-serveur et l'exposition publique des langues.
+- **Tests :** suites Admin et Dashboard réalignées après le passage des libellés en i18n (12 suites / 95 tests verts).
+
 ## [2.1.0] - 2026-06-12
 ### Security
 - **BUG-010 :** CORS en wildcard `['*']` — remplacé par la variable d'environnement `CORS_ALLOW_ORIGIN` avec `origin_regex` (localhost en dev, sous-domaines perfweb.net en prod).
