@@ -151,7 +151,7 @@ const Routes = () => {
         <Container maxWidth="lg" className="routes__container">
             <Box className="routes__header">
                 <RouteIcon className="routes__icon" />
-                <Typography variant="h3" className="routes__title">{t('routes.title')}</Typography>
+                <Typography variant="h3" className="routes__title ah-page-title">{t('routes.title')}</Typography>
             </Box>
 
             {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}

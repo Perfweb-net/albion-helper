@@ -301,7 +301,7 @@ const Craft = () => {
             {/* Header */}
             <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
                 <Box sx={{ flex: 1 }}>
-                    <Typography variant="h4" fontWeight={700} sx={{ fontFamily: 'Cinzel, serif', color: '#c9a84c' }}>
+                    <Typography variant="h4" fontWeight={700} className="ah-page-title" sx={{ fontFamily: 'Cinzel, serif', color: 'primary.main' }}>
                         {t('craft.title')}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
@@ -309,7 +309,7 @@ const Craft = () => {
                     </Typography>
                 </Box>
                 <Tooltip title={t('craft.start_tour')}>
-                    <IconButton onClick={() => setRunTour(true)} sx={{ color: '#c9a84c' }}>
+                    <IconButton onClick={() => setRunTour(true)} sx={{ color: 'primary.main' }}>
                         <HelpOutlineIcon />
                     </IconButton>
                 </Tooltip>
@@ -464,7 +464,7 @@ const Craft = () => {
                             { labelKey: 'craft.spec_group.refining', branches: REFINING_BRANCHES, keys: REFINING_BRANCH_KEYS },
                         ].map(({ labelKey, branches, keys }) => (
                             <Box key={labelKey} sx={{ mb: 1.5 }}>
-                                <Typography variant="caption" sx={{ color: '#c9a84c', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}>
+                                <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}>
                                     {t(labelKey)}
                                 </Typography>
                                 <Grid2 container spacing={1.5} sx={{ mt: 0.5 }}>
@@ -481,7 +481,7 @@ const Craft = () => {
                                                     size="small" value={spec} min={0} max={100} step={1}
                                                     aria-label={t('craft.spec.aria_label', { branch: branchLabel })}
                                                     onChange={(_, v) => setSpecializations(prev => ({ ...prev, [branch]: v }))}
-                                                    sx={{ color: '#c9a84c', py: '6px' }}
+                                                    sx={{ color: 'primary.main', py: '6px' }}
                                                 />
                                             </Grid2>
                                         );
@@ -547,7 +547,7 @@ const Craft = () => {
                             <TableRow sx={{ bgcolor: 'rgba(201,168,76,0.07)' }}>
                                 <TableCell sx={{ fontWeight: 700, minWidth: 230 }}>{t('craft.table.recipe')}</TableCell>
                                 <TableCell align="right" sx={{ fontWeight: 700 }}>{t('craft.table.tier')}</TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 700, cursor: 'pointer', '&:hover': { color: '#c9a84c' } }}
+                                <TableCell align="right" sx={{ fontWeight: 700, cursor: 'pointer', '&:hover': { color: 'primary.main' } }}
                                     onClick={() => toggleSort('cost')}>
                                     {t('craft.table.material_cost')} <SortIcon col="cost" />
                                 </TableCell>
@@ -560,7 +560,7 @@ const Craft = () => {
                                         <StorefrontIcon sx={{ fontSize: 14 }} /> {t('craft.table.sell_price')}
                                     </Box>
                                 </TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 700, cursor: 'pointer', '&:hover': { color: '#c9a84c' } }}
+                                <TableCell align="right" sx={{ fontWeight: 700, cursor: 'pointer', '&:hover': { color: 'primary.main' } }}
                                     onClick={() => toggleSort('profit')}>
                                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 0.5 }}>
                                         <SavingsIcon sx={{ fontSize: 14 }} /> {t('craft.table.profit')} <SortIcon col="profit" />

@@ -38,3 +38,49 @@ code {
     transform: scale(1.3);
   }
 }
+
+/* ────────────────────────────────────────────────────────────────────────
+   Signature visuelle : filet héraldique sous les titres de page.
+   Un fin filet d'or interrompu par un losange, vocabulaire des bannières
+   et cadres d'items d'Albion. --gold est défini dans styles/variables.scss
+   et commute avec le thème (body[data-theme]).
+   ──────────────────────────────────────────────────────────────────────── */
+.ah-page-title::after {
+  content: "◆";
+  display: block;
+  width: 220px;
+  margin: 14px 0 0;
+  font-size: 9px;
+  line-height: 1;
+  text-align: center;
+  color: var(--gold, #c9a84c);
+  background:
+    linear-gradient(90deg, transparent, var(--gold, #c9a84c)) left center / calc(50% - 16px) 1px no-repeat,
+    linear-gradient(90deg, var(--gold, #c9a84c), transparent) right center / calc(50% - 16px) 1px no-repeat;
+}
+
+.ah-page-title--center::after {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Socle d'accessibilité : anneau de focus clavier visible partout */
+:focus-visible {
+  outline: 2px solid var(--gold, #c9a84c);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Respect de la préférence système « réduire les animations » */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}

@@ -37,7 +37,7 @@ const Guilds = () => {  // Le nom du composant commence par une majuscule
     return (
         <Container maxWidth="lg" sx={{ py: 4 }}>
             <Box sx={{ mb: 4, textAlign: 'center' }}>
-                <Typography variant="h3" fontWeight={700} gutterBottom>
+                <Typography variant="h3" fontWeight={700} gutterBottom className="ah-page-title ah-page-title--center">
                     {t('guilds.title')}
                 </Typography>
                 <Typography variant="body1" color="text.secondary">

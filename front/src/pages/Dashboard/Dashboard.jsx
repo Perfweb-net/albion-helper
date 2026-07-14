@@ -73,7 +73,7 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
     return (
         <Container maxWidth="lg" className="dashboard__container">
             <Box className="dashboard__header">
-                <Typography variant="h3" className="dashboard__title" gutterBottom>
+                <Typography variant="h3" className="dashboard__title ah-page-title ah-page-title--center" gutterBottom>
                     {t('dashboard.title')}
                 </Typography>
                 <Typography variant="body1" className="dashboard__subtitle">

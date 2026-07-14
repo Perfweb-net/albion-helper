@@ -69,7 +69,7 @@ const Battles = () => {
             <Box sx={{ mb: 3, textAlign: 'center' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 1, mb: 1 }}>
                     <MilitaryTechIcon color="primary" sx={{ fontSize: 36 }} />
-                    <Typography variant="h3" fontWeight={700}>{t('battles.title')}</Typography>
+                    <Typography variant="h3" fontWeight={700} className="ah-page-title ah-page-title--center">{t('battles.title')}</Typography>
                 </Box>
                 <Typography variant="body1" color="text.secondary">
                     {t('battles.subtitle')}

@@ -44,7 +44,7 @@ function CompoCard({ comp, onDelete, onCopyLink, showOwner }) {
     return (
         <Card sx={{ bgcolor: '#161b22', border: '1px solid #21262d', borderRadius: 2, height: '100%', display: 'flex', flexDirection: 'column', '&:hover': { borderColor: 'rgba(201,168,76,0.3)' } }}>
             <CardContent sx={{ flex: 1 }}>
-                <Typography variant="h6" sx={{ fontFamily: 'Cinzel, serif', color: '#c9a84c', mb: 1, lineHeight: 1.3, fontSize: '1rem' }}>
+                <Typography variant="h6" sx={{ fontFamily: 'Cinzel, serif', color: 'primary.main', mb: 1, lineHeight: 1.3, fontSize: '1rem' }}>
                     {comp.name}
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 0.75, flexWrap: 'wrap', mb: 1 }}>
@@ -54,7 +54,7 @@ function CompoCard({ comp, onDelete, onCopyLink, showOwner }) {
                     <VisibilityChip visibility={comp.visibility} />
                 </Box>
                 {showOwner && (
-                    <Typography sx={{ fontSize: '0.75rem', color: '#c9a84c', mb: 0.5 }}>{t('compositions.by_owner', { owner: comp.owner })}</Typography>
+                    <Typography sx={{ fontSize: '0.75rem', color: 'primary.main', mb: 0.5 }}>{t('compositions.by_owner', { owner: comp.owner })}</Typography>
                 )}
                 <Typography sx={{ fontSize: '0.72rem', color: '#8b949e' }}>
                     {new Date(comp.updatedAt).toLocaleDateString('fr-FR')}
@@ -171,8 +171,8 @@ export default function Compositions() {
     return (
         <Container maxWidth="lg" sx={{ py: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-                <GroupsIcon sx={{ fontSize: 36, color: '#c9a84c' }} />
-                <Typography variant="h4" sx={{ fontFamily: 'Cinzel, serif', color: '#c9a84c', flex: 1 }}>
+                <GroupsIcon sx={{ fontSize: 36, color: 'primary.main' }} />
+                <Typography variant="h4" className="ah-page-title" sx={{ fontFamily: 'Cinzel, serif', color: 'primary.main', flex: 1 }}>
                     {t('compositions.title')}
                 </Typography>
                 <Button variant="contained" startIcon={<AddIcon />} onClick={() => setCreateDialog(true)}>
@@ -227,7 +227,7 @@ export default function Compositions() {
             {/* Create dialog */}
             <Dialog open={createDialog} onClose={() => setCreateDialog(false)} maxWidth="xs" fullWidth
                 PaperProps={{ sx: { bgcolor: '#161b22', border: '1px solid rgba(201,168,76,0.25)' } }}>
-                <DialogTitle sx={{ fontFamily: 'Cinzel, serif', color: '#c9a84c' }}>{t('compositions.dialog_create_title')}</DialogTitle>
+                <DialogTitle sx={{ fontFamily: 'Cinzel, serif', color: 'primary.main' }}>{t('compositions.dialog_create_title')}</DialogTitle>
                 <DialogContent>
                     <TextField autoFocus fullWidth size="small" label={t('compositions.name_label')} value={newName}
                         onChange={e => setNewName(e.target.value)}

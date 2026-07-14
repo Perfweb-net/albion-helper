@@ -58,7 +58,7 @@ function PlayerCard({ player, index }) {
             </Box>
             {swapSlots.length > 0 && (
                 <Box sx={{ display: 'flex', gap: 0.5, mt: 0.5, pl: 0.5, flexWrap: 'wrap', borderTop: '1px solid #21262d', pt: 0.5, alignItems: 'center' }}>
-                    <Typography sx={{ fontSize: '0.65rem', color: '#c9a84c', mr: 0.5 }}>⇄</Typography>
+                    <Typography sx={{ fontSize: '0.65rem', color: 'primary.main', mr: 0.5 }}>⇄</Typography>
                     {swapSlots.map(slot => (
                         <SlotIcon key={`swap-${slot}`} item={player.swaps[slot]} size={26} />
                     ))}
@@ -109,8 +109,8 @@ export default function CompositionShare() {
     return (
         <Container maxWidth="xl" sx={{ py: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, flexWrap: 'wrap' }}>
-                <GroupsIcon sx={{ color: '#c9a84c', fontSize: 32 }} />
-                <Typography variant="h4" sx={{ fontFamily: 'Cinzel, serif', color: '#c9a84c', flex: 1 }}>
+                <GroupsIcon sx={{ color: 'primary.main', fontSize: 32 }} />
+                <Typography variant="h4" sx={{ fontFamily: 'Cinzel, serif', color: 'primary.main', flex: 1 }}>
                     {comp.name}
                 </Typography>
                 <Chip label={t('compositions.by_owner', { owner: comp.owner })} size="small" sx={{ bgcolor: '#21262d' }} />

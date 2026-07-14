@@ -172,7 +172,7 @@ const Admin = () => {
         <Container maxWidth="lg" className="admin__container">
             <Box className="admin__header">
                 <AdminPanelSettingsIcon className="admin__icon" />
-                <Typography variant="h3" className="admin__title">{t('admin.title')}</Typography>
+                <Typography variant="h3" className="admin__title ah-page-title">{t('admin.title')}</Typography>
             </Box>
 
             {error && <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError('')}>{error}</Alert>}

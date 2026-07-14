@@ -131,7 +131,7 @@ const Tutorial = () => {
 
             <Box className="tutorial__header">
                 <InfoIcon className="tutorial__icon" />
-                <Typography variant="h3" className="tutorial__title" gutterBottom>
+                <Typography variant="h3" className="tutorial__title ah-page-title ah-page-title--center" gutterBottom>
                     {t('tutorial.title')}
                 </Typography>
                 <Typography variant="body1" className="tutorial__subtitle">
