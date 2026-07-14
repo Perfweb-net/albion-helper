@@ -1,5 +1,11 @@
 @import '../../styles/variables';
 
+// L'infobulle de la visite guidée doit passer au-dessus de l'AppBar sticky de MUI
+// (z-index 1100) ; react-joyride v3 pose le floater à 101 quoi qu'on passe en props.
+.react-joyride__floater {
+  z-index: 1300 !important;
+}
+
 .tutorial {
   &__container {
     padding: 32px 0;
@@ -52,11 +58,18 @@
     margin-top: 32px;
   }
 
+  &__cta-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+
   &__cta-button {
     padding: 14px 32px;
     font-size: 1.125rem;
     font-weight: 600;
-    margin-bottom: 16px;
   }
 
   &__cta-text {
@@ -150,7 +163,8 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: linear-gradient(135deg, $primary-color 0%, $primary-light 100%);
+    // Or fixe (même rendu dans les deux thèmes) : le texte sombre y reste lisible
+    background: linear-gradient(135deg, #c9a84c 0%, #e8c96b 100%);
     color: #0d0d0d;
     display: flex;
     align-items: center;

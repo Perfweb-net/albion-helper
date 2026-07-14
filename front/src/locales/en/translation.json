@@ -13,7 +13,9 @@
     "register": "Register",
     "logout": "Logout",
     "battles": "Battles",
-    "compositions": "Compositions"
+    "compositions": "Compositions",
+    "explore": "Explore",
+    "tools": "Tools"
   },
   "auth": {
     "username": "Username",
@@ -201,7 +203,39 @@
     "skip": "Skip",
     "next": "Next",
     "back": "Back",
-    "finish": "Finish"
+    "finish": "Finish",
+    "before_title": "Before you start",
+    "before_text": "To use all of Albion Helper's features, you first need to create an account. It's free and only takes a few seconds!",
+    "create_account": "Create an account",
+    "already_account": "Already have an account?",
+    "login_link": "Log in",
+    "features_title": "Features",
+    "feature_players_title": "Player search",
+    "feature_players_desc": "Search for players by name and browse their detailed statistics: Kill Fame, Death Fame, PvE, Gathering, Crafting and much more.",
+    "feature_guilds_title": "Guild search",
+    "feature_guilds_desc": "Explore Albion Online guilds, browse their statistics, members and PvP performance.",
+    "feature_map_title": "Map exploration",
+    "feature_map_desc": "Search and explore Albion Online maps. Discover available chests, gatherable resources and tunnels to plan your adventures.",
+    "feature_routes_title": "Farming routes",
+    "feature_routes_desc": "Create routes linking up to 8 zones with a timer per zone. Share your route with a public link valid for 24h.",
+    "feature_items_title": "Item search",
+    "feature_items_desc": "Search items by name, tier and quality. Check market prices to optimise your trades.",
+    "steps_title": "How to get started?",
+    "step1_title": "Create your account",
+    "step1_desc": "Sign up for free to access every feature",
+    "step2_title": "Explore the Dashboard",
+    "step2_desc": "Use the search bar to find players, guilds or maps",
+    "step3_title": "View the details",
+    "step3_desc": "Click a result to see all the detailed information",
+    "ready_title": "Ready to start?",
+    "ready_button": "Create my account now",
+    "tour_welcome": "Welcome to Albion Helper! This tool helps you explore the world of Albion Online.",
+    "tour_cta": "Create a free account to access every feature.",
+    "tour_players": "Search for any player by name and browse their detailed statistics.",
+    "tour_guilds": "Explore Albion Online guilds and alliances.",
+    "tour_map": "Search maps by name and check available resources and chests.",
+    "tour_routes": "Create farming routes linking up to 8 zones and share them with a public link.",
+    "tour_steps": "Follow these 3 simple steps to start your adventure!"
   },
   "common": {
     "loading": "Loading...",
@@ -454,7 +488,8 @@
       "daily_bonus": "Daily bonus",
       "daily_bonus_hint": "0–20% (additional LPB)",
       "daily_bonus_hint_short": "0–20% LPB",
-      "quantity": "Quantity"
+      "quantity": "Quantity",
+      "title": "Settings"
     },
     "spec": {
       "title": "Destiny Board Mastery (0–100)",

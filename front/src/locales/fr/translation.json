@@ -13,7 +13,9 @@
     "register": "Inscription",
     "logout": "Déconnexion",
     "battles": "Batailles",
-    "compositions": "Compositions"
+    "compositions": "Compositions",
+    "explore": "Exploration",
+    "tools": "Outils"
   },
   "auth": {
     "username": "Nom d'utilisateur",
@@ -201,7 +203,39 @@
     "skip": "Passer",
     "next": "Suivant",
     "back": "Retour",
-    "finish": "Terminer"
+    "finish": "Terminer",
+    "before_title": "Avant de commencer",
+    "before_text": "Pour utiliser toutes les fonctionnalités d'Albion Helper, vous devez d'abord créer un compte. C'est gratuit et ne prend que quelques secondes !",
+    "create_account": "Créer un compte",
+    "already_account": "Déjà un compte ?",
+    "login_link": "Connectez-vous",
+    "features_title": "Fonctionnalités",
+    "feature_players_title": "Recherche de joueurs",
+    "feature_players_desc": "Recherchez des joueurs par leur pseudo et consultez leurs statistiques détaillées : Kill Fame, Death Fame, PvE, Gathering, Crafting et bien plus encore.",
+    "feature_guilds_title": "Recherche de guildes",
+    "feature_guilds_desc": "Explorez les guildes d'Albion Online, consultez leurs statistiques, leurs membres et leurs performances en PvP.",
+    "feature_map_title": "Exploration de cartes",
+    "feature_map_desc": "Recherchez et explorez les cartes d'Albion Online. Découvrez les coffres disponibles, les ressources à récolter et les tunnels pour planifier vos aventures.",
+    "feature_routes_title": "Routes de farming",
+    "feature_routes_desc": "Créez des routes reliant jusqu'à 8 zones avec un minuteur par zone. Partagez votre route via un lien public valable 24h.",
+    "feature_items_title": "Recherche d'items",
+    "feature_items_desc": "Recherchez des items par nom, tier et qualité. Consultez les prix du marché pour optimiser vos transactions.",
+    "steps_title": "Comment commencer ?",
+    "step1_title": "Créez votre compte",
+    "step1_desc": "Inscrivez-vous gratuitement pour accéder à toutes les fonctionnalités",
+    "step2_title": "Explorez le Dashboard",
+    "step2_desc": "Utilisez la barre de recherche pour trouver des joueurs, guildes ou cartes",
+    "step3_title": "Consultez les détails",
+    "step3_desc": "Cliquez sur un résultat pour voir toutes les informations détaillées",
+    "ready_title": "Prêt à commencer ?",
+    "ready_button": "Créer mon compte maintenant",
+    "tour_welcome": "Bienvenue sur Albion Helper ! Cet outil vous aide à explorer le monde d'Albion Online.",
+    "tour_cta": "Créez un compte gratuitement pour accéder à toutes les fonctionnalités.",
+    "tour_players": "Recherchez n'importe quel joueur par son pseudo et consultez ses statistiques détaillées.",
+    "tour_guilds": "Explorez les guildes et alliances d'Albion Online.",
+    "tour_map": "Cherchez des cartes par nom et consultez les ressources et coffres disponibles.",
+    "tour_routes": "Créez des routes de farming reliant jusqu'à 8 zones et partagez-les avec un lien public.",
+    "tour_steps": "Suivez ces 3 étapes simples pour démarrer votre aventure !"
   },
   "common": {
     "loading": "Chargement...",
@@ -454,7 +488,8 @@
       "daily_bonus": "Bonus journalier",
       "daily_bonus_hint": "0–20% (LPB additionnel)",
       "daily_bonus_hint_short": "0–20% LPB",
-      "quantity": "Quantité"
+      "quantity": "Quantité",
+      "title": "Paramètres"
     },
     "spec": {
       "title": "Maîtrise Destiny Board (0–100)",
