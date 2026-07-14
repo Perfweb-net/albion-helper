@@ -25,6 +25,10 @@ import GroupsIcon from '@mui/icons-material/Groups';
 import MilitaryTechIcon from '@mui/icons-material/MilitaryTech';
 import PublicIcon from '@mui/icons-material/Public';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
+import MapIcon from '@mui/icons-material/Map';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import './Header.scss';
 
 const Header = () => {
@@ -36,6 +40,8 @@ const Header = () => {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const [langMenuAnchor, setLangMenuAnchor] = useState(null);
     const [serverMenuAnchor, setServerMenuAnchor] = useState(null);
+    const [navMenuAnchor, setNavMenuAnchor] = useState(null);
+    const [openGroup, setOpenGroup] = useState(null);
     const [languages, setLanguages] = useState(availableLanguages);
 
     useEffect(() => {
@@ -56,16 +62,39 @@ const Header = () => {
         setLangMenuAnchor(null);
     };
 
-    const navLinks = isLogin ? [
-        { to: '/guilds', label: t('nav.guilds') },
-        { to: '/players', label: t('nav.players') },
-        { to: '/map', label: t('nav.map') },
-        { to: '/routes', label: t('nav.routes'), icon: <RouteIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
-        { to: '/items', label: t('nav.items') },
-        { to: '/craft', label: t('nav.craft'), icon: <ConstructionIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
-        { to: '/compositions', label: t('nav.compositions'), icon: <GroupsIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
-        { to: '/battles', label: t('nav.battles'), icon: <MilitaryTechIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    // Navigation regroupée en 2 sous-menus pour alléger la barre
+    const navGroups = isLogin ? [
+        {
+            key: 'explore',
+            label: t('nav.explore'),
+            links: [
+                { to: '/players', label: t('nav.players'), icon: <PersonSearchIcon sx={{ fontSize: 18, mr: 1 }} /> },
+                { to: '/guilds', label: t('nav.guilds'), icon: <GroupsIcon sx={{ fontSize: 18, mr: 1 }} /> },
+                { to: '/battles', label: t('nav.battles'), icon: <MilitaryTechIcon sx={{ fontSize: 18, mr: 1 }} /> },
+                { to: '/map', label: t('nav.map'), icon: <MapIcon sx={{ fontSize: 18, mr: 1 }} /> },
+                { to: '/items', label: t('nav.items'), icon: <InventoryIcon sx={{ fontSize: 18, mr: 1 }} /> },
+            ],
+        },
+        {
+            key: 'tools',
+            label: t('nav.tools'),
+            links: [
+                { to: '/routes', label: t('nav.routes'), icon: <RouteIcon sx={{ fontSize: 18, mr: 1 }} /> },
+                { to: '/compositions', label: t('nav.compositions'), icon: <GroupsIcon sx={{ fontSize: 18, mr: 1 }} /> },
+                { to: '/craft', label: t('nav.craft'), icon: <ConstructionIcon sx={{ fontSize: 18, mr: 1 }} /> },
+            ],
+        },
     ] : [];
+
+    const handleGroupOpen = (key) => (e) => {
+        setNavMenuAnchor(e.currentTarget);
+        setOpenGroup(key);
+    };
+
+    const handleGroupClose = () => {
+        setNavMenuAnchor(null);
+        setOpenGroup(null);
+    };
 
     const drawerContent = (
         <Box className="header__drawer-content">
@@ -78,18 +107,25 @@ const Header = () => {
 
             <Divider />
 
-            {navLinks.map((link) => (
-                <Button
-                    key={link.to}
-                    color="inherit"
-                    component={Link}
-                    to={link.to}
-                    onClick={() => setIsDrawerOpen(false)}
-                    className="header__drawer-button"
-                    startIcon={link.icon}
-                >
-                    {link.label}
-                </Button>
+            {navGroups.map((group) => (
+                <Box key={group.key}>
+                    <Typography variant="overline" sx={{ px: 1.5, opacity: 0.7 }}>
+                        {group.label}
+                    </Typography>
+                    {group.links.map((link) => (
+                        <Button
+                            key={link.to}
+                            color="inherit"
+                            component={Link}
+                            to={link.to}
+                            onClick={() => setIsDrawerOpen(false)}
+                            className="header__drawer-button"
+                            startIcon={link.icon}
+                        >
+                            {link.label}
+                        </Button>
+                    ))}
+                </Box>
             ))}
 
             {isAdmin && (
@@ -183,17 +219,18 @@ const Header = () => {
 
                 {/* Desktop nav */}
                 <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', gap: 0.5, ml: 3, flex: 1 }}>
-                    {navLinks.map((link) => (
+                    {navGroups.map((group) => (
                         <Button
-                            key={link.to}
+                            key={group.key}
                             color="inherit"
-                            component={Link}
-                            to={link.to}
+                            onClick={handleGroupOpen(group.key)}
                             className="header__menu-button"
-                            startIcon={link.icon}
+                            endIcon={<ExpandMoreIcon sx={{ fontSize: 18 }} />}
+                            aria-haspopup="menu"
+                            aria-expanded={openGroup === group.key}
                             sx={{ fontSize: '0.78rem', letterSpacing: '0.06em', color: 'rgba(232,220,200,0.85)', '&:hover': { color: '#c9a84c' } }}
                         >
-                            {link.label}
+                            {group.label}
                         </Button>
                     ))}
                     {isAdmin && (
@@ -250,6 +287,28 @@ const Header = () => {
                     )}
                 </Box>
             </Toolbar>
+
+            {/* Grouped navigation menus */}
+            {navGroups.map((group) => (
+                <Menu
+                    key={group.key}
+                    anchorEl={navMenuAnchor}
+                    open={openGroup === group.key}
+                    onClose={handleGroupClose}
+                >
+                    {group.links.map((link) => (
+                        <MenuItem
+                            key={link.to}
+                            component={Link}
+                            to={link.to}
+                            onClick={handleGroupClose}
+                        >
+                            {link.icon}
+                            {link.label}
+                        </MenuItem>
+                    ))}
+                </Menu>
+            ))}
 
             {/* Server menu */}
             <Menu anchorEl={serverMenuAnchor} open={Boolean(serverMenuAnchor)} onClose={() => setServerMenuAnchor(null)}>
