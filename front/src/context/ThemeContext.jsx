@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useMemo } from 'react';
+import React, { createContext, useContext, useState, useMemo, useEffect } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { darkTheme, lightTheme } from '../theme';
@@ -19,6 +19,11 @@ export const ThemeModeProvider = ({ children }) => {
     };
 
     const theme = useMemo(() => (mode === 'dark' ? darkTheme : lightTheme), [mode]);
+
+    // Expose le mode aux feuilles .scss (custom properties de src/styles/variables.scss)
+    useEffect(() => {
+        document.body.dataset.theme = mode;
+    }, [mode]);
 
     return (
         <ThemeContext.Provider value={{ mode, toggleTheme }}>

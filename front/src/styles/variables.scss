@@ -1,12 +1,41 @@
-// Variables globales — alignées sur le thème sombre "fantasy" (cf. src/theme.js).
-$primary-color: #c9a84c;        // or (accent principal)
-$primary-light: #e8c96b;
-$primary-dark: #8b6914;
-$secondary-color: #9b3b3b;
-$background-default: #0a0805;
-$background-paper: #1c1508;
-$text-primary: #e8dcc8;
-$text-secondary: #b8a88a;
+// Variables globales — pilotées par le thème via des custom properties CSS.
+// body[data-theme] est posé par ThemeModeProvider (cf. src/context/ThemeContext.jsx),
+// les valeurs suivent les palettes de src/theme.js pour les deux modes.
+
+:root,
+body[data-theme='dark'] {
+  --ah-primary: #c9a84c;
+  --ah-primary-light: #e8c96b;
+  --ah-primary-dark: #8b6914;
+  --ah-secondary: #9b3b3b;
+  --ah-background-default: #0a0805;
+  --ah-background-paper: #1c1508;
+  --ah-text-primary: #e8dcc8;
+  --ah-text-secondary: #b8a88a;
+  // Or "titre" : accent lisible sur le fond du mode courant (contraste AA)
+  --gold: #c9a84c;
+}
+
+body[data-theme='light'] {
+  --ah-primary: #8b6914;
+  --ah-primary-light: #c9a84c;
+  --ah-primary-dark: #5a4010;
+  --ah-secondary: #7a2a2a;
+  --ah-background-default: #f4ede0;
+  --ah-background-paper: #fdf7ec;
+  --ah-text-primary: #1a1005;
+  --ah-text-secondary: #5a4825;
+  --gold: #8b6914;
+}
+
+$primary-color: var(--ah-primary);
+$primary-light: var(--ah-primary-light);
+$primary-dark: var(--ah-primary-dark);
+$secondary-color: var(--ah-secondary);
+$background-default: var(--ah-background-default);
+$background-paper: var(--ah-background-paper);
+$text-primary: var(--ah-text-primary);
+$text-secondary: var(--ah-text-secondary);
 $border-radius: 12px;
 $border-radius-large: 16px;
 $border-radius-small: 8px;
@@ -37,5 +66,3 @@ $transition: all 0.3s ease-in-out;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
   }
 }
-
-

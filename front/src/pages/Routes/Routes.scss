@@ -13,13 +13,13 @@
 
   &__icon {
     font-size: 3rem !important;
-    color: var(--gold, #c9a84c);
+    color: var(--gold);
   }
 
   &__title {
     font-family: 'Cinzel', serif !important;
     font-weight: 700 !important;
-    color: var(--gold, #c9a84c) !important;
+    color: var(--gold) !important;
   }
 
   &__create-btn {
@@ -42,7 +42,7 @@
   &__zone-number {
     min-width: 24px;
     font-weight: 700;
-    color: var(--gold, #c9a84c);
+    color: var(--gold);
     font-family: 'Cinzel', serif;
   }
 
