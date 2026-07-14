@@ -341,7 +341,7 @@ const CraftDetail = () => {
                     <Card sx={{ border: '1px solid rgba(201,168,76,0.2)', position: 'sticky', top: 80 }}>
                         <CardContent sx={{ p: 2.5 }}>
                             <Typography variant="subtitle2" sx={{ fontFamily: 'Cinzel, serif', color: '#c9a84c', mb: 2 }}>
-                                {t('craft.settings')}
+                                {t('craft.settings.title')}
                             </Typography>
 
                             {/* Location */}
