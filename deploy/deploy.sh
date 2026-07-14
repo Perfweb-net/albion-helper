@@ -5,6 +5,7 @@ set -e
 
 echo "=== Déploiement Albion Helper ==="
 cd "$(dirname "$0")/.."
+PROJECT_DIR="$(pwd)"
 
 echo "--- Mise à jour du code (master) ---"
 git fetch origin master
@@ -21,5 +22,13 @@ echo "--- Frontend : build de production ---"
 cd ../front
 npm ci --legacy-peer-deps
 npm run build
+
+echo "--- Supervision : installation de la sonde cron (*/5) ---"
+# Idempotent : l'ancienne ligne est retirée puis la ligne courante réécrite,
+# la sonde suit donc automatiquement chaque déploiement.
+chmod +x "$PROJECT_DIR/deploy/healthcheck-probe.sh"
+CRON_LINE="*/5 * * * * $PROJECT_DIR/deploy/healthcheck-probe.sh"
+( crontab -l 2>/dev/null | grep -vF "deploy/healthcheck-probe.sh" ; echo "$CRON_LINE" ) | crontab -
+echo "Sonde installée : $CRON_LINE"
 
 echo "=== Déploiement terminé : $(date '+%Y-%m-%d %H:%M:%S') ==="
