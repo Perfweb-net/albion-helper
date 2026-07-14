@@ -19,7 +19,7 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 
 | Bloc | Épreuve | Date | État au 14/07 |
 |---|---|---|---|
-| Bloc 2 | Dossier écrit 30p max + code source | ~~08–19/06~~ **décalé — date à confirmer** | 🟢 **dossier v2 prêt** (`Dossier_Bloc2_Albion_Helper_v2.docx`, 14/07) — relire, mettre à jour le sommaire dans Word, déposer |
+| Bloc 2 | Dossier écrit 30p max + code source | ~~08–19/06~~ **décalé — date à confirmer** | 🟢 **dossier v3 prêt** (`Dossier_Bloc2_Albion_Helper_v3.docx`, 15/07 — skill docx, XML validé, 18 pages) — relire, mettre à jour le sommaire dans Word, déposer |
 | Bloc 4 | Dossier écrit 20p max | **20–24/07/2026** | 🚨 **J-6** — prod à redéployer + UptimeRobot + relecture |
 | Bloc 3 | Oral 45' (30'+15') + démo live | 17–21/08 ou 01–29/09 | 🟠 support prêt (pptx), reste kanban + prod + répétitions |
 | Bloc 1 | Oral 30' (20'+10') | Rentrée oct. 2026 | 🟡 support prêt (pptx), reste relecture + répétitions |
@@ -183,11 +183,11 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 
 # 🟢 BLOC 2 — Concevoir et développer des applications logicielles (**date décalée — à confirmer avec le campus**)
 
-**14/07 : dossier v2 généré** → `dossier/Dossier_Bloc2_Albion_Helper_v2.docx` (l'ancien `Dossier_Bloc2_Albion_Helper.docx` est conservé). Mise en page or/brun, page de garde, 13 figures neuves (app v3.0.0 : multi-serveur, batailles, rapport de session PvP, 20 langues, thème clair), contenus actualisés : 126 tests (31 back/95 front), CHANGELOG v3.0.0, 9 séquences de déploiement (sonde auto), recette 28 scénarios (SRV-01 et BAT-01 ajoutés), registre BUG-001→015. Les 16 points du règlement sont couverts ; volume estimé ~23 pages (max 30).
+**15/07 : dossier v3 généré avec le skill docx officiel** → `dossier/Dossier_Bloc2_Albion_Helper_v3.docx` — **c'est la version à déposer** (v1 et v2 conservées pour trace). Validation OOXML PASSED, **18 pages** vérifiées par conversion PDF (max 30), A4, sommaire Word natif, pied de page numéroté. Contenu : 13 figures neuves (app v3.0.0 : multi-serveur, batailles, rapport de session PvP, 20 langues, thème clair), 126 tests (31 back/95 front), CHANGELOG v3.0.0, 9 séquences de déploiement (sonde auto), recette 28 scénarios (SRV-01 et BAT-01 ajoutés), registre BUG-001→015. Les 16 points du règlement sont couverts.
 
 - C2.1.1 environnements ☑ · C2.1.2 CI ☑ · C2.2.1 prototype ⚠️ÉLIM ☑ · C2.2.2 tests ⚠️ÉLIM ☑ (14/07 : back 31 tests/85 assertions, front 95/95) · C2.2.3 sécurité/accessibilité ⚠️ÉLIM ☑ (OWASP faille par faille + RGAA 4.1 + audits Lighthouse/axe-core + correctif contrastes mode clair du 14/07) · C2.2.4 versions ☑ · C2.3.1 cahier de recettes ⚠️ÉLIM ☑ (28 scénarios PASS) · C2.3.2 plan de correction ☑ (BUG-001→015) · C2.4.1 documentation ☑
-- [ ] **Relire le dossier v2 dans Word** : mettre à jour le sommaire (clic droit → Mettre à jour les champs), vérifier le rendu des figures et le nombre de pages réel (≤ 30)
-- [ ] **Confirmer la nouvelle date de dépôt avec le campus** puis déposer code + dossier v2 sur DigiformaCertif
+- [ ] **Relire le dossier v3 dans Word** : mettre à jour le sommaire (clic droit → Mettre à jour les champs) et parcourir le rendu
+- [ ] **Confirmer la nouvelle date de dépôt avec le campus** puis déposer code + dossier v3 sur DigiformaCertif
 
 ---
 
