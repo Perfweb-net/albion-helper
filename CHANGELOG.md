@@ -11,6 +11,11 @@ All notable changes to the Albion Helper project will be documented in this file
 
 ### Changed
 - Front : session observée via `/api/me` (contexte utilisateur), rafraîchissement automatique sur 401 puis rejeu de la requête ; suites de tests Login/authUtils réécrites (96 tests).
+- Repasse design : filet héraldique sous les titres de page, focus clavier visible (`:focus-visible`), respect de `prefers-reduced-motion`, états vides réécrits, navigation regroupée en sous-menus Exploration/Outils.
+
+### Fixed
+- **BUG-014 :** titre de section du craft affiché comme « KEY 'craft.settings' returned an object » — clé i18n dédiée `craft.settings.title` (fr + en).
+- **BUG-015 :** mode clair illisible par endroits (variables Sass figées sur la palette sombre) — variables CSS commutées par `body[data-theme]`.
 
 ## [3.0.0] - 2026-07-03
 ### Added
