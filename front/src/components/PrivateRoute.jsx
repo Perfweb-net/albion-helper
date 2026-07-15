@@ -1,30 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { Navigate } from 'react-router-dom';
+import { UserContext } from '../context/UserContext';
 
-export { isTokenValid } from '../utils/authUtils';
-
+// La session vit dans des cookies httpOnly : c'est le contexte utilisateur
+// (alimenté par /api/me) qui fait foi, pas un jeton local.
 const PrivateRoute = ({ element }) => {
-    const [isAuthenticated, setIsAuthenticated] = useState(null);
+    const { isLogin, sessionLoading } = useContext(UserContext);
 
-    useEffect(() => {
-        const checkToken = async () => {
-            const token = localStorage.getItem('token');
-            if (token) {
-                const { isTokenValid } = await import('../utils/authUtils');
-                const valid = await isTokenValid(token);
-                setIsAuthenticated(valid);
-            } else {
-                setIsAuthenticated(false);
-            }
-        };
-        checkToken();
-    }, []);
-
-    if (isAuthenticated === null) {
+    if (sessionLoading) {
         return <div>Loading...</div>;
     }
 
-    return isAuthenticated ? element : <Navigate to="/" replace />;
+    return isLogin ? element : <Navigate to="/" replace />;
 };
 
 export default PrivateRoute;

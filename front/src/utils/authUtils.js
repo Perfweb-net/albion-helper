@@ -1,37 +1,30 @@
-import { jwtDecode } from 'jwt-decode';
-import axios from 'axios';
+import api from '../api';
 
-const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+// Les jetons vivent dans des cookies httpOnly : le front ne les voit jamais.
+// La session s'observe via /api/me et se termine via /api/logout.
 
-export const isTokenValid = async (token) => {
-    if (!token) return false;
-
+/**
+ * Retourne l'identité de la session courante ({ username, roles })
+ * ou null si aucune session n'est active.
+ */
+export const fetchSession = async () => {
     try {
-        const decoded = jwtDecode(token);
-        const now = Date.now() / 1000;
-        const timeLeft = decoded.exp - now;
-
-        if (decoded.exp <= now || timeLeft <= 300) {
-            const refreshToken = localStorage.getItem('refreshToken');
-            if (!refreshToken) {
-                localStorage.removeItem('token');
-                return false;
-            }
-            try {
-                const response = await axios.post(`${BASE_URL}/token/refresh`, {
-                    refresh_token: refreshToken,
-                });
-                localStorage.setItem('token', response.data.token);
-                localStorage.setItem('refreshToken', response.data.refresh_token);
-            } catch {
-                localStorage.removeItem('token');
-                localStorage.removeItem('refreshToken');
-                return false;
-            }
-        }
-
-        return true;
+        const response = await api.get('/me');
+        return response.data;
     } catch {
-        return false;
+        return null;
+    }
+};
+
+/**
+ * Termine la session : le back invalide le refresh token en base
+ * et expire les deux cookies. Ne lève jamais (la déconnexion locale
+ * doit aboutir même si l'API est injoignable).
+ */
+export const logout = async () => {
+    try {
+        await api.post('/logout');
+    } catch {
+        // session déjà expirée ou API indisponible : rien à faire
     }
 };

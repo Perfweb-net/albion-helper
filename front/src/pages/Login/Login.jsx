@@ -3,7 +3,6 @@ import api from '../../authApi';
 import { useNavigate, Link } from 'react-router-dom';
 import {Box, Button, Container, TextField, Typography, Card, CardContent, Alert} from "@mui/material";
 import {UserContext} from "../../context/UserContext";
-import {isTokenValid} from "../../components/PrivateRoute";
 import LoginIcon from '@mui/icons-material/Login';
 import './Login.scss';
 
@@ -15,8 +14,7 @@ const Login = () => {
     const {isLogin, setIsLogin} = useContext(UserContext);
 
     useEffect(() => {
-        const isValid = isTokenValid(localStorage.getItem('token'));
-        if (isLogin && isValid) {
+        if (isLogin) {
             navigate('/dashboard');
         }
     }, [navigate, isLogin]);
@@ -26,15 +24,14 @@ const Login = () => {
         setError('');
 
         try {
-            const response = await api.post('/login', { username, password });
-            localStorage.setItem('refreshToken', response.data.refresh_token);
-            localStorage.setItem('token', response.data.token);
+            // Les jetons sont posés par l'API dans des cookies httpOnly :
+            // rien n'est stocké (ni lisible) côté JavaScript.
+            await api.post('/login', { username, password });
 
             setIsLogin(true);
             navigate('/dashboard');
         } catch (err) {
             setError('Une erreur est survenue lors de la connexion. Vérifiez vos identifiants.');
-            setIsLogin(false);
         }
     };
 

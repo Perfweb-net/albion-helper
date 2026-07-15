@@ -28,7 +28,6 @@ import {
     Paper
 } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';
-import {isTokenValid} from "../../components/PrivateRoute";
 import './Map.scss';
 
 const Map = () => {
@@ -42,10 +41,6 @@ const Map = () => {
 
     const handleSubmit = useCallback(async () => {
         if (baseSearch.length === 3) {
-            const token = localStorage.getItem('token');
-
-            await isTokenValid(token)
-
             await api.get(`/map/search?map=${baseSearch}`).then((response) => {
                 setMaps(response.data.maps);
             }).catch((error) => console.error('Error fetching maps:', error));

@@ -23,7 +23,6 @@ import SearchIcon from "@mui/icons-material/Search";
 import PersonIcon from "@mui/icons-material/Person";
 import GroupsIcon from "@mui/icons-material/Groups";
 import MapIcon from "@mui/icons-material/Map";
-import {isTokenValid} from "../../components/PrivateRoute";
 import './Dashboard.scss';
 
 const Dashboard = () => {  // Le nom du composant commence par une majuscule
@@ -43,10 +42,6 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
     };
 
     const handleSubmit = async (e) => {
-        const token = localStorage.getItem('token');
-
-        await isTokenValid(token)
-
         if (selection === 'map') {
             await api.get(`/map/search?map=${pseudo}`).then((response) => {
                 setMaps(response.data.maps);

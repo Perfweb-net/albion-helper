@@ -14,7 +14,6 @@ import {
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import PersonIcon from "@mui/icons-material/Person";
-import {isTokenValid} from "../../components/PrivateRoute";
 import { useTranslation } from 'react-i18next';
 import './Players.scss';
 
@@ -25,9 +24,6 @@ const Players = () => {  // Le nom du composant commence par une majuscule
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-        const token = localStorage.getItem('token');
-
-        await isTokenValid(token)
         await api.get("/player/search?pseudo=" + pseudo).then(
             (response) => {
                     setPlayers(response.data.players);

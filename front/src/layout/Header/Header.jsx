@@ -51,8 +51,8 @@ const Header = () => {
     const isAdmin = user?.roles?.includes('ROLE_ADMIN');
 
     const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
+        // setIsLogin(false) appelle /api/logout : le back invalide le refresh
+        // token et expire les cookies httpOnly.
         setIsLogin(false);
         navigate('/login');
     };

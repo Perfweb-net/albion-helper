@@ -6,9 +6,6 @@ import { UserContext } from '../../context/UserContext';
 import Login from './Login';
 
 jest.mock('../../authApi', () => ({ post: jest.fn() }));
-jest.mock('../../components/PrivateRoute', () => ({
-    isTokenValid: jest.fn(() => Promise.resolve(false)),
-}));
 
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
@@ -53,10 +50,10 @@ test('shows error alert on failed login', async () => {
     await waitFor(() => expect(screen.getByRole('alert')).toBeInTheDocument());
 });
 
-test('stores token and navigates to dashboard on success', async () => {
-    api.post.mockResolvedValueOnce({
-        data: { token: 'fake-jwt', refresh_token: 'fake-refresh' },
-    });
+test('logs in via the API and navigates without storing any token client-side', async () => {
+    // Les jetons sont posés en cookies httpOnly par l'API : la réponse est
+    // volontairement ignorée par le front.
+    api.post.mockResolvedValueOnce({ data: { token: 'ignored', refresh_token: 'ignored' } });
     const setIsLogin = jest.fn();
     renderLogin({ isLogin: false, setIsLogin });
 
@@ -69,8 +66,16 @@ test('stores token and navigates to dashboard on success', async () => {
     fireEvent.click(screen.getByRole('button', { name: /se connecter/i }));
 
     await waitFor(() => {
-        expect(localStorage.getItem('token')).toBe('fake-jwt');
+        expect(api.post).toHaveBeenCalledWith('/login', { username: 'testuser', password: 'password123' });
         expect(setIsLogin).toHaveBeenCalledWith(true);
         expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
     });
+    // Aucun jeton ne doit exister côté JavaScript
+    expect(localStorage.getItem('token')).toBeNull();
+    expect(localStorage.getItem('refreshToken')).toBeNull();
+});
+
+test('redirects to dashboard when a session is already active', () => {
+    renderLogin({ isLogin: true, setIsLogin: jest.fn() });
+    expect(mockNavigate).toHaveBeenCalledWith('/dashboard');
 });

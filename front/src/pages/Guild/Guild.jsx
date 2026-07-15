@@ -7,7 +7,6 @@ import GroupsIcon from "@mui/icons-material/Groups";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import PersonIcon from "@mui/icons-material/Person";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
-import {isTokenValid} from "../../components/PrivateRoute";
 import { useTranslation } from 'react-i18next';
 import './Guild.scss';
 
@@ -26,10 +25,6 @@ const Player = () => {  // Le nom du composant commence par une majuscule
 
     useEffect(() => {
         const getPlayerInfo = async (e) => {
-            const token = localStorage.getItem('token');
-
-            await isTokenValid(token)
-
             await api.get("/guilds/" + guildId).then(
                 (response) => {
                     if (response.data.statut !== "OK") {

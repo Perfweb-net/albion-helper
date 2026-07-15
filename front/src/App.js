@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import Login from './pages/Login/Login';
 import Register from './pages/Register/Register';
@@ -24,15 +24,6 @@ import CompositionShare from "./pages/Compositions/CompositionShare";
 import Battles from "./pages/Battles/Battles";
 
 const App = () => {
-    // Vérifie si l'utilisateur est authentifié
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-    useEffect(() => {
-        // Vérifie si un token JWT existe dans le localStorage
-        const token = localStorage.getItem('token');
-        setIsAuthenticated(!!token);
-    }, []);
-
     return (
         <Router>
             <Header/>
@@ -47,64 +38,64 @@ const App = () => {
                     {/* Route protégée */}
                     <Route
                         path="/dashboard"
-                        element={<PrivateRoute element={<Dashboard/>} isAuthenticated={isAuthenticated}/>}
+                        element={<PrivateRoute element={<Dashboard/>}/>}
                     />
 
                     <Route
                         path="/player/:playerId"
-                        element={<PrivateRoute element={<Player/>} isAuthenticated={isAuthenticated}/>}
+                        element={<PrivateRoute element={<Player/>}/>}
                     />
 
                     <Route
                         path="/map"
-                        element={<PrivateRoute element={<Map/>} isAuthenticated={isAuthenticated}/>}
+                        element={<PrivateRoute element={<Map/>}/>}
                     />
 
                     <Route
                         path="/items"
-                        element={<PrivateRoute element={<Items/>} isAuthenticated={isAuthenticated}/>}
+                        element={<PrivateRoute element={<Items/>}/>}
                     />
 
                     <Route
                         path="/players"
-                        element={<PrivateRoute element={<Players/>} isAuthenticated={isAuthenticated}/>}
+                        element={<PrivateRoute element={<Players/>}/>}
                     />
 
 
-                    <Route path="/guilds" element={<PrivateRoute element={<Guilds/>} isAuthenticated={isAuthenticated}/>}/>
+                    <Route path="/guilds" element={<PrivateRoute element={<Guilds/>}/>}/>
                     <Route
                         path="/guild/:guildId"
-                        element={<PrivateRoute element={<Guild/>} isAuthenticated={isAuthenticated}/>}
+                        element={<PrivateRoute element={<Guild/>}/>}
                     />
                     <Route
                         path="/routes"
-                        element={<PrivateRoute element={<GameRoutes/>} isAuthenticated={isAuthenticated}/>}
+                        element={<PrivateRoute element={<GameRoutes/>}/>}
                     />
                     <Route path="/routes/share/:token" element={<RouteShare/>}/>
                     <Route path="/compositions/share/:token" element={<CompositionShare/>}/>
                     <Route
                         path="/craft"
-                        element={<PrivateRoute element={<Craft/>} isAuthenticated={isAuthenticated}/>}
+                        element={<PrivateRoute element={<Craft/>}/>}
                     />
                     <Route
                         path="/craft/:id"
-                        element={<PrivateRoute element={<CraftDetail/>} isAuthenticated={isAuthenticated}/>}
+                        element={<PrivateRoute element={<CraftDetail/>}/>}
                     />
                     <Route
                         path="/compositions"
-                        element={<PrivateRoute element={<Compositions/>} isAuthenticated={isAuthenticated}/>}
+                        element={<PrivateRoute element={<Compositions/>}/>}
                     />
                     <Route
                         path="/compositions/:id"
-                        element={<PrivateRoute element={<CompositionEditor/>} isAuthenticated={isAuthenticated}/>}
+                        element={<PrivateRoute element={<CompositionEditor/>}/>}
                     />
                     <Route
                         path="/battles"
-                        element={<PrivateRoute element={<Battles/>} isAuthenticated={isAuthenticated}/>}
+                        element={<PrivateRoute element={<Battles/>}/>}
                     />
                     <Route
                         path="/admin"
-                        element={<PrivateRoute element={<Admin/>} isAuthenticated={isAuthenticated}/>}
+                        element={<PrivateRoute element={<Admin/>}/>}
                     />
                 </Routes>
             </main>

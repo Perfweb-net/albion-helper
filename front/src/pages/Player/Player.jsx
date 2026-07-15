@@ -6,7 +6,6 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import PersonIcon from "@mui/icons-material/Person";
 import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
-import {isTokenValid} from "../../components/PrivateRoute";
 import PlayerPvP from './PlayerPvP';
 import { useTranslation } from 'react-i18next';
 import './Player.scss';
@@ -20,10 +19,6 @@ const Player = () => {  // Le nom du composant commence par une majuscule
 
     useEffect(() =>{
         const getPlayerInfo = async (e) => {
-            const token = localStorage.getItem('token');
-
-            await isTokenValid(token);
-
             await api.get("/player/" + playerId).then(
                 (response) => {
                     if (response.data.statut !== "OK") {
