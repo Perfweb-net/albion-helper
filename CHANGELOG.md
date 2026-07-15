@@ -2,6 +2,16 @@
 
 All notable changes to the Albion Helper project will be documented in this file.
 
+## [3.1.0] - 2026-07-15
+### Security
+- **Jetons JWT en cookies httpOnly :** le jeton d'accès et le refresh token ne transitent plus par localStorage — ils sont posés et lus exclusivement par l'API (cookies httpOnly + Secure). La classe d'attaque XSS → vol de jeton disparaît ; l'axe d'amélioration identifié au Bloc 2 (§7.1) est réalisé.
+- **Nouvelles routes :** `GET /api/me` (identité de la session : username + rôles) et `POST /api/logout` (invalidation du refresh token en base + expiration des cookies).
+- **CORS :** `allow_credentials` activé, origines toujours en liste fermée (`origin_regex`).
+- **BUG-016 :** la suppression d'un compte échouait si l'utilisateur possédait des routes (contrainte FK sans cascade) — migration `ON DELETE CASCADE`, droit à l'effacement complet.
+
+### Changed
+- Front : session observée via `/api/me` (contexte utilisateur), rafraîchissement automatique sur 401 puis rejeu de la requête ; suites de tests Login/authUtils réécrites (96 tests).
+
 ## [3.0.0] - 2026-07-03
 ### Added
 - **Multi-serveur :** support des trois serveurs de jeu (Americas, Europe, Asia) — sélecteur dans l'en-tête, tous les endpoints back paramétrés par serveur.
