@@ -72,7 +72,8 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 - [x] 6. Présentation des recommandations argumentées d'amélioration
 - [x] 7. Présentation d'un exemplaire du journal de version *(à rafraîchir après ajout v3.0.0)*
 - [x] 8. Exemple de problème résolu en collaboration avec le support client
-- [ ] **DERNIÈRES ÉTAPES (ordre conseillé)** : ① redéployer la prod → ② monitor UptimeRobot + capture §3.4 + cron interne → ③ CHANGELOG v3.0.0 + rafraîchir l'exemplaire du dossier → ④ relire `dossier/Dossier_Bloc4_Albion_Helper.docx` (docx du 12/06 : mettre à jour sommaire + chiffres de tests 31/85 back, 95 front) → ⑤ **déposer sur DigiformaCertif entre le 20 et le 24/07**
+- [x] **15/07 : dossier v2 généré** → `dossier/Dossier_Bloc4_Albion_Helper_v2.docx` (v1 conservée) — skill docx, 13 pages/20, XML validé. Faits à jour : 131 tests, sonde auto-installée + log d'exécution réel, journal →v3.1.0, registre BUG-001→016, traitement BUG-011 & BUG-016, runbook d'alerte, §3.4 honnête (UptimeRobot spécifié, « à activer avec la remise en production »)
+- [ ] **DERNIÈRES ÉTAPES** : ① redéployer la prod (secrets GitHub) → ② activer le monitor UptimeRobot (spec dans le dossier §3.4) → ③ relire le docx v2 dans Word (sommaire) → ④ **déposer sur DigiformaCertif entre le 20 et le 24/07**
 
 ---
 
