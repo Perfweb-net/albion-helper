@@ -109,7 +109,7 @@ const Header = () => {
 
             {navGroups.map((group) => (
                 <Box key={group.key}>
-                    <Typography variant="overline" sx={{ px: 1.5, opacity: 0.7 }}>
+                    <Typography variant="overline" sx={{ px: 1.5, opacity: 0.7, display: 'block' }}>
                         {group.label}
                     </Typography>
                     {group.links.map((link) => (
