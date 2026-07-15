@@ -2,5 +2,14 @@ gesdinet_jwt_refresh_token:
     refresh_token_class: App\Entity\RefreshToken
     ttl: 2592000
     # Rotation des refresh tokens : chaque refresh invalide l'ancien token et en émet un nouveau.
-    # Mitigation du stockage des tokens côté client (un token volé ne sert qu'une fois).
     single_use: true
+    # Le refresh token est lui aussi porté par un cookie httpOnly : plus aucun jeton
+    # n'est accessible à JavaScript.
+    cookie:
+        enabled: true
+        same_site: none
+        path: /
+        http_only: true
+        secure: true
+        # Conservé dans le corps pour l'outillage (tests API) ; jamais stocké par le front.
+        remove_token_from_body: false

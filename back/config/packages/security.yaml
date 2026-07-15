@@ -38,6 +38,7 @@ security:
         - { path: ^/api/health, roles: PUBLIC_ACCESS }
         - { path: ^/api/register, roles: PUBLIC_ACCESS }
         - { path: ^/api/login, roles: PUBLIC_ACCESS }
+        - { path: ^/api/logout, roles: PUBLIC_ACCESS }
         - { path: ^/api/token/refresh, roles: PUBLIC_ACCESS }
         - { path: ^/api/routes/share/, roles: PUBLIC_ACCESS }
         - { path: ^/api/compositions/share/, roles: PUBLIC_ACCESS }

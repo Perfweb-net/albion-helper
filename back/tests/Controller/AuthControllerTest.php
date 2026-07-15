@@ -97,4 +97,71 @@ class AuthControllerTest extends WebTestCase
         $this->assertArrayHasKey('detail', $content);
         $this->assertStringContainsString('password', $content['detail']);
     }
+
+    /** Crée un compte, se connecte, et retourne le client (cookies stockés par le test client). */
+    private function registerAndLogin($client): string
+    {
+        $username = 'cookieuser_' . uniqid();
+        $client->request('POST', '/api/register', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['username' => $username, 'password' => 'password123'])
+        );
+        $client->request('POST', '/api/login', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['username' => $username, 'password' => 'password123'])
+        );
+
+        return $username;
+    }
+
+    public function testLoginSetsHttpOnlyAuthCookies(): void
+    {
+        $client = static::createClient();
+        $this->registerAndLogin($client);
+
+        $this->assertResponseStatusCodeSame(200);
+        $cookies = [];
+        foreach ($client->getResponse()->headers->getCookies() as $cookie) {
+            $cookies[$cookie->getName()] = $cookie;
+        }
+
+        foreach (['jwt_token', 'refresh_token'] as $name) {
+            $this->assertArrayHasKey($name, $cookies, "Le cookie $name doit être posé au login");
+            $this->assertTrue($cookies[$name]->isHttpOnly(), "$name doit être httpOnly (illisible par JavaScript)");
+            $this->assertTrue($cookies[$name]->isSecure(), "$name doit être limité à HTTPS");
+        }
+    }
+
+    public function testMeReturnsSessionIdentityViaCookie(): void
+    {
+        $client = static::createClient();
+        $username = $this->registerAndLogin($client);
+
+        // Aucun header Authorization : seule l'authentification par cookie est en jeu
+        $client->request('GET', '/api/me');
+
+        $this->assertResponseStatusCodeSame(200);
+        $content = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals($username, $content['username']);
+        $this->assertContains('ROLE_USER', $content['roles']);
+    }
+
+    public function testMeRequiresAuthentication(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/api/me');
+
+        $this->assertResponseStatusCodeSame(401);
+    }
+
+    public function testLogoutClearsSession(): void
+    {
+        $client = static::createClient();
+        $this->registerAndLogin($client);
+
+        $client->request('POST', '/api/logout');
+        $this->assertResponseStatusCodeSame(200);
+
+        // Les cookies expirés renvoyés par /api/logout doivent invalider la session
+        $client->request('GET', '/api/me');
+        $this->assertResponseStatusCodeSame(401);
+    }
 }
