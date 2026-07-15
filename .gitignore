@@ -20,3 +20,4 @@ front/coverage*/
 
 # Fichier auto-généré par Symfony Flex
 back/config/reference.php
+~$*
