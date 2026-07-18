@@ -74,6 +74,7 @@ describe('exportCompositionAsJpeg', () => {
                         stroke: jest.fn(),
                         drawImage: jest.fn(),
                         measureText: jest.fn(() => ({ width: 50 })),
+                        scale: jest.fn(),
                     })),
                     toDataURL: jest.fn(() => 'data:image/jpeg;base64,mock'),
                 };
@@ -141,6 +142,7 @@ describe('exportCompositionAsJpeg', () => {
                         lineTo: jest.fn(), quadraticCurveTo: jest.fn(), fill: jest.fn(),
                         stroke: jest.fn(), drawImage: jest.fn(),
                         measureText: jest.fn(() => ({ width: 50 })),
+                        scale: jest.fn(),
                         fillStyle: '', strokeStyle: '', lineWidth: 0, font: '', textAlign: '',
                     })),
                     toDataURL: jest.fn(() => 'data:image/jpeg;base64,mock'),

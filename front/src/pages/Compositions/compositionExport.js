@@ -15,14 +15,20 @@ const GRAY    = '#8b949e';
 const SWAP_BG = '#1c2128';
 
 const COLS       = 5;
-const CELL_W     = 260;
-const CELL_H     = 190;
 const PAD        = 12;
 const ICON_SIZE  = 28;
 const SWAP_SIZE  = 20;
 const HEADER_H   = 72;
 const FOOTER_H   = 32;
 const PAGE_SIZE  = 20; // players per page
+const EXPORT_SCALE = 2; // rendu à 2x pour un export net (au lieu d'un canvas 1x pixelisé)
+
+// CELL_W doit accueillir la ligne de slots la plus large possible (arme + bouclier
+// + 7 autres emplacements) avec de la marge des deux côtés, sinon le dernier icône
+// (monture) déborde du cadre de la carte — cf. capture utilisateur.
+const MAX_SLOT_ROW_W = SLOT_ORDER.length * (ICON_SIZE + 4) - 4;
+const CELL_W = MAX_SLOT_ROW_W + 32;
+const CELL_H = 190;
 
 const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
@@ -96,10 +102,12 @@ function drawPage(canvas, comp, pageIndex, totalPages, icons) {
 
     const W = COLS * CELL_W + PAD * 2;
     const H = HEADER_H + rows * CELL_H + FOOTER_H + PAD;
-    canvas.width  = W;
-    canvas.height = H;
+    canvas.width  = W * EXPORT_SCALE;
+    canvas.height = H * EXPORT_SCALE;
 
     const ctx = canvas.getContext('2d');
+    ctx.scale(EXPORT_SCALE, EXPORT_SCALE);
+    ctx.imageSmoothingQuality = 'high';
 
     // Background
     ctx.fillStyle = BG;
@@ -222,7 +230,7 @@ export async function exportCompositionAsJpeg(comp) {
         const canvas = document.createElement('canvas');
         drawPage(canvas, comp, p, totalPages, icons);
 
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.92);
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.97);
         const link    = document.createElement('a');
         const suffix  = totalPages > 1 ? `_partie${p + 1}` : '';
         link.download = `${comp.name.replace(/[^a-z0-9]/gi, '_')}${suffix}.jpg`;
