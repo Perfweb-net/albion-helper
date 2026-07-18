@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
     Box, Container, Typography, Button, TextField, IconButton, Tooltip,
     CircularProgress, Alert, Paper, Chip, ToggleButtonGroup, ToggleButton,
-    Dialog, DialogTitle, DialogContent, DialogActions, Divider, Snackbar
+    Dialog, DialogTitle, DialogContent, DialogActions, Divider, Snackbar, useTheme
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -23,11 +23,30 @@ import { exportCompositionAsJpeg } from './compositionExport';
 
 const SLOTS = ['weapon', 'offhand', 'head', 'armor', 'boots', 'cape', 'food', 'potion', 'mount'];
 
+// Cette page utilisait des couleurs GitHub-dark codées en dur, ignorant le
+// thème clair (texte clair sur fond clair devenu illisible). On dérive les
+// mêmes teintes visuelles depuis le thème actif au lieu de valeurs fixes.
+function compositionPalette(theme) {
+    const isDark = theme.palette.mode === 'dark';
+    return {
+        surface:    isDark ? '#161b22' : '#fdf7ec',
+        surfaceAlt: isDark ? '#21262d' : '#f0e8d4',
+        sunken:     isDark ? '#0d1117' : '#ffffff',
+        border:     isDark ? '#30363d' : 'rgba(139,105,20,0.35)',
+        borderSoft: isDark ? '#21262d' : 'rgba(139,105,20,0.2)',
+        muted:      theme.palette.text.secondary,
+        text:       theme.palette.text.primary,
+        gold:       theme.palette.primary.main,
+    };
+}
+
 function emptyPlayer(index, t) {
     return { name: t('compositions.player_default_name', { n: index + 1 }), weapon: null, offhand: null, head: null, armor: null, boots: null, cape: null, food: null, potion: null, mount: null, swaps: {} };
 }
 
 function SlotButton({ item, onClick, size = 44, showLabel, label, chooseLabel }) {
+    const theme = useTheme();
+    const pal = compositionPalette(theme);
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.3 }}>
             <Tooltip title={item?.name ?? chooseLabel ?? label}>
@@ -35,11 +54,11 @@ function SlotButton({ item, onClick, size = 44, showLabel, label, chooseLabel })
                     onClick={onClick}
                     sx={{
                         width: size, height: size, borderRadius: 1, cursor: 'pointer',
-                        border: item ? '1.5px solid rgba(201,168,76,0.5)' : '1.5px dashed #30363d',
-                        bgcolor: item ? '#21262d' : '#161b22',
+                        border: item ? '1.5px solid rgba(201,168,76,0.5)' : `1.5px dashed ${pal.border}`,
+                        bgcolor: item ? pal.surfaceAlt : pal.surface,
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         overflow: 'hidden', position: 'relative',
-                        '&:hover': { borderColor: '#c9a84c', bgcolor: '#21262d' },
+                        '&:hover': { borderColor: pal.gold, bgcolor: pal.surfaceAlt },
                         transition: 'all 0.15s',
                     }}
                 >
@@ -57,7 +76,7 @@ function SlotButton({ item, onClick, size = 44, showLabel, label, chooseLabel })
                 </Box>
             </Tooltip>
             {showLabel && (
-                <Typography sx={{ fontSize: '0.58rem', color: '#8b949e', lineHeight: 1 }}>{label}</Typography>
+                <Typography sx={{ fontSize: '0.58rem', color: pal.muted, lineHeight: 1 }}>{label}</Typography>
             )}
         </Box>
     );
@@ -65,6 +84,8 @@ function SlotButton({ item, onClick, size = 44, showLabel, label, chooseLabel })
 
 function PlayerRow({ player, index, onChange, onRemove }) {
     const { t } = useTranslation();
+    const theme = useTheme();
+    const pal = compositionPalette(theme);
     const SLOT_LABELS = {
         weapon: t('compositions.slot_weapon'), offhand: t('compositions.slot_offhand'),
         head: t('compositions.slot_head'), armor: t('compositions.slot_armor'),
@@ -106,9 +127,9 @@ function PlayerRow({ player, index, onChange, onRemove }) {
     };
 
     return (
-        <Paper elevation={0} sx={{ p: 1.5, mb: 1, bgcolor: '#161b22', border: '1px solid #21262d', borderRadius: 2, '&:hover': { borderColor: 'rgba(201,168,76,0.2)' } }}>
+        <Paper elevation={0} sx={{ p: 1.5, mb: 1, bgcolor: pal.surface, border: `1px solid ${pal.borderSoft}`, borderRadius: 2, '&:hover': { borderColor: 'rgba(201,168,76,0.2)' } }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, flexWrap: 'wrap' }}>
-                <Typography sx={{ color: '#8b949e', fontSize: '0.8rem', minWidth: 24 }}>{index + 1}.</Typography>
+                <Typography sx={{ color: pal.muted, fontSize: '0.8rem', minWidth: 24 }}>{index + 1}.</Typography>
 
                 <TextField
                     size="small"
@@ -125,7 +146,7 @@ function PlayerRow({ player, index, onChange, onRemove }) {
                         <SlotButton item={player[slot]} label={SLOT_LABELS[slot]} chooseLabel={t('compositions.choose_slot', { slot: SLOT_LABELS[slot] })} showLabel onClick={() => setPicker({ slot, isSwap: false })} />
                         {player[slot] && (
                             <IconButton size="small" onClick={clearSlot(slot, false)}
-                                sx={{ position: 'absolute', top: -6, right: -6, bgcolor: '#0d1117', p: '2px', '&:hover': { bgcolor: '#f44336' } }}>
+                                sx={{ position: 'absolute', top: -6, right: -6, bgcolor: pal.sunken, p: '2px', '&:hover': { bgcolor: '#f44336' } }}>
                                 <DeleteIcon sx={{ fontSize: 10 }} />
                             </IconButton>
                         )}
@@ -136,7 +157,7 @@ function PlayerRow({ player, index, onChange, onRemove }) {
 
                 <Tooltip title={showSwaps ? t('compositions.hide_swaps') : t('compositions.manage_swaps')}>
                     <IconButton size="small" onClick={() => setShowSwaps(v => !v)}
-                        sx={{ color: showSwaps ? '#c9a84c' : '#8b949e', border: '1px solid', borderColor: showSwaps ? 'rgba(201,168,76,0.5)' : '#30363d' }}>
+                        sx={{ color: showSwaps ? pal.gold : pal.muted, border: '1px solid', borderColor: showSwaps ? 'rgba(201,168,76,0.5)' : pal.border }}>
                         <SwapHorizIcon fontSize="small" />
                     </IconButton>
                 </Tooltip>
@@ -150,13 +171,13 @@ function PlayerRow({ player, index, onChange, onRemove }) {
 
             {showSwaps && (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 1, pl: 5, flexWrap: 'wrap' }}>
-                    <Chip label="⇄ swap" size="small" sx={{ bgcolor: '#21262d', color: '#c9a84c', fontSize: '0.7rem', height: 20 }} />
+                    <Chip label="⇄ swap" size="small" sx={{ bgcolor: pal.surfaceAlt, color: pal.gold, fontSize: '0.7rem', height: 20 }} />
                     {visibleSlots.map(slot => (
                         <Box key={`swap-${slot}`} sx={{ position: 'relative' }}>
                             <SlotButton item={player.swaps?.[slot] ?? null} label={SLOT_LABELS[slot]} chooseLabel={t('compositions.choose_slot', { slot: SLOT_LABELS[slot] })} showLabel size={34} onClick={() => setPicker({ slot, isSwap: true })} />
                             {player.swaps?.[slot] && (
                                 <IconButton size="small" onClick={clearSlot(slot, true)}
-                                    sx={{ position: 'absolute', top: -5, right: -5, bgcolor: '#0d1117', p: '1px', '&:hover': { bgcolor: '#f44336' } }}>
+                                    sx={{ position: 'absolute', top: -5, right: -5, bgcolor: pal.sunken, p: '1px', '&:hover': { bgcolor: '#f44336' } }}>
                                     <DeleteIcon sx={{ fontSize: 9 }} />
                                 </IconButton>
                             )}
@@ -178,6 +199,8 @@ export default function CompositionEditor() {
     const navigate = useNavigate();
     const { t } = useTranslation();
     const { user } = useContext(UserContext);
+    const theme = useTheme();
+    const pal = compositionPalette(theme);
 
     const [comp, setComp]           = useState(null);
     const [name, setName]           = useState('');
@@ -252,7 +275,7 @@ export default function CompositionEditor() {
     };
 
     const VISIBILITY_CONFIG = {
-        private:  { label: t('compositions.visibility_private'),  icon: <LockIcon   sx={{ fontSize: 14 }} />, color: '#8b949e' },
+        private:  { label: t('compositions.visibility_private'),  icon: <LockIcon   sx={{ fontSize: 14 }} />, color: pal.muted },
         url_only: { label: t('compositions.visibility_url_only'), icon: <LinkIcon   sx={{ fontSize: 14 }} />, color: '#58a6ff' },
         public:   { label: t('compositions.visibility_public'),   icon: <PublicIcon sx={{ fontSize: 14 }} />, color: '#3fb950' },
     };
@@ -279,7 +302,7 @@ export default function CompositionEditor() {
                     inputProps={{ style: { fontFamily: 'Cinzel, serif', fontSize: '1rem', fontWeight: 700 } }}
                 />
 
-                <Typography sx={{ color: '#8b949e', fontSize: '0.82rem' }}>
+                <Typography sx={{ color: pal.muted, fontSize: '0.82rem' }}>
                     {t('compositions.player_counter', { count: players.length })}
                 </Typography>
 
@@ -290,7 +313,7 @@ export default function CompositionEditor() {
                         exclusive
                         onChange={(_, v) => { if (v) setVisibility(v); }}
                         size="small"
-                        sx={{ bgcolor: '#0d1117', border: '1px solid #30363d', borderRadius: 1 }}
+                        sx={{ bgcolor: pal.sunken, border: `1px solid ${pal.border}`, borderRadius: 1 }}
                     >
                         {Object.entries(VISIBILITY_CONFIG).map(([val, cfg]) => (
                             <ToggleButton
@@ -298,9 +321,9 @@ export default function CompositionEditor() {
                                 value={val}
                                 sx={{
                                     px: 1.5, py: 0.5, gap: 0.5, fontSize: '0.75rem', border: 'none',
-                                    color: visibility === val ? cfg.color : '#8b949e',
-                                    '&.Mui-selected': { bgcolor: '#21262d', color: cfg.color },
-                                    '&:hover': { bgcolor: '#21262d' },
+                                    color: visibility === val ? cfg.color : pal.muted,
+                                    '&.Mui-selected': { bgcolor: pal.surfaceAlt, color: cfg.color },
+                                    '&:hover': { bgcolor: pal.surfaceAlt },
                                 }}
                             >
                                 {cfg.icon}
@@ -348,10 +371,10 @@ export default function CompositionEditor() {
 
             {/* Share dialog */}
             <Dialog open={shareDialog} onClose={() => setShareDialog(false)} maxWidth="sm" fullWidth
-                PaperProps={{ sx: { bgcolor: '#161b22', border: '1px solid rgba(201,168,76,0.25)' } }}>
-                <DialogTitle sx={{ fontFamily: 'Cinzel, serif', color: '#c9a84c' }}>{t('compositions.share_dialog_title')}</DialogTitle>
+                PaperProps={{ sx: { bgcolor: pal.surface, border: '1px solid rgba(201,168,76,0.25)' } }}>
+                <DialogTitle sx={{ fontFamily: 'Cinzel, serif', color: pal.gold }}>{t('compositions.share_dialog_title')}</DialogTitle>
                 <DialogContent>
-                    <Typography sx={{ fontSize: '0.82rem', mb: 1.5, color: '#8b949e' }}>
+                    <Typography sx={{ fontSize: '0.82rem', mb: 1.5, color: pal.muted }}>
                         {visibility === 'public'
                             ? t('compositions.share_hint_public')
                             : t('compositions.share_hint_url_only')}
@@ -360,7 +383,7 @@ export default function CompositionEditor() {
                         <TextField size="small" fullWidth
                             value={`${window.location.origin}/compositions/share/${comp?.shareToken}`}
                             InputProps={{ readOnly: true, sx: { fontSize: '0.78rem' } }} />
-                        <IconButton onClick={copyShareLink} size="small" sx={{ color: '#c9a84c' }}>
+                        <IconButton onClick={copyShareLink} size="small" sx={{ color: pal.gold }}>
                             <ContentCopyIcon />
                         </IconButton>
                     </Box>

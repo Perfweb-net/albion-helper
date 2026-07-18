@@ -1,21 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
-    Box, Container, Typography, CircularProgress, Alert, Button, Chip, Tooltip
+    Box, Container, Typography, CircularProgress, Alert, Button, Chip, Tooltip, useTheme
 } from '@mui/material';
 import GroupsIcon from '@mui/icons-material/Groups';
 import DownloadIcon from '@mui/icons-material/Download';
 import PublicIcon from '@mui/icons-material/Public';
 import LinkIcon from '@mui/icons-material/Link';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import api from '../../api';
 import { exportCompositionAsJpeg } from './compositionExport';
 
 const SLOTS = ['weapon', 'offhand', 'head', 'armor', 'boots', 'cape', 'food', 'potion', 'mount'];
 
+// cf. CompositionEditor.jsx : mêmes teintes dérivées du thème actif au lieu de
+// couleurs sombres codées en dur (illisibles en thème clair).
+function sharePalette(theme) {
+    const isDark = theme.palette.mode === 'dark';
+    return {
+        surface:    isDark ? '#161b22' : '#fdf7ec',
+        surfaceAlt: isDark ? '#21262d' : '#f0e8d4',
+        border:     isDark ? '#30363d' : 'rgba(139,105,20,0.35)',
+        muted:      theme.palette.text.secondary,
+        text:       theme.palette.text.primary,
+    };
+}
+
 function SlotIcon({ item, size = 36 }) {
+    const theme = useTheme();
+    const pal = sharePalette(theme);
     if (!item) return (
-        <Box sx={{ width: size, height: size, border: '1px dashed #30363d', borderRadius: 1, bgcolor: '#161b22' }} />
+        <Box sx={{ width: size, height: size, border: `1px dashed ${pal.border}`, borderRadius: 1, bgcolor: pal.surface }} />
     );
     return (
         <Tooltip title={item.name ?? item.uniqueName}>
@@ -32,6 +48,8 @@ function SlotIcon({ item, size = 36 }) {
 
 function PlayerCard({ player, index }) {
     const { t } = useTranslation();
+    const theme = useTheme();
+    const pal = sharePalette(theme);
     const SLOT_LABELS = {
         weapon: t('compositions.slot_weapon'), offhand: t('compositions.slot_offhand'),
         head: t('compositions.slot_head'), armor: t('compositions.slot_armor'),
@@ -44,20 +62,20 @@ function PlayerCard({ player, index }) {
     const swapSlots    = visibleSlots.filter(s => player.swaps?.[s]);
 
     return (
-        <Box sx={{ p: 1.5, bgcolor: '#161b22', border: '1px solid #21262d', borderRadius: 2 }}>
-            <Typography sx={{ fontSize: '0.82rem', fontWeight: 700, color: '#e8dcc8', mb: 1 }}>
+        <Box sx={{ p: 1.5, bgcolor: pal.surface, border: `1px solid ${pal.surfaceAlt}`, borderRadius: 2 }}>
+            <Typography sx={{ fontSize: '0.82rem', fontWeight: 700, color: pal.text, mb: 1 }}>
                 {index + 1}. {player.name}
             </Typography>
             <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>
                 {visibleSlots.map(slot => (
                     <Box key={slot} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 0.2 }}>
                         <SlotIcon item={player[slot]} size={32} />
-                        <Typography sx={{ fontSize: '0.55rem', color: '#8b949e' }}>{SLOT_LABELS[slot]}</Typography>
+                        <Typography sx={{ fontSize: '0.55rem', color: pal.muted }}>{SLOT_LABELS[slot]}</Typography>
                     </Box>
                 ))}
             </Box>
             {swapSlots.length > 0 && (
-                <Box sx={{ display: 'flex', gap: 0.5, mt: 0.5, pl: 0.5, flexWrap: 'wrap', borderTop: '1px solid #21262d', pt: 0.5, alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', gap: 0.5, mt: 0.5, pl: 0.5, flexWrap: 'wrap', borderTop: `1px solid ${pal.surfaceAlt}`, pt: 0.5, alignItems: 'center' }}>
                     <Typography sx={{ fontSize: '0.65rem', color: 'primary.main', mr: 0.5 }}>⇄</Typography>
                     {swapSlots.map(slot => (
                         <SlotIcon key={`swap-${slot}`} item={player.swaps[slot]} size={26} />
@@ -70,7 +88,10 @@ function PlayerCard({ player, index }) {
 
 export default function CompositionShare() {
     const { token } = useParams();
+    const navigate = useNavigate();
     const { t } = useTranslation();
+    const theme = useTheme();
+    const pal = sharePalette(theme);
     const [comp, setComp]           = useState(null);
     const [loading, setLoading]     = useState(true);
     const [error, setError]         = useState('');
@@ -97,6 +118,9 @@ export default function CompositionShare() {
     if (error) return (
         <Container maxWidth="sm" sx={{ mt: 6 }}>
             <Alert severity="error">{error}</Alert>
+            <Button startIcon={<ArrowBackIcon />} onClick={() => navigate('/compositions')} sx={{ mt: 2 }}>
+                {t('common.back')}
+            </Button>
         </Container>
     );
 
@@ -108,19 +132,27 @@ export default function CompositionShare() {
 
     return (
         <Container maxWidth="xl" sx={{ py: 3 }}>
+            <Button
+                startIcon={<ArrowBackIcon />}
+                onClick={() => navigate('/compositions')}
+                sx={{ mb: 2, color: 'text.secondary', '&:hover': { color: '#c9a84c' } }}
+            >
+                {t('common.back')}
+            </Button>
+
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3, flexWrap: 'wrap' }}>
                 <GroupsIcon sx={{ color: 'primary.main', fontSize: 32 }} />
                 <Typography variant="h4" sx={{ fontFamily: 'Cinzel, serif', color: 'primary.main', flex: 1 }}>
                     {comp.name}
                 </Typography>
-                <Chip label={t('compositions.by_owner', { owner: comp.owner })} size="small" sx={{ bgcolor: '#21262d' }} />
-                <Chip label={t('compositions.player_count', { count: comp.players.length })} size="small" sx={{ bgcolor: '#21262d' }} />
+                <Chip label={t('compositions.by_owner', { owner: comp.owner })} size="small" sx={{ bgcolor: pal.surfaceAlt }} />
+                <Chip label={t('compositions.player_count', { count: comp.players.length })} size="small" sx={{ bgcolor: pal.surfaceAlt }} />
                 {visCfg && (
                     <Chip
                         icon={visCfg.icon}
                         label={visCfg.label}
                         size="small"
-                        sx={{ bgcolor: '#21262d', color: visCfg.color, '& .MuiChip-icon': { color: visCfg.color } }}
+                        sx={{ bgcolor: pal.surfaceAlt, color: visCfg.color, '& .MuiChip-icon': { color: visCfg.color } }}
                     />
                 )}
                 <Button
