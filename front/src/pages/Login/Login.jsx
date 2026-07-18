@@ -58,6 +58,7 @@ const Login = () => {
                             onChange={(e) => setUsername(e.target.value)}
                             required
                             className="login__textfield"
+                            sx={{ mb: 3 }}
                             autoComplete="username"
                             inputProps={{
                                 'aria-required': 'true',
@@ -73,17 +74,19 @@ const Login = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                             className="login__textfield"
+                            sx={{ mb: 3 }}
                             autoComplete="current-password"
                             inputProps={{
                                 'aria-required': 'true',
                                 'aria-label': "Saisissez votre mot de passe"
                             }}
                         />
-                        
+
                         {error && (
-                            <Alert 
-                                severity="error" 
-                                className="login__alert" 
+                            <Alert
+                                severity="error"
+                                className="login__alert"
+                                sx={{ mb: 3 }}
                                 role="alert"
                                 aria-live="assertive"
                             >
@@ -99,6 +102,7 @@ const Login = () => {
                             size="large"
                             startIcon={<LoginIcon />}
                             className="login__button"
+                            sx={{ mb: 3 }}
                             aria-label="Se connecter à mon compte"
                         >
                             Se connecter

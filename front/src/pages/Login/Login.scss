@@ -37,17 +37,11 @@
     color: $text-secondary;
   }
 
-  &__textfield {
-    margin-bottom: 24px;
-  }
-
-  &__alert {
-    margin-bottom: 24px;
-  }
-
+  // __textfield / __alert / __button : l'espacement (margin-bottom) est posé
+  // via le prop sx dans le composant — un margin-bottom CSS classique ici est
+  // écrasé par les styles internes de MUI (même spécificité, insérés après).
   &__button {
     padding: 12px 0;
-    margin-bottom: 24px;
     font-size: 1rem;
     font-weight: 600;
   }

@@ -46,6 +46,7 @@ const Register = () => {
                             onChange={(e) => setUsername(e.target.value)}
                             required
                             className="register__textfield"
+                            sx={{ mb: 3 }}
                             autoComplete="username"
                             inputProps={{
                                 'aria-required': 'true',
@@ -61,17 +62,19 @@ const Register = () => {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                             className="register__textfield"
+                            sx={{ mb: 3 }}
                             autoComplete="new-password"
                             inputProps={{
                                 'aria-required': 'true',
                                 'aria-label': "Choisissez un mot de passe sécurisé"
                             }}
                         />
-                        
+
                         {error && (
-                            <Alert 
-                                severity="error" 
+                            <Alert
+                                severity="error"
                                 className="register__alert"
+                                sx={{ mb: 3 }}
                                 role="alert"
                                 aria-live="assertive"
                             >
@@ -87,6 +90,7 @@ const Register = () => {
                             size="large"
                             startIcon={<PersonAddIcon />}
                             className="register__button"
+                            sx={{ mb: 3 }}
                             aria-label="Créer mon compte"
                         >
                             S'inscrire
