@@ -9,6 +9,14 @@ framework:
             interval: '1 hour'
             lock_factory: null
 
+        # Garde-fou général sur l'API : 50 requêtes/minute par utilisateur connecté
+        # (par IP pour les routes publiques) — cf. ApiRateLimitSubscriber.
+        api_general:
+            policy: 'sliding_window'
+            limit: 50
+            interval: '1 minute'
+            lock_factory: null
+
 # En test, le compteur persiste dans le cache entre les runs : on désactive de fait la limite
 when@test:
     framework:
@@ -17,4 +25,9 @@ when@test:
                 policy: 'fixed_window'
                 limit: 100000
                 interval: '1 hour'
+                lock_factory: null
+            api_general:
+                policy: 'fixed_window'
+                limit: 100000
+                interval: '1 minute'
                 lock_factory: null

@@ -248,7 +248,8 @@
     "search": "Search",
     "back": "Back",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "rate_limited": "Too many requests — wait a moment, then click \"Search\" to continue."
   },
   "theme": {
     "dark": "Dark mode",

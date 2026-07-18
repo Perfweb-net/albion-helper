@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { triggerRateLimited } from './utils/rateLimitBus';
 
 // L'authentification vit dans des cookies httpOnly posés par l'API :
 // aucun jeton n'est lisible (ni stocké) côté JavaScript.
@@ -31,6 +32,12 @@ api.interceptors.response.use(
     async (error) => {
         const { config, response } = error;
         const url = config?.url || '';
+
+        // Quota de requêtes dépassé (cf. ApiRateLimitSubscriber, 50/min côté back) :
+        // avertit l'app entière — les recherches auto passent en mode manuel.
+        if (response?.status === 429) {
+            triggerRateLimited();
+        }
 
         // Ne pas rediriger pour les échecs d'authentification eux-mêmes (mauvais identifiants,
         // inscription refusée) : la page doit afficher l'erreur à l'utilisateur.

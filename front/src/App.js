@@ -22,10 +22,12 @@ import Compositions from "./pages/Compositions/Compositions";
 import CompositionEditor from "./pages/Compositions/CompositionEditor";
 import CompositionShare from "./pages/Compositions/CompositionShare";
 import Battles from "./pages/Battles/Battles";
+import RateLimitToast from "./components/RateLimitToast";
 
 const App = () => {
     return (
         <Router>
+            <RateLimitToast/>
             <Header/>
             <main style={{ marginBottom: '80px', marginTop: '20px', flex: 1 }}>
                 <Routes>
