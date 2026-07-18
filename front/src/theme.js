@@ -145,6 +145,16 @@ const buildTheme = (mode) => {
               letterSpacing: '0.04em',
               '&.Mui-focused': { color: GOLD },
             },
+            // L'encoche du contour (légende cachée qui calcule sa largeur) hérite
+            // par défaut la police de MuiOutlinedInput-root (Crimson) au lieu de
+            // celle du label (Cinzel + letter-spacing, plus large) — l'écart de
+            // largeur grandit avec le texte, jusqu'à faire déborder le label
+            // hors de l'encoche pour les libellés longs. On aligne les deux.
+            '& .MuiOutlinedInput-notchedOutline legend': {
+              fontFamily: CINZEL,
+              letterSpacing: '0.04em',
+              fontSize: '0.6375rem', // 0.85rem (label) × 0.75 (facteur de réduction MUI au focus)
+            },
           },
         },
       },
