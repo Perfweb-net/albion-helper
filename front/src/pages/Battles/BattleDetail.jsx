@@ -66,7 +66,7 @@ const BattleDetail = ({ battleId }) => {
                         metric={(p) => `${p.kills} ${t('battles.kills')}`} />
                 </Grid2>
                 <Grid2 size={{ xs: 6, md: 3 }}>
-                    <MvpCard icon={<ShieldIcon />} color="#c9a84c" label={t('battles.mvp_top_fame')} player={mvp.topFame}
+                    <MvpCard icon={<ShieldIcon />} color="primary.main" label={t('battles.mvp_top_fame')} player={mvp.topFame}
                         metric={(p) => `${fmtFame(p.fame)} ${t('battles.fame')}`} />
                 </Grid2>
                 <Grid2 size={{ xs: 6, md: 3 }}>

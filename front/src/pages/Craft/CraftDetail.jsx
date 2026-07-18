@@ -242,7 +242,7 @@ const CraftDetail = () => {
     if (loadingRecipe) {
         return (
             <Container maxWidth="lg" sx={{ py: 6, textAlign: 'center' }}>
-                <CircularProgress sx={{ color: '#c9a84c' }} />
+                <CircularProgress sx={{ color: 'primary.main' }} />
             </Container>
         );
     }
@@ -268,7 +268,7 @@ const CraftDetail = () => {
             <Button
                 startIcon={<ArrowBackIcon />}
                 onClick={() => navigate('/craft')}
-                sx={{ mb: 2, color: 'text.secondary', '&:hover': { color: '#c9a84c' } }}
+                sx={{ mb: 2, color: 'text.secondary', '&:hover': { color: 'primary.main' } }}
             >
                 {t('craft.detail.back')}
             </Button>
@@ -284,7 +284,7 @@ const CraftDetail = () => {
                         onError={e => { e.target.style.display = 'none'; }}
                     />
                     <Box sx={{ flex: 1 }}>
-                        <Typography variant="h5" fontWeight={700} sx={{ fontFamily: 'Cinzel, serif', color: '#c9a84c', mb: 0.5 }}>
+                        <Typography variant="h5" fontWeight={700} sx={{ fontFamily: 'Cinzel, serif', color: 'primary.main', mb: 0.5 }}>
                             {recipe.name || recipe.uniqueName}
                         </Typography>
                         {recipe.name && (
@@ -317,7 +317,7 @@ const CraftDetail = () => {
                         <IconButton
                             onClick={() => fetchPrices(recipe)}
                             disabled={loadingPrices}
-                            sx={{ color: '#c9a84c' }}
+                            sx={{ color: 'primary.main' }}
                             title={t('craft.refresh_prices')}
                         >
                             <RefreshIcon />
@@ -342,7 +342,7 @@ const CraftDetail = () => {
                 <Grid2 size={{ xs: 12, md: 4 }}>
                     <Card sx={{ border: '1px solid rgba(201,168,76,0.2)', position: 'sticky', top: 80 }}>
                         <CardContent sx={{ p: 2.5 }}>
-                            <Typography variant="subtitle2" sx={{ fontFamily: 'Cinzel, serif', color: '#c9a84c', mb: 2 }}>
+                            <Typography variant="subtitle2" sx={{ fontFamily: 'Cinzel, serif', color: 'primary.main', mb: 2 }}>
                                 {t('craft.settings.title')}
                             </Typography>
 
@@ -452,7 +452,7 @@ const CraftDetail = () => {
                                 value={specializations[specBranch] ?? 0}
                                 min={0} max={100} step={1}
                                 onChange={(_, v) => setSpecializations(prev => ({ ...prev, [specBranch]: v }))}
-                                sx={{ color: '#c9a84c', mb: 0.5 }}
+                                sx={{ color: 'primary.main', mb: 0.5 }}
                             />
                             {calcData && (
                                 <Typography variant="caption" color="text.secondary">
@@ -506,7 +506,7 @@ const CraftDetail = () => {
                     )}
 
                     {/* ── Ingredients table ── */}
-                    <Typography variant="subtitle2" sx={{ fontFamily: 'Cinzel, serif', mb: 1.5, color: '#c9a84c' }}>
+                    <Typography variant="subtitle2" sx={{ fontFamily: 'Cinzel, serif', mb: 1.5, color: 'primary.main' }}>
                         {t('craft.detail.ingredients')}
                     </Typography>
                     <TableContainer component={Paper} sx={{ mb: 3, border: '1px solid rgba(201,168,76,0.15)' }}>
@@ -605,7 +605,7 @@ const CraftDetail = () => {
                                         )}
                                         <TableRow sx={{ bgcolor: 'rgba(201,168,76,0.06)' }}>
                                             <TableCell colSpan={3} sx={{ fontWeight: 700 }}>{t('craft.table.effective_cost')}</TableCell>
-                                            <TableCell align="right" sx={{ fontWeight: 700, color: '#c9a84c' }}>
+                                            <TableCell align="right" sx={{ fontWeight: 700, color: 'primary.main' }}>
                                                 {fmt(calcData.effectiveCost)} Ag
                                             </TableCell>
                                             {useFocus && <TableCell />}
@@ -617,7 +617,7 @@ const CraftDetail = () => {
                     </TableContainer>
 
                     {/* ── Output item + P&L ── */}
-                    <Typography variant="subtitle2" sx={{ fontFamily: 'Cinzel, serif', mb: 1.5, color: '#c9a84c' }}>
+                    <Typography variant="subtitle2" sx={{ fontFamily: 'Cinzel, serif', mb: 1.5, color: 'primary.main' }}>
                         {t('craft.detail.craft_result')}
                     </Typography>
                     <Card sx={{ mb: 3, border: '1px solid rgba(201,168,76,0.2)' }}>
@@ -644,7 +644,7 @@ const CraftDetail = () => {
                                 </Box>
                                 <Box sx={{ textAlign: 'right' }}>
                                     <Typography variant="body2" color="text.secondary">{t('craft.detail.sell_price')}</Typography>
-                                    <Typography variant="h6" fontWeight={700} sx={{ color: '#c9a84c' }}>
+                                    <Typography variant="h6" fontWeight={700} sx={{ color: 'primary.main' }}>
                                         {calcData?.sellPriceUnit > 0 ? `${fmt(calcData.sellPriceUnit)} Ag` : 'N/A'}
                                     </Typography>
                                     <Box sx={{ display: 'flex', gap: 0.5, justifyContent: 'flex-end', mt: 0.5 }}>
@@ -663,7 +663,7 @@ const CraftDetail = () => {
                                         {
                                             label: t('craft.detail.gross_revenue'),
                                             value: fmt(calcData.grossRevenue),
-                                            color: '#c9a84c',
+                                            color: 'primary.main',
                                             sub: `${recipe.outputAmount * quantity} × ${fmt(calcData.sellPriceUnit)} Ag`,
                                         },
                                         {
@@ -675,7 +675,7 @@ const CraftDetail = () => {
                                         {
                                             label: t('craft.detail.net_revenue'),
                                             value: fmt(calcData.netRevenue),
-                                            color: '#c9a84c',
+                                            color: 'primary.main',
                                             bold: true,
                                             divider: true,
                                         },

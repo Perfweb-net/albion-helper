@@ -139,7 +139,7 @@ export default function CompositionShare() {
             <Button
                 startIcon={<ArrowBackIcon />}
                 onClick={() => navigate('/compositions')}
-                sx={{ mb: 2, color: 'text.secondary', '&:hover': { color: '#c9a84c' } }}
+                sx={{ mb: 2, color: 'text.secondary', '&:hover': { color: 'primary.main' } }}
             >
                 {t('common.back')}
             </Button>

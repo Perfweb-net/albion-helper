@@ -187,7 +187,7 @@ const Admin = () => {
                         icon={<PeopleIcon fontSize="large" />}
                         label={t('admin.total_users')}
                         value={stats?.totalUsers}
-                        color="#c9a84c"
+                        color="primary.main"
                     />
                 </Grid2>
                 <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
@@ -195,7 +195,7 @@ const Admin = () => {
                         icon={<PersonAddIcon fontSize="large" />}
                         label={t('admin.new_today')}
                         value={stats?.newToday}
-                        color="#e8c96b"
+                        color="primary.light"
                     />
                 </Grid2>
                 <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
@@ -203,7 +203,7 @@ const Admin = () => {
                         icon={<RouteIcon fontSize="large" />}
                         label={t('admin.active_routes')}
                         value={stats?.activeRoutes}
-                        color="#c9a84c"
+                        color="primary.main"
                     />
                 </Grid2>
                 <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
@@ -219,7 +219,7 @@ const Admin = () => {
                         icon={<SearchIcon fontSize="large" />}
                         label={t('admin.player_searches')}
                         value={stats?.playerSearches}
-                        color="#e8c96b"
+                        color="primary.light"
                     />
                 </Grid2>
                 <Grid2 size={{ xs: 12, sm: 6, md: 4 }}>
@@ -241,7 +241,7 @@ const Admin = () => {
                     <Grid2 container spacing={3} alignItems="center">
                         <Grid2 size={{ xs: 12, md: 4 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                                <InventoryIcon sx={{ color: '#c9a84c', fontSize: 36 }} />
+                                <InventoryIcon sx={{ color: 'primary.main', fontSize: 36 }} />
                                 <Box>
                                     <Typography variant="h5" sx={{ fontFamily: 'Cinzel, serif', fontWeight: 700 }}>
                                         {itemCounts.items.toLocaleString()}
@@ -282,7 +282,7 @@ const Admin = () => {
                     <Grid2 container spacing={3} alignItems="flex-start">
                         <Grid2 size={{ xs: 12, md: 6 }}>
                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-                                <TranslateIcon sx={{ color: '#c9a84c', fontSize: 32 }} />
+                                <TranslateIcon sx={{ color: 'primary.main', fontSize: 32 }} />
                                 <Typography variant="h6" sx={{ fontFamily: 'Cinzel, serif' }}>
                                     {t('admin.available_languages', { count: languages.length })}
                                 </Typography>

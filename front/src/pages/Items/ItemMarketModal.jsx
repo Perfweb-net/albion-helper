@@ -4,7 +4,7 @@ import {
     Dialog, DialogTitle, DialogContent, Box, Typography, Button,
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
     Paper, Chip, CircularProgress, Alert, Tooltip, IconButton,
-    FormControl, InputLabel, Select, MenuItem, Divider
+    FormControl, InputLabel, Select, MenuItem, Divider, useTheme
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -46,6 +46,7 @@ const buildHistoryChartData = (history) => {
 const ItemMarketModal = ({ item, onClose }) => {
     const { t } = useTranslation();
     const accents = useAccentColors();
+    const theme = useTheme();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -102,7 +103,7 @@ const ItemMarketModal = ({ item, onClose }) => {
                     onError={e => { e.target.style.display = 'none'; }}
                 />
                 <Box sx={{ flex: 1 }}>
-                    <Typography variant="h6" sx={{ fontFamily: 'Cinzel, serif', color: '#c9a84c' }}>{item.name}</Typography>
+                    <Typography variant="h6" sx={{ fontFamily: 'Cinzel, serif', color: 'primary.main' }}>{item.name}</Typography>
                     <Typography variant="caption" color="text.secondary">{item.uniqueName}</Typography>
                 </Box>
                 <FormControl size="small" sx={{ minWidth: 130, mr: 1 }}>
@@ -213,7 +214,7 @@ const ItemMarketModal = ({ item, onClose }) => {
                                     />
                                     <ChartTooltip
                                         contentStyle={{ backgroundColor: '#1e1a10', border: '1px solid rgba(201,168,76,0.4)', borderRadius: 4 }}
-                                        labelStyle={{ color: '#c9a84c', fontFamily: 'Cinzel, serif' }}
+                                        labelStyle={{ color: theme.palette.primary.main, fontFamily: 'Cinzel, serif' }}
                                         formatter={(v, name) => [v.toLocaleString() + ' silver', name]}
                                     />
                                     <Legend wrapperStyle={{ fontSize: 12 }} />
