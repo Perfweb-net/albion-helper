@@ -21,7 +21,9 @@ class ItemRepository extends ServiceEntityRepository
         $types  = [];
 
         if ($q !== '') {
-            $wheres[] = '(LOWER(i.unique_name) LIKE LOWER(:q) OR LOWER(i.localized_names::text) LIKE LOWER(:q))';
+            // unaccent() ignore les accents des deux côtés (colonne et recherche) :
+            // "epee" doit retrouver "Épée" comme "épée" le ferait.
+            $wheres[] = '(unaccent(LOWER(i.unique_name)) LIKE unaccent(LOWER(:q)) OR unaccent(LOWER(i.localized_names::text)) LIKE unaccent(LOWER(:q)))';
             $params['q'] = '%' . $q . '%';
         }
 
