@@ -14,21 +14,23 @@ import {
 import SearchIcon from "@mui/icons-material/Search";
 import GroupsIcon from "@mui/icons-material/Groups";
 import { useTranslation } from 'react-i18next';
+import { useDebouncedSearch } from '../../hooks/useDebouncedSearch';
 import './Guilds.scss';
 
 const Guilds = () => {  // Le nom du composant commence par une majuscule
     const { t } = useTranslation();
-    const [pseudo, setPseudo] = useState('');
     const [guilds, setGuilds] = useState('');
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        await api.get("/player/search?pseudo=" + pseudo).then(
+    const handleSubmit = async (term) => {
+        await api.get("/player/search?pseudo=" + term).then(
             (response) => {
                 setGuilds(response.data.guilds);
             }
         ).catch((error) => console.error('Error fetching player:', error));
     }
+
+    const { query: pseudo, setQuery: setPseudo, triggerSearch } = useDebouncedSearch(handleSubmit);
 
     return (
         <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -53,7 +55,7 @@ const Guilds = () => {  // Le nom du composant commence par une majuscule
                                 onChange={(e) => setPseudo(e.target.value)}
                                 onKeyPress={(e) => {
                                     if (e.key === 'Enter') {
-                                        handleSubmit();
+                                        triggerSearch();
                                     }
                                 }}
                                 placeholder={t('guilds.search_placeholder')}
@@ -64,7 +66,7 @@ const Guilds = () => {  // Le nom du composant commence par une majuscule
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={handleSubmit}
+                                onClick={triggerSearch}
                                 fullWidth
                                 size="large"
                                 startIcon={<SearchIcon />}

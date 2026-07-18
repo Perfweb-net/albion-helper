@@ -23,6 +23,7 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import { getItemPrices } from '../../api/albionDataApi';
 import api from '../../api';
 import ItemMarketModal from './ItemMarketModal';
+import { useDebouncedSearch } from '../../hooks/useDebouncedSearch';
 import './Items.scss';
 
 const LANG_MAP = { fr: 'FR-FR', en: 'EN-US', de: 'DE-DE', es: 'ES-ES', pt: 'PT-BR', ru: 'RU-RU', it: 'IT-IT', pl: 'PL-PL', zh: 'ZH-CN', ko: 'KO-KR', ja: 'JA-JP', tr: 'TR-TR' };
@@ -35,7 +36,6 @@ const getLocalizedName = (item, lang) => {
 const Items = () => {
     const { t, i18n } = useTranslation();
     const lang = i18n.language?.split('-')[0] || 'en';
-    const [searchTerm, setSearchTerm] = useState('');
     const [selectedTier, setSelectedTier] = useState('');
     const [selectedQuality, setSelectedQuality] = useState('');
     const [filteredItems, setFilteredItems] = useState([]);
@@ -51,13 +51,13 @@ const Items = () => {
         api.get('/items/count').then(r => setDbEmpty(r.data.count === 0)).catch(() => {});
     }, []);
 
-    const handleSearch = async () => {
-        if (!searchTerm && !selectedTier) return;
+    const handleSearch = async (term) => {
+        if (!term && !selectedTier) return;
         setLoading(true);
         setError('');
         try {
             const params = new URLSearchParams({ lang });
-            if (searchTerm) params.set('q', searchTerm);
+            if (term) params.set('q', term);
             if (selectedTier) params.set('tier', selectedTier);
             const res = await api.get(`/items/search?${params}`);
             setFilteredItems(res.data);
@@ -67,6 +67,8 @@ const Items = () => {
             setLoading(false);
         }
     };
+
+    const { query: searchTerm, setQuery: setSearchTerm, triggerSearch } = useDebouncedSearch(handleSearch);
 
     const handleGetPrices = async (itemId) => {
         if (itemPrices[itemId]) {
@@ -142,7 +144,7 @@ const Items = () => {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 onKeyPress={(e) => {
                                     if (e.key === 'Enter') {
-                                        handleSearch();
+                                        triggerSearch();
                                     }
                                 }}
                                 placeholder={t('items.item_name_placeholder')}
@@ -189,7 +191,7 @@ const Items = () => {
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={handleSearch}
+                                onClick={triggerSearch}
                                 fullWidth
                                 size="large"
                                 startIcon={<SearchIcon />}

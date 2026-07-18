@@ -13,11 +13,11 @@ import { useTranslation } from 'react-i18next';
 import api from '../../api';
 import BattleDetail from './BattleDetail';
 import { fmtFame, fmtDate } from '../../components/albion/albionFormat';
+import { useDebouncedSearch } from '../../hooks/useDebouncedSearch';
 
 const Battles = () => {
     const { t } = useTranslation();
 
-    const [query, setQuery] = useState('');
     const [results, setResults] = useState(null);          // { guilds, alliances }
     const [target, setTarget] = useState(null);            // { type:'guild'|'alliance', id, name }
     const [range, setRange] = useState('week');
@@ -26,11 +26,10 @@ const Battles = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
-    const doSearch = async () => {
-        if (query.trim().length < 2) return;
+    const doSearch = async (term) => {
         setLoading(true); setError(''); setResults(null); setBattles(null); setTarget(null); setSelectedBattle(null);
         try {
-            const res = await api.get(`/battles/search?q=${encodeURIComponent(query.trim())}`);
+            const res = await api.get(`/battles/search?q=${encodeURIComponent(term.trim())}`);
             setResults(res.data);
         } catch {
             setError(t('battles.search_error'));
@@ -38,6 +37,8 @@ const Battles = () => {
             setLoading(false);
         }
     };
+
+    const { query, setQuery, triggerSearch } = useDebouncedSearch(doSearch);
 
     const loadBattles = async (newTarget, newRange = range) => {
         setLoading(true); setError(''); setBattles(null); setSelectedBattle(null);
@@ -83,11 +84,11 @@ const Battles = () => {
                             <TextField
                                 fullWidth label={t('battles.search_label')} value={query}
                                 onChange={(e) => setQuery(e.target.value)}
-                                onKeyDown={(e) => e.key === 'Enter' && doSearch()}
+                                onKeyDown={(e) => e.key === 'Enter' && triggerSearch()}
                             />
                         </Grid2>
                         <Grid2 size={{ xs: 12, md: 2 }}>
-                            <Button fullWidth variant="contained" startIcon={<SearchIcon />} onClick={doSearch} sx={{ height: 56 }}>
+                            <Button fullWidth variant="contained" startIcon={<SearchIcon />} onClick={triggerSearch} sx={{ height: 56 }}>
                                 {t('common.search')}
                             </Button>
                         </Grid2>
