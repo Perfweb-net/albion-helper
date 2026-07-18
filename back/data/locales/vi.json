@@ -214,7 +214,8 @@
     "search": "Tìm kiếm",
     "back": "Quay lại",
     "yes": "Có",
-    "no": "Không"
+    "no": "Không",
+    "rate_limited": "Quá nhiều yêu cầu — vui lòng đợi một chút, sau đó nhấp vào “Tìm kiếm” để tiếp tục."
   },
   "theme": {
     "dark": "Chế độ tối",
@@ -421,7 +422,7 @@
     "share_hint_public": "Đội hình này là công khai và được liệt kê trong thư viện.",
     "share_hint_url_only": "Chỉ có thể truy cập qua liên kết này (không được liệt kê).",
     "search_placeholder": "Tìm kiếm…",
-    "search_hint": "Nhập tên để tìm vật phẩm T8",
+    "search_hint": "Nhập tên để tìm vật phẩm",
     "no_results": "Không có kết quả"
   },
   "craft": {

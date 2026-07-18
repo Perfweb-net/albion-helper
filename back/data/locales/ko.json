@@ -214,7 +214,8 @@
     "search": "검색",
     "back": "뒤로",
     "yes": "예",
-    "no": "아니오"
+    "no": "아니오",
+    "rate_limited": "요청이 너무 많습니다 — 잠시 기다린 후 “검색”을 클릭하여 계속하세요."
   },
   "theme": {
     "dark": "다크 모드",
@@ -421,7 +422,7 @@
     "share_hint_public": "이 구성은 공개이며 갤러리에 나열됩니다.",
     "share_hint_url_only": "이 링크를 통해서만 접근 가능 (비열거).",
     "search_placeholder": "검색…",
-    "search_hint": "T8 아이템을 검색하려면 이름을 입력하세요",
+    "search_hint": "아이템을 검색하려면 이름을 입력하세요",
     "no_results": "결과 없음"
   },
   "craft": {

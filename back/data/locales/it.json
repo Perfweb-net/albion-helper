@@ -214,7 +214,8 @@
     "search": "Cerca",
     "back": "Indietro",
     "yes": "Sì",
-    "no": "No"
+    "no": "No",
+    "rate_limited": "Troppe richieste — attendi un momento, poi clicca su «Cerca» per continuare."
   },
   "theme": {
     "dark": "Modalità scura",
@@ -421,7 +422,7 @@
     "share_hint_public": "Questa composizione è pubblica ed elencata nella galleria.",
     "share_hint_url_only": "Accessibile solo tramite questo link (non elencata).",
     "search_placeholder": "Cerca…",
-    "search_hint": "Inserisci un nome per cercare un oggetto T8",
+    "search_hint": "Inserisci un nome per cercare un oggetto",
     "no_results": "Nessun risultato"
   },
   "craft": {

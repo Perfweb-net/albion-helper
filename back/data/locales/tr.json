@@ -214,7 +214,8 @@
     "search": "Ara",
     "back": "Geri",
     "yes": "Evet",
-    "no": "Hayır"
+    "no": "Hayır",
+    "rate_limited": "Çok fazla istek — biraz bekleyin, ardından devam etmek için “Ara” düğmesine tıklayın."
   },
   "theme": {
     "dark": "Karanlık mod",
@@ -421,7 +422,7 @@
     "share_hint_public": "Bu kompozisyon herkese açık ve galeride listeleniyor.",
     "share_hint_url_only": "Yalnızca bu bağlantı aracılığıyla erişilebilir (listelenmemiş).",
     "search_placeholder": "Ara…",
-    "search_hint": "T8 eşya aramak için bir isim girin",
+    "search_hint": "Eşya aramak için bir isim girin",
     "no_results": "Sonuç bulunamadı"
   },
   "craft": {

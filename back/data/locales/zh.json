@@ -214,7 +214,8 @@
     "search": "搜索",
     "back": "返回",
     "yes": "是",
-    "no": "否"
+    "no": "否",
+    "rate_limited": "请求过多 — 请稍等片刻，然后点击“搜索”继续。"
   },
   "theme": {
     "dark": "深色模式",
@@ -421,7 +422,7 @@
     "share_hint_public": "此阵容为公开状态，已在画廊中列出。",
     "share_hint_url_only": "仅可通过此链接访问（不公开列出）。",
     "search_placeholder": "搜索…",
-    "search_hint": "输入名称以搜索 T8 物品",
+    "search_hint": "输入名称以搜索物品",
     "no_results": "无结果"
   },
   "craft": {

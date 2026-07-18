@@ -214,7 +214,8 @@
     "search": "Rechercher",
     "back": "Retour",
     "yes": "Oui",
-    "no": "Non"
+    "no": "Non",
+    "rate_limited": "Trop de requêtes — patiente un instant, puis clique sur «Rechercher» pour continuer."
   },
   "theme": {
     "dark": "Mode sombre",
@@ -421,7 +422,7 @@
     "share_hint_public": "Cette composition est publique et listée dans la galerie.",
     "share_hint_url_only": "Accessible uniquement via ce lien (non listé).",
     "search_placeholder": "Rechercher…",
-    "search_hint": "Saisir un nom pour chercher un item T8",
+    "search_hint": "Saisir un nom pour chercher un item",
     "no_results": "Aucun résultat"
   },
   "craft": {

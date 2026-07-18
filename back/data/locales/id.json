@@ -214,7 +214,8 @@
     "search": "Cari",
     "back": "Kembali",
     "yes": "Ya",
-    "no": "Tidak"
+    "no": "Tidak",
+    "rate_limited": "Terlalu banyak permintaan — tunggu sebentar, lalu klik “Cari” untuk melanjutkan."
   },
   "theme": {
     "dark": "Mode gelap",
@@ -421,7 +422,7 @@
     "share_hint_public": "Komposisi ini bersifat publik dan terdaftar di galeri.",
     "share_hint_url_only": "Hanya dapat diakses melalui tautan ini (tidak terdaftar).",
     "search_placeholder": "Cari…",
-    "search_hint": "Ketik nama untuk mencari item T8",
+    "search_hint": "Ketik nama untuk mencari item",
     "no_results": "Tidak ada hasil"
   },
   "craft": {
