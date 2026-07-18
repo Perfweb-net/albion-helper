@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Joyride, STATUS } from 'react-joyride';
+import { Joyride, STATUS, EVENTS, ACTIONS } from 'react-joyride';
 import {
     Box, Container, Typography, Card, CardContent, Grid2, Button, Slider,
     FormControl, InputLabel, Select, MenuItem, Switch, FormControlLabel,
@@ -106,6 +106,19 @@ const fmt = n => {
 
 const profitColor = p => (p > 0 ? '#4ade80' : p < 0 ? '#f87171' : 'text.secondary');
 
+// Scrolle la cible du tuto à une hauteur fixe depuis le haut plutôt que de la
+// centrer/aligner en haut : laisse de la place pour le tooltip qu'il se place
+// au-dessus ou en dessous, et évite de tenter de "centrer" .craft-table qui
+// fait plusieurs milliers de pixels de haut (impossible dans le viewport).
+const TOUR_TARGET_TOP_OFFSET = 260;
+
+function scrollTourTargetIntoView(selector) {
+    const el = selector ? document.querySelector(selector) : null;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    window.scrollBy({ top: rect.top - TOUR_TARGET_TOP_OFFSET, behavior: 'instant' });
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Component
 // ─────────────────────────────────────────────────────────────────────────────
@@ -114,7 +127,29 @@ const Craft = () => {
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
 
-    // Joyride steps built inside component so t() is available
+    // Location & city
+    const [locationType, setLocationType] = useState('city'); // 'city' | 'hideout' | 'island'
+    const [city, setCity] = useState('Caerleon');
+    const [hoBaseReturn, setHoBaseReturn] = useState(26); // % return WITHOUT focus in HO
+
+    // Settings
+    const [premium, setPremium] = useState(false);
+    const [useFocus, setUseFocus] = useState(false);
+    const [dailyBonus, setDailyBonus] = useState(0);
+    const [specializations, setSpecializations] = useState(
+        () => Object.fromEntries(ALL_SPEC_BRANCHES.map(b => [b, 0]))
+    );
+    const [quantity, setQuantity] = useState(1);
+
+    // Joyride steps built inside component so t() is available.
+    // La colonne SPF n'existe dans le DOM que si "Utiliser le focus" est actif
+    // (cf. rendu conditionnel {useFocus && (...)} sur .craft-spf-col plus bas) —
+    // sans ce filtre, Joyride cible un élément absent et le tooltip part hors écran.
+    //
+    // skipScroll: true partout — le scroll-to-target intégré de Joyride v3 ne
+    // fonctionne pas de façon fiable ici (bloqué à scrollY=0 sans erreur visible),
+    // on le fait nous-mêmes dans handleTourCallback pour garantir que la cible
+    // (notamment .craft-table, loin en bas de page) reste dans l'écran.
     const TOUR_STEPS = [
         {
             target: '.craft-location',
@@ -141,26 +176,12 @@ const Craft = () => {
             title: t('craft.tour.table.title'),
             content: t('craft.tour.table.content'),
         },
-        {
+        ...(useFocus ? [{
             target: '.craft-spf-col',
             title: t('craft.tour.spf.title'),
             content: t('craft.tour.spf.content'),
-        },
-    ];
-
-    // Location & city
-    const [locationType, setLocationType] = useState('city'); // 'city' | 'hideout' | 'island'
-    const [city, setCity] = useState('Caerleon');
-    const [hoBaseReturn, setHoBaseReturn] = useState(26); // % return WITHOUT focus in HO
-
-    // Settings
-    const [premium, setPremium] = useState(false);
-    const [useFocus, setUseFocus] = useState(false);
-    const [dailyBonus, setDailyBonus] = useState(0);
-    const [specializations, setSpecializations] = useState(
-        () => Object.fromEntries(ALL_SPEC_BRANCHES.map(b => [b, 0]))
-    );
-    const [quantity, setQuantity] = useState(1);
+        }] : []),
+    ].map(step => ({ ...step, skipScroll: true }));
 
     // Data
     const [recipes, setRecipes] = useState([]);
@@ -176,6 +197,7 @@ const Craft = () => {
     const [sortDir, setSortDir] = useState('desc');
     const [searchTerm, setSearchTerm] = useState('');
     const [runTour, setRunTour] = useState(false);
+    const [tourStepIndex, setTourStepIndex] = useState(0);
 
     // Load preferences
     useEffect(() => {
@@ -263,7 +285,29 @@ const Craft = () => {
     const SortIcon = ({ col }) => sortBy !== col ? null :
         (sortDir === 'desc' ? <ArrowDownwardIcon sx={{ fontSize: 14 }} /> : <ArrowUpwardIcon sx={{ fontSize: 14 }} />);
 
-    const handleTourEnd = d => { if ([STATUS.FINISHED, STATUS.SKIPPED].includes(d.status)) setRunTour(false); };
+    // react-joyride v3 a changé son API (callback -> onEvent) et son scroll-to-target
+    // intégré ne fonctionne pas de façon fiable ici (le tooltip se positionne d'après
+    // les coordonnées du target AVANT que le scroll n'ait eu lieu, donc part hors écran
+    // pour les cibles loin en bas de page comme .craft-table). Steps en skipScroll: true
+    // + tour piloté en mode "controlled" (stepIndex) : on scrolle la cible en vue et on
+    // attend la fin du scroll AVANT de faire avancer l'étape, pour garantir l'ordre.
+    const handleTourCallback = d => {
+        if (d.type === EVENTS.STEP_AFTER || d.type === EVENTS.TARGET_NOT_FOUND) {
+            let nextIndex = d.index;
+            if (d.action === ACTIONS.NEXT) nextIndex = d.index + 1;
+            else if (d.action === ACTIONS.PREV) nextIndex = d.index - 1;
+            else return;
+
+            scrollTourTargetIntoView(TOUR_STEPS[nextIndex]?.target);
+            setTourStepIndex(nextIndex);
+        } else if (d.type === EVENTS.TOUR_START) {
+            setTourStepIndex(0);
+        }
+        if ([STATUS.FINISHED, STATUS.SKIPPED].includes(d.status)) {
+            setRunTour(false);
+            setTourStepIndex(0);
+        }
+    };
 
     const tourStyles = {
         options: { backgroundColor: '#1e1a10', textColor: '#f5edd8', primaryColor: '#c9a84c', zIndex: 10000 },
@@ -288,8 +332,8 @@ const Craft = () => {
 
     return (
         <Container maxWidth="xl" sx={{ py: 4 }}>
-            <Joyride steps={TOUR_STEPS} run={runTour} continuous showSkipButton callback={handleTourEnd}
-                styles={tourStyles} scrollOffset={80} disableScrollParentFix
+            <Joyride steps={TOUR_STEPS} run={runTour} stepIndex={tourStepIndex} continuous showSkipButton onEvent={handleTourCallback}
+                styles={tourStyles}
                 locale={{
                     back: t('tutorial.back'),
                     close: t('common.close'),
@@ -309,7 +353,11 @@ const Craft = () => {
                     </Typography>
                 </Box>
                 <Tooltip title={t('craft.start_tour')}>
-                    <IconButton onClick={() => setRunTour(true)} sx={{ color: 'primary.main' }}>
+                    <IconButton onClick={() => {
+                        scrollTourTargetIntoView(TOUR_STEPS[0]?.target);
+                        setTourStepIndex(0);
+                        setRunTour(true);
+                    }} sx={{ color: 'primary.main' }}>
                         <HelpOutlineIcon />
                     </IconButton>
                 </Tooltip>
