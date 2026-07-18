@@ -53,10 +53,15 @@ const RouteShare = () => {
 
     return (
         <Container maxWidth="md" sx={{ mt: 4, mb: 8 }}>
+            <Button component={Link} to="/" startIcon={<HomeIcon />}
+                sx={{ mb: 2, color: 'text.secondary', '&:hover': { color: 'primary.main' } }}>
+                {t('common.back')}
+            </Button>
+
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 3 }}>
-                <RouteIcon sx={{ fontSize: 40, color: '#c9a84c' }} />
+                <RouteIcon sx={{ fontSize: 40, color: 'primary.main' }} />
                 <Box>
-                    <Typography variant="h4" sx={{ fontFamily: 'Cinzel, serif', fontWeight: 700, color: '#c9a84c' }}>
+                    <Typography variant="h4" sx={{ fontFamily: 'Cinzel, serif', fontWeight: 700, color: 'primary.main' }}>
                         {route.name}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
@@ -86,7 +91,7 @@ const RouteShare = () => {
                                         minWidth: 28,
                                         fontFamily: 'Cinzel, serif',
                                         fontWeight: 700,
-                                        color: '#c9a84c',
+                                        color: 'primary.main',
                                         fontSize: '1.1rem'
                                     }}
                                 >
