@@ -16,6 +16,7 @@ cd back
 composer install --no-dev --optimize-autoloader --no-interaction
 php bin/console lexik:jwt:generate-keypair --skip-if-exists
 php bin/console doctrine:migrations:migrate --no-interaction --env=prod
+php bin/console app:seed-reference-data --env=prod --no-interaction
 php bin/console cache:clear --env=prod
 
 echo "--- Frontend : build de production ---"
