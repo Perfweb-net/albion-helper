@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import {
     Box, Container, Typography, Button, Card, CardContent, CardActions,
     IconButton, CircularProgress, Alert, Grid2, Chip, Tooltip,
-    Dialog, DialogTitle, DialogContent, DialogActions, TextField, Tabs, Tab
+    Dialog, DialogTitle, DialogContent, DialogActions, TextField, Tabs, Tab, useTheme
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -18,12 +18,29 @@ import PublicIcon from '@mui/icons-material/Public';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import api from '../../api';
 
+// cf. CompositionEditor.jsx : couleurs dérivées du thème actif plutôt que
+// codées en dur (illisibles en thème clair — cf. retour utilisateur).
+function listPalette(theme) {
+    const isDark = theme.palette.mode === 'dark';
+    return {
+        surface:    isDark ? '#161b22' : '#fdf7ec',
+        surfaceAlt: isDark ? '#21262d' : '#f0e8d4',
+        border:     isDark ? '#21262d' : 'rgba(139,105,20,0.25)',
+        muted:      theme.palette.text.secondary,
+        text:       theme.palette.text.primary,
+        infoAccent:    isDark ? '#58a6ff' : theme.palette.info.dark,
+        successAccent: isDark ? '#3fb950' : theme.palette.success.dark,
+    };
+}
+
 function VisibilityChip({ visibility }) {
     const { t } = useTranslation();
+    const theme = useTheme();
+    const pal = listPalette(theme);
     const VISIBILITY_CONFIG = {
-        private:  { label: t('compositions.visibility_private'),  icon: <LockIcon   sx={{ fontSize: 12 }} />, color: '#8b949e' },
-        url_only: { label: t('compositions.visibility_url_only'), icon: <LinkIcon   sx={{ fontSize: 12 }} />, color: '#58a6ff' },
-        public:   { label: t('compositions.visibility_public'),   icon: <PublicIcon sx={{ fontSize: 12 }} />, color: '#3fb950' },
+        private:  { label: t('compositions.visibility_private'),  icon: <LockIcon   sx={{ fontSize: 12 }} />, color: pal.muted },
+        url_only: { label: t('compositions.visibility_url_only'), icon: <LinkIcon   sx={{ fontSize: 12 }} />, color: pal.infoAccent },
+        public:   { label: t('compositions.visibility_public'),   icon: <PublicIcon sx={{ fontSize: 12 }} />, color: pal.successAccent },
     };
     const cfg = VISIBILITY_CONFIG[visibility] ?? VISIBILITY_CONFIG.private;
     return (
@@ -31,7 +48,7 @@ function VisibilityChip({ visibility }) {
             icon={cfg.icon}
             label={cfg.label}
             size="small"
-            sx={{ bgcolor: '#21262d', color: cfg.color, fontSize: '0.7rem', height: 20, '& .MuiChip-icon': { color: cfg.color } }}
+            sx={{ bgcolor: pal.surfaceAlt, color: cfg.color, fontSize: '0.7rem', height: 20, '& .MuiChip-icon': { color: cfg.color } }}
         />
     );
 }
@@ -39,10 +56,12 @@ function VisibilityChip({ visibility }) {
 function CompoCard({ comp, onDelete, onCopyLink, showOwner }) {
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const theme = useTheme();
+    const pal = listPalette(theme);
     const canShare = comp.visibility === 'url_only' || comp.visibility === 'public';
 
     return (
-        <Card sx={{ bgcolor: '#161b22', border: '1px solid #21262d', borderRadius: 2, height: '100%', display: 'flex', flexDirection: 'column', '&:hover': { borderColor: 'rgba(201,168,76,0.3)' } }}>
+        <Card sx={{ bgcolor: pal.surface, border: `1px solid ${pal.border}`, borderRadius: 2, height: '100%', display: 'flex', flexDirection: 'column', '&:hover': { borderColor: 'rgba(201,168,76,0.3)' } }}>
             <CardContent sx={{ flex: 1 }}>
                 <Typography variant="h6" sx={{ fontFamily: 'Cinzel, serif', color: 'primary.main', mb: 1, lineHeight: 1.3, fontSize: '1rem' }}>
                     {comp.name}
@@ -50,27 +69,27 @@ function CompoCard({ comp, onDelete, onCopyLink, showOwner }) {
                 <Box sx={{ display: 'flex', gap: 0.75, flexWrap: 'wrap', mb: 1 }}>
                     <Chip icon={<GroupsIcon sx={{ fontSize: 12 }} />}
                         label={t('compositions.player_count', { count: comp.players.length })}
-                        size="small" sx={{ bgcolor: '#21262d', fontSize: '0.7rem', height: 20 }} />
+                        size="small" sx={{ bgcolor: pal.surfaceAlt, color: pal.text, fontSize: '0.7rem', height: 20 }} />
                     <VisibilityChip visibility={comp.visibility} />
                 </Box>
                 {showOwner && (
                     <Typography sx={{ fontSize: '0.75rem', color: 'primary.main', mb: 0.5 }}>{t('compositions.by_owner', { owner: comp.owner })}</Typography>
                 )}
-                <Typography sx={{ fontSize: '0.72rem', color: '#8b949e' }}>
+                <Typography sx={{ fontSize: '0.72rem', color: pal.muted }}>
                     {new Date(comp.updatedAt).toLocaleDateString('fr-FR')}
                 </Typography>
             </CardContent>
             <CardActions sx={{ justifyContent: 'flex-end', pt: 0, gap: 0.5 }}>
                 {canShare && (
                     <Tooltip title={t('compositions.copy_link')}>
-                        <IconButton size="small" onClick={() => onCopyLink(comp)} sx={{ color: '#8b949e', '&:hover': { color: '#58a6ff' } }}>
+                        <IconButton size="small" onClick={() => onCopyLink(comp)} sx={{ color: pal.muted, '&:hover': { color: pal.infoAccent } }}>
                             <ContentCopyIcon sx={{ fontSize: 16 }} />
                         </IconButton>
                     </Tooltip>
                 )}
                 {!showOwner && (
                     <Tooltip title={t('common.delete')}>
-                        <IconButton size="small" onClick={() => onDelete(comp)} sx={{ color: '#8b949e', '&:hover': { color: '#f44336' } }}>
+                        <IconButton size="small" onClick={() => onDelete(comp)} sx={{ color: pal.muted, '&:hover': { color: '#f44336' } }}>
                             <DeleteIcon sx={{ fontSize: 16 }} />
                         </IconButton>
                     </Tooltip>
@@ -94,6 +113,8 @@ function CompoCard({ comp, onDelete, onCopyLink, showOwner }) {
 export default function Compositions() {
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const theme = useTheme();
+    const pal = listPalette(theme);
     const [tab, setTab]                   = useState(0);
     const [myComps, setMyComps]           = useState([]);
     const [publicComps, setPublicComps]   = useState([]);
@@ -183,7 +204,7 @@ export default function Compositions() {
             {error && <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError('')}>{error}</Alert>}
             {snack && <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSnack('')}>{snack}</Alert>}
 
-            <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 3, borderBottom: '1px solid #21262d' }}>
+            <Tabs value={tab} onChange={(_, v) => setTab(v)} sx={{ mb: 3, borderBottom: `1px solid ${pal.border}` }}>
                 <Tab label={t('compositions.tab_mine', { count: myComps.length })} />
                 <Tab label={t('compositions.tab_gallery')} icon={<PublicIcon sx={{ fontSize: 16 }} />} iconPosition="start" />
             </Tabs>
@@ -193,7 +214,7 @@ export default function Compositions() {
                 loading
                     ? <Box sx={{ textAlign: 'center', py: 6 }}><CircularProgress /></Box>
                     : myComps.length === 0
-                        ? <Box sx={{ textAlign: 'center', py: 8, color: '#8b949e' }}>
+                        ? <Box sx={{ textAlign: 'center', py: 8, color: pal.muted }}>
                             <GroupsIcon sx={{ fontSize: 64, opacity: 0.3, mb: 2 }} />
                             <Typography>{t('compositions.empty_mine')}</Typography>
                           </Box>
@@ -211,7 +232,7 @@ export default function Compositions() {
                 pubLoading
                     ? <Box sx={{ textAlign: 'center', py: 6 }}><CircularProgress /></Box>
                     : publicComps.length === 0
-                        ? <Box sx={{ textAlign: 'center', py: 8, color: '#8b949e' }}>
+                        ? <Box sx={{ textAlign: 'center', py: 8, color: pal.muted }}>
                             <PublicIcon sx={{ fontSize: 64, opacity: 0.3, mb: 2 }} />
                             <Typography>{t('compositions.empty_gallery')}</Typography>
                           </Box>
@@ -226,7 +247,7 @@ export default function Compositions() {
 
             {/* Create dialog */}
             <Dialog open={createDialog} onClose={() => setCreateDialog(false)} maxWidth="xs" fullWidth
-                PaperProps={{ sx: { bgcolor: '#161b22', border: '1px solid rgba(201,168,76,0.25)' } }}>
+                PaperProps={{ sx: { bgcolor: pal.surface, border: '1px solid rgba(201,168,76,0.25)' } }}>
                 <DialogTitle sx={{ fontFamily: 'Cinzel, serif', color: 'primary.main' }}>{t('compositions.dialog_create_title')}</DialogTitle>
                 <DialogContent>
                     <TextField autoFocus fullWidth size="small" label={t('compositions.name_label')} value={newName}
@@ -245,7 +266,7 @@ export default function Compositions() {
 
             {/* Delete confirm */}
             <Dialog open={!!deleteTarget} onClose={() => setDeleteTarget(null)} maxWidth="xs" fullWidth
-                PaperProps={{ sx: { bgcolor: '#161b22', border: '1px solid rgba(201,168,76,0.25)' } }}>
+                PaperProps={{ sx: { bgcolor: pal.surface, border: '1px solid rgba(201,168,76,0.25)' } }}>
                 <DialogTitle sx={{ fontFamily: 'Cinzel, serif' }}>{t('compositions.dialog_delete_title')}</DialogTitle>
                 <DialogContent>
                     <Typography>{t('compositions.dialog_delete_confirm', { name: deleteTarget?.name })}</Typography>

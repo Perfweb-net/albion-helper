@@ -19,6 +19,7 @@ import StorefrontIcon from '@mui/icons-material/Storefront';
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 import api from '../../api';
+import { useAccentColors } from '../../hooks/useAccentColors';
 
 // ─── Constants (same logic as Craft.jsx) ────────────────────────────────────
 
@@ -107,7 +108,7 @@ const fmt = n => {
     return Math.round(n).toLocaleString('fr-FR');
 };
 
-const profitColor = p => (p > 0 ? '#4ade80' : p < 0 ? '#f87171' : 'inherit');
+const profitColor = (p, accents) => (p > 0 ? accents.green : p < 0 ? accents.red : 'inherit');
 
 // ─── Sub-components ──────────────────────────────────────────────────────────
 
@@ -129,6 +130,7 @@ const CraftDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
     const { t } = useTranslation();
+    const accents = useAccentColors();
 
     // Settings
     const [locationType, setLocationType] = useState('city');
@@ -455,12 +457,12 @@ const CraftDetail = () => {
                             {calcData && (
                                 <Typography variant="caption" color="text.secondary">
                                     {t('craft.detail.focus_cost_pct')}{' '}
-                                    <span style={{ color: '#60a5fa' }}>
+                                    <span style={{ color: accents.blue }}>
                                         {(focusCostMultiplier(specializations[specBranch] ?? 0) * 100).toFixed(1)}% {t('craft.detail.of_base')}
                                     </span>
                                     <br />
                                     {t('craft.detail.return_rate')} {(calcData.returnRate * 100).toFixed(2)}%
-                                    {useFocus && <span style={{ color: '#60a5fa' }}> ({t('craft.settings.focus')})</span>}
+                                    {useFocus && <span style={{ color: accents.blue }}> ({t('craft.settings.focus')})</span>}
                                     {' / '}{t('craft.detail.without_focus')} {(rrFromLPB(calcData.lpbNoFocus) * 100).toFixed(2)}%
                                 </Typography>
                             )}
@@ -488,7 +490,7 @@ const CraftDetail = () => {
                                 <Grid2 size={{ xs: 6, sm: 3 }}>
                                     <SummaryCard label={t('craft.detail.market_tax')} value={`${(calcData.tax * 100).toFixed(1)}%`}
                                         sub={premium ? t('craft.settings.premium') : t('craft.detail.non_premium')}
-                                        color={premium ? '#4ade80' : '#f87171'}
+                                        color={premium ? accents.green : accents.red}
                                     />
                                 </Grid2>
                                 <Grid2 size={{ xs: 6, sm: 3 }}>
@@ -496,7 +498,7 @@ const CraftDetail = () => {
                                         label={useFocus ? t('craft.detail.focus_consumed') : t('craft.detail.focus_inactive')}
                                         value={useFocus ? `${fmt(calcData.focusCost)} F` : '—'}
                                         sub={useFocus && recipe.focusCostBase ? t('craft.detail.focus_per_craft', { amount: fmt(recipe.focusCostBase) }) : null}
-                                        color={useFocus ? '#60a5fa' : 'text.disabled'}
+                                        color={useFocus ? accents.blue : 'text.disabled'}
                                     />
                                 </Grid2>
                             </Grid2>
@@ -516,7 +518,7 @@ const CraftDetail = () => {
                                     <TableCell align="right" sx={{ fontWeight: 700 }}>{t('craft.detail.ing_unit_price')}</TableCell>
                                     <TableCell align="right" sx={{ fontWeight: 700 }}>{t('craft.detail.ing_subtotal')}</TableCell>
                                     {calcData && useFocus && (
-                                        <TableCell align="right" sx={{ fontWeight: 700, color: '#60a5fa' }}>
+                                        <TableCell align="right" sx={{ fontWeight: 700, color: accents.blue }}>
                                             {t('craft.detail.ing_returned')}
                                         </TableCell>
                                     )}
@@ -566,7 +568,7 @@ const CraftDetail = () => {
                                             </Typography>
                                         </TableCell>
                                         {calcData && useFocus && (
-                                            <TableCell align="right" sx={{ color: '#60a5fa' }}>
+                                            <TableCell align="right" sx={{ color: accents.blue }}>
                                                 <Typography variant="body2">
                                                     {ing.saved > 0 ? `+${fmt(ing.saved)} Ag` : '—'}
                                                 </Typography>
@@ -587,16 +589,16 @@ const CraftDetail = () => {
                                         </TableRow>
                                         {useFocus && (
                                             <TableRow sx={{ bgcolor: 'rgba(96,165,250,0.04)' }}>
-                                                <TableCell colSpan={3} sx={{ color: '#60a5fa' }}>
+                                                <TableCell colSpan={3} sx={{ color: accents.blue }}>
                                                     {t('craft.detail.focus_return_row', {
                                                         rr: (calcData.returnRate * 100).toFixed(2),
                                                         lpb: calcData.lpb.toFixed(0),
                                                     })}
                                                 </TableCell>
-                                                <TableCell align="right" sx={{ color: '#60a5fa' }}>
+                                                <TableCell align="right" sx={{ color: accents.blue }}>
                                                     −{fmt(calcData.totalSaved)} Ag
                                                 </TableCell>
-                                                <TableCell align="right" sx={{ color: '#60a5fa' }}>
+                                                <TableCell align="right" sx={{ color: accents.blue }}>
                                                     +{fmt(calcData.totalSaved)} Ag
                                                 </TableCell>
                                             </TableRow>
@@ -667,7 +669,7 @@ const CraftDetail = () => {
                                         {
                                             label: t('craft.detail.market_tax_row', { pct: (calcData.tax * 100).toFixed(1) }),
                                             value: `−${fmt(calcData.grossRevenue * calcData.tax)}`,
-                                            color: '#f87171',
+                                            color: accents.red,
                                             sub: premium ? t('craft.detail.premium_tax') : t('craft.detail.non_premium_tax'),
                                         },
                                         {
@@ -680,7 +682,7 @@ const CraftDetail = () => {
                                         {
                                             label: t('craft.detail.effective_material_cost'),
                                             value: `−${fmt(calcData.effectiveCost)}`,
-                                            color: '#f87171',
+                                            color: accents.red,
                                             sub: useFocus
                                                 ? t('craft.detail.after_return', { rr: (calcData.returnRate * 100).toFixed(2) })
                                                 : t('craft.detail.without_focus'),
@@ -705,23 +707,23 @@ const CraftDetail = () => {
                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 1.5, borderRadius: 1, bgcolor: calcData.profit > 0 ? 'rgba(74,222,128,0.06)' : 'rgba(248,113,113,0.06)', border: `1px solid ${calcData.profit > 0 ? 'rgba(74,222,128,0.2)' : 'rgba(248,113,113,0.2)'}` }}>
                                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                             {calcData.profit > 0
-                                                ? <TrendingUpIcon sx={{ color: '#4ade80' }} />
-                                                : <TrendingDownIcon sx={{ color: '#f87171' }} />
+                                                ? <TrendingUpIcon sx={{ color: accents.green }} />
+                                                : <TrendingDownIcon sx={{ color: accents.red }} />
                                             }
                                             <Box>
                                                 <Typography variant="h6" fontWeight={700}
-                                                    sx={{ color: profitColor(calcData.profit) }}>
+                                                    sx={{ color: profitColor(calcData.profit, accents) }}>
                                                     {t('craft.detail.net_profit')}
                                                 </Typography>
                                                 {calcData.margin && (
-                                                    <Typography variant="caption" sx={{ color: profitColor(calcData.profit) }}>
+                                                    <Typography variant="caption" sx={{ color: profitColor(calcData.profit, accents) }}>
                                                         {t('craft.detail.margin', { pct: calcData.margin })}
                                                     </Typography>
                                                 )}
                                             </Box>
                                         </Box>
                                         <Typography variant="h5" fontWeight={700}
-                                            sx={{ color: profitColor(calcData.profit) }}>
+                                            sx={{ color: profitColor(calcData.profit, accents) }}>
                                             {calcData.sellPriceUnit > 0 ? `${calcData.profit >= 0 ? '+' : ''}${fmt(calcData.profit)} Ag` : '—'}
                                         </Typography>
                                     </Box>
@@ -730,9 +732,9 @@ const CraftDetail = () => {
                                     {useFocus && calcData.spf !== null && (
                                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1.5, p: 1.5, borderRadius: 1, bgcolor: 'rgba(96,165,250,0.06)', border: '1px solid rgba(96,165,250,0.2)' }}>
                                             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                                <FlashOnIcon sx={{ color: '#60a5fa' }} />
+                                                <FlashOnIcon sx={{ color: accents.blue }} />
                                                 <Box>
-                                                    <Typography variant="body1" fontWeight={700} sx={{ color: '#60a5fa' }}>
+                                                    <Typography variant="body1" fontWeight={700} sx={{ color: accents.blue }}>
                                                         {t('craft.detail.spf_label')}
                                                     </Typography>
                                                     <Typography variant="caption" color="text.secondary">
@@ -741,7 +743,7 @@ const CraftDetail = () => {
                                                 </Box>
                                             </Box>
                                             <Typography variant="h6" fontWeight={700}
-                                                sx={{ color: calcData.spf > 0 ? '#60a5fa' : '#f87171' }}>
+                                                sx={{ color: calcData.spf > 0 ? accents.blue : accents.red }}>
                                                 {fmt(calcData.spf)} Ag/F
                                             </Typography>
                                         </Box>

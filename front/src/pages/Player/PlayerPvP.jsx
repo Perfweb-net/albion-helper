@@ -9,6 +9,7 @@ import api from '../../api';
 import KillEventCard from '../../components/albion/KillEventCard';
 import { fmtFame, fmtDate } from '../../components/albion/albionFormat';
 import { useTranslation } from 'react-i18next';
+import { useAccentColors } from '../../hooks/useAccentColors';
 
 const StatBox = ({ label, value, color }) => (
     <Paper sx={{ p: 2, textAlign: 'center', height: '100%' }}>
@@ -19,13 +20,14 @@ const StatBox = ({ label, value, color }) => (
 
 const SessionReport = ({ report }) => {
     const { t } = useTranslation();
+    const accents = useAccentColors();
     if (!report) return null;
     const totals = report.totals;
     return (
         <Box>
             <Grid2 container spacing={2} sx={{ mb: 2 }}>
-                <Grid2 size={{ xs: 6, sm: 3 }}><StatBox label={t('pvp.kills')} value={totals.kills} color="#4ade80" /></Grid2>
-                <Grid2 size={{ xs: 6, sm: 3 }}><StatBox label={t('pvp.deaths')} value={totals.deaths} color="#f87171" /></Grid2>
+                <Grid2 size={{ xs: 6, sm: 3 }}><StatBox label={t('pvp.kills')} value={totals.kills} color={accents.green} /></Grid2>
+                <Grid2 size={{ xs: 6, sm: 3 }}><StatBox label={t('pvp.deaths')} value={totals.deaths} color={accents.red} /></Grid2>
                 <Grid2 size={{ xs: 6, sm: 3 }}><StatBox label={t('pvp.kd')} value={totals.kd} /></Grid2>
                 <Grid2 size={{ xs: 6, sm: 3 }}><StatBox label={t('pvp.net_fame')} value={fmtFame(totals.netFame)} color="primary.main" /></Grid2>
             </Grid2>

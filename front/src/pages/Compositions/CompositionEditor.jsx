@@ -37,6 +37,10 @@ function compositionPalette(theme) {
         muted:      theme.palette.text.secondary,
         text:       theme.palette.text.primary,
         gold:       theme.palette.primary.main,
+        // Bleu/vert "à la GitHub" : contraste correct sur fond sombre, mais
+        // ratio ~2:1 sur fond clair (illisible) — .dark du thème passe l'AA (>8:1).
+        infoAccent:    isDark ? '#58a6ff' : theme.palette.info.dark,
+        successAccent: isDark ? '#3fb950' : theme.palette.success.dark,
     };
 }
 
@@ -276,8 +280,8 @@ export default function CompositionEditor() {
 
     const VISIBILITY_CONFIG = {
         private:  { label: t('compositions.visibility_private'),  icon: <LockIcon   sx={{ fontSize: 14 }} />, color: pal.muted },
-        url_only: { label: t('compositions.visibility_url_only'), icon: <LinkIcon   sx={{ fontSize: 14 }} />, color: '#58a6ff' },
-        public:   { label: t('compositions.visibility_public'),   icon: <PublicIcon sx={{ fontSize: 14 }} />, color: '#3fb950' },
+        url_only: { label: t('compositions.visibility_url_only'), icon: <LinkIcon   sx={{ fontSize: 14 }} />, color: pal.infoAccent },
+        public:   { label: t('compositions.visibility_public'),   icon: <PublicIcon sx={{ fontSize: 14 }} />, color: pal.successAccent },
     };
 
     if (loading) return <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8 }}><CircularProgress /></Box>;

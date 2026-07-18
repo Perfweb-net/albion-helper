@@ -24,6 +24,10 @@ function sharePalette(theme) {
         border:     isDark ? '#30363d' : 'rgba(139,105,20,0.35)',
         muted:      theme.palette.text.secondary,
         text:       theme.palette.text.primary,
+        // Bleu/vert "à la GitHub" : contraste correct sur fond sombre, mais
+        // ratio ~2:1 sur fond clair (illisible) — .dark du thème passe l'AA (>8:1).
+        infoAccent:    isDark ? '#58a6ff' : theme.palette.info.dark,
+        successAccent: isDark ? '#3fb950' : theme.palette.success.dark,
     };
 }
 
@@ -125,8 +129,8 @@ export default function CompositionShare() {
     );
 
     const VISIBILITY_CONFIG = {
-        url_only: { label: t('compositions.visibility_url_only'), icon: <LinkIcon   sx={{ fontSize: 12 }} />, color: '#58a6ff' },
-        public:   { label: t('compositions.visibility_public'),   icon: <PublicIcon sx={{ fontSize: 12 }} />, color: '#3fb950' },
+        url_only: { label: t('compositions.visibility_url_only'), icon: <LinkIcon   sx={{ fontSize: 12 }} />, color: pal.infoAccent },
+        public:   { label: t('compositions.visibility_public'),   icon: <PublicIcon sx={{ fontSize: 12 }} />, color: pal.successAccent },
     };
     const visCfg = VISIBILITY_CONFIG[comp.visibility];
 
@@ -145,8 +149,8 @@ export default function CompositionShare() {
                 <Typography variant="h4" sx={{ fontFamily: 'Cinzel, serif', color: 'primary.main', flex: 1 }}>
                     {comp.name}
                 </Typography>
-                <Chip label={t('compositions.by_owner', { owner: comp.owner })} size="small" sx={{ bgcolor: pal.surfaceAlt }} />
-                <Chip label={t('compositions.player_count', { count: comp.players.length })} size="small" sx={{ bgcolor: pal.surfaceAlt }} />
+                <Chip label={t('compositions.by_owner', { owner: comp.owner })} size="small" sx={{ bgcolor: pal.surfaceAlt, color: pal.text }} />
+                <Chip label={t('compositions.player_count', { count: comp.players.length })} size="small" sx={{ bgcolor: pal.surfaceAlt, color: pal.text }} />
                 {visCfg && (
                     <Chip
                         icon={visCfg.icon}

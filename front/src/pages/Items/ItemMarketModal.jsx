@@ -14,6 +14,7 @@ import {
     Legend, ResponsiveContainer
 } from 'recharts';
 import api from '../../api';
+import { useAccentColors } from '../../hooks/useAccentColors';
 
 const CITIES = ['Brecilien', 'Bridgewatch', 'Caerleon', 'Fort Sterling', 'Lymhurst', 'Martlock', 'Thetford', 'Black Market'];
 
@@ -44,6 +45,7 @@ const buildHistoryChartData = (history) => {
 
 const ItemMarketModal = ({ item, onClose }) => {
     const { t } = useTranslation();
+    const accents = useAccentColors();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -155,10 +157,10 @@ const ItemMarketModal = ({ item, onClose }) => {
                                 <TableHead>
                                     <TableRow>
                                         <TableCell sx={{ fontWeight: 700 }}>{t('items.col_city')}</TableCell>
-                                        <TableCell align="right" sx={{ color: '#4ade80', fontWeight: 700 }}>{t('items.col_sell_min')}</TableCell>
-                                        <TableCell align="right" sx={{ color: '#4ade80', fontWeight: 700 }}>{t('items.col_sell_max')}</TableCell>
-                                        <TableCell align="right" sx={{ color: '#f97316', fontWeight: 700 }}>{t('items.col_buy_min')}</TableCell>
-                                        <TableCell align="right" sx={{ color: '#f97316', fontWeight: 700 }}>{t('items.col_buy_max')}</TableCell>
+                                        <TableCell align="right" sx={{ color: accents.green, fontWeight: 700 }}>{t('items.col_sell_min')}</TableCell>
+                                        <TableCell align="right" sx={{ color: accents.green, fontWeight: 700 }}>{t('items.col_sell_max')}</TableCell>
+                                        <TableCell align="right" sx={{ color: accents.orange, fontWeight: 700 }}>{t('items.col_buy_min')}</TableCell>
+                                        <TableCell align="right" sx={{ color: accents.orange, fontWeight: 700 }}>{t('items.col_buy_max')}</TableCell>
                                         <TableCell align="right" sx={{ fontWeight: 700, fontSize: 11 }}>{t('items.col_last_update')}</TableCell>
                                     </TableRow>
                                 </TableHead>
@@ -174,10 +176,10 @@ const ItemMarketModal = ({ item, onClose }) => {
                                                         {city}
                                                     </Box>
                                                 </TableCell>
-                                                <TableCell align="right" sx={{ color: '#4ade80' }}>{fmt(p?.sell_price_min)}</TableCell>
-                                                <TableCell align="right" sx={{ color: '#4ade80' }}>{fmt(p?.sell_price_max)}</TableCell>
-                                                <TableCell align="right" sx={{ color: '#f97316' }}>{fmt(p?.buy_price_min)}</TableCell>
-                                                <TableCell align="right" sx={{ color: '#f97316' }}>{fmt(p?.buy_price_max)}</TableCell>
+                                                <TableCell align="right" sx={{ color: accents.green }}>{fmt(p?.sell_price_min)}</TableCell>
+                                                <TableCell align="right" sx={{ color: accents.green }}>{fmt(p?.sell_price_max)}</TableCell>
+                                                <TableCell align="right" sx={{ color: accents.orange }}>{fmt(p?.buy_price_min)}</TableCell>
+                                                <TableCell align="right" sx={{ color: accents.orange }}>{fmt(p?.buy_price_max)}</TableCell>
                                                 <TableCell align="right" sx={{ fontSize: 11, color: 'text.secondary' }}>
                                                     {formatDate(p?.sell_price_min_date)}
                                                 </TableCell>

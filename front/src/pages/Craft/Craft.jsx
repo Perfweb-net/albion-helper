@@ -21,6 +21,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import TerrainIcon from '@mui/icons-material/Terrain';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import api from '../../api';
+import { useAccentColors } from '../../hooks/useAccentColors';
 import {
     CITIES, WEAPON_BRANCHES, ARMOR_BRANCHES, ACCESSORY_BRANCHES,
     FOOD_BRANCHES, POTION_BRANCHES, REFINING_BRANCHES, ALL_SPEC_BRANCHES,
@@ -104,7 +105,7 @@ const fmt = n => {
     return Math.round(n).toLocaleString('fr-FR');
 };
 
-const profitColor = p => (p > 0 ? '#4ade80' : p < 0 ? '#f87171' : 'text.secondary');
+const profitColor = (p, accents) => (p > 0 ? accents.green : p < 0 ? accents.red : 'text.secondary');
 
 // Scrolle la cible du tuto à une hauteur fixe depuis le haut plutôt que de la
 // centrer/aligner en haut : laisse de la place pour le tooltip qu'il se place
@@ -126,6 +127,7 @@ function scrollTourTargetIntoView(selector) {
 const Craft = () => {
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
+    const accents = useAccentColors();
 
     // Location & city
     const [locationType, setLocationType] = useState('city'); // 'city' | 'hideout' | 'island'
@@ -599,7 +601,7 @@ const Craft = () => {
                                     onClick={() => toggleSort('cost')}>
                                     {t('craft.table.material_cost')} <SortIcon col="cost" />
                                 </TableCell>
-                                <TableCell align="right" sx={{ fontWeight: 700, color: '#60a5fa' }}>
+                                <TableCell align="right" sx={{ fontWeight: 700, color: accents.blue }}>
                                     {t('craft.table.focus_return')}
                                 </TableCell>
                                 <TableCell align="right" sx={{ fontWeight: 700 }}>{t('craft.table.effective_cost')}</TableCell>
@@ -616,7 +618,7 @@ const Craft = () => {
                                 </TableCell>
                                 {useFocus && (
                                     <TableCell className="craft-spf-col" align="right"
-                                        sx={{ fontWeight: 700, color: '#60a5fa', cursor: 'pointer', '&:hover': { color: '#93c5fd' } }}
+                                        sx={{ fontWeight: 700, color: accents.blue, cursor: 'pointer', '&:hover': { color: accents.blueLight } }}
                                         onClick={() => toggleSort('spf')}>
                                         <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: 0.5 }}>
                                             <FlashOnIcon sx={{ fontSize: 14 }} /> {t('craft.table.spf')} <SortIcon col="spf" />
@@ -675,7 +677,7 @@ const Craft = () => {
                                         <TableCell align="right">
                                             <Typography variant="body2">{fmt(calc.materialCost)}</Typography>
                                         </TableCell>
-                                        <TableCell align="right" sx={{ color: '#60a5fa' }}>
+                                        <TableCell align="right" sx={{ color: accents.blue }}>
                                             {useFocus ? (
                                                 <Box>
                                                     <Typography variant="body2">
@@ -713,21 +715,21 @@ const Craft = () => {
                                         </TableCell>
                                         <TableCell align="right">
                                             <Typography variant="body2" fontWeight={700}
-                                                sx={{ color: profitColor(calc.profit) }}>
+                                                sx={{ color: profitColor(calc.profit, accents) }}>
                                                 {calc.sellPriceUnit > 0 ? fmt(calc.profit) : '—'}
                                             </Typography>
                                             {calc.profit !== 0 && calc.materialCost > 0 && calc.sellPriceUnit > 0 && (
-                                                <Typography variant="caption" sx={{ color: profitColor(calc.profit) }}>
+                                                <Typography variant="caption" sx={{ color: profitColor(calc.profit, accents) }}>
                                                     {((calc.profit / calc.materialCost) * 100).toFixed(1)}%
                                                 </Typography>
                                             )}
                                         </TableCell>
                                         {useFocus && (
-                                            <TableCell align="right" sx={{ color: '#60a5fa' }}>
+                                            <TableCell align="right" sx={{ color: accents.blue }}>
                                                 {calc.spf !== null ? (
                                                     <Box>
                                                         <Typography variant="body2" fontWeight={700}
-                                                            sx={{ color: calc.spf > 0 ? '#60a5fa' : '#f87171' }}>
+                                                            sx={{ color: calc.spf > 0 ? accents.blue : accents.red }}>
                                                             {fmt(calc.spf)}
                                                         </Typography>
                                                         <Typography variant="caption" color="text.secondary">

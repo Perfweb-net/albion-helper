@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import api from '../../api';
 import KillEventCard from '../../components/albion/KillEventCard';
 import { fmtFame } from '../../components/albion/albionFormat';
+import { useAccentColors } from '../../hooks/useAccentColors';
 
 const MvpCard = ({ icon, label, player, metric, color }) => (
     <Card variant="outlined" sx={{ height: '100%', borderTop: `3px solid ${color}` }}>
@@ -25,6 +26,7 @@ const MvpCard = ({ icon, label, player, metric, color }) => (
 
 const BattleDetail = ({ battleId }) => {
     const { t } = useTranslation();
+    const accents = useAccentColors();
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
@@ -68,11 +70,11 @@ const BattleDetail = ({ battleId }) => {
                         metric={(p) => `${fmtFame(p.fame)} ${t('battles.fame')}`} />
                 </Grid2>
                 <Grid2 size={{ xs: 6, md: 3 }}>
-                    <MvpCard icon={<WhatshotIcon />} color="#f87171" label={t('battles.mvp_top_damage')} player={mvp.topDamage}
+                    <MvpCard icon={<WhatshotIcon />} color={accents.red} label={t('battles.mvp_top_damage')} player={mvp.topDamage}
                         metric={(p) => `${fmtFame(p.damageDone)} ${t('battles.dmg')}`} />
                 </Grid2>
                 <Grid2 size={{ xs: 6, md: 3 }}>
-                    <MvpCard icon={<HealingIcon />} color="#4ade80" label={t('battles.mvp_top_healer')} player={mvp.topHealer}
+                    <MvpCard icon={<HealingIcon />} color={accents.green} label={t('battles.mvp_top_healer')} player={mvp.topHealer}
                         metric={(p) => `${fmtFame(p.healingDone)} ${t('battles.heal')}`} />
                 </Grid2>
             </Grid2>
@@ -101,8 +103,8 @@ const BattleDetail = ({ battleId }) => {
                                         <TableCell>{i + 1}</TableCell>
                                         <TableCell>{p.name}</TableCell>
                                         <TableCell>{p.extra || '—'}</TableCell>
-                                        <TableCell align="right" sx={{ color: '#4ade80' }}>{p.kills}</TableCell>
-                                        <TableCell align="right" sx={{ color: '#f87171' }}>{p.deaths}</TableCell>
+                                        <TableCell align="right" sx={{ color: accents.green }}>{p.kills}</TableCell>
+                                        <TableCell align="right" sx={{ color: accents.red }}>{p.deaths}</TableCell>
                                         <TableCell align="right">{fmtFame(p.fame)}</TableCell>
                                         <TableCell align="right">{fmtFame(p.damageDone)}</TableCell>
                                         <TableCell align="right">{fmtFame(p.healingDone)}</TableCell>
@@ -127,8 +129,8 @@ const BattleDetail = ({ battleId }) => {
                                         <TableCell>{i + 1}</TableCell>
                                         <TableCell>{f.name}</TableCell>
                                         <TableCell>{f.extra || '—'}</TableCell>
-                                        <TableCell align="right" sx={{ color: '#4ade80' }}>{f.kills}</TableCell>
-                                        <TableCell align="right" sx={{ color: '#f87171' }}>{f.deaths}</TableCell>
+                                        <TableCell align="right" sx={{ color: accents.green }}>{f.kills}</TableCell>
+                                        <TableCell align="right" sx={{ color: accents.red }}>{f.deaths}</TableCell>
                                         <TableCell align="right">{fmtFame(f.fame)}</TableCell>
                                     </TableRow>
                                 ))}
