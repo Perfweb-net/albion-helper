@@ -1,7 +1,8 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import api from '../../api';
 import {useNavigate} from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useDebouncedSearch } from '../../hooks/useDebouncedSearch';
 import {
     Box,
     Button,
@@ -15,7 +16,6 @@ import {
     Typography,
     Card,
     CardContent,
-    Paper,
     Chip
 } from "@mui/material";
 import CircleIcon from "@mui/icons-material/Circle";
@@ -27,7 +27,6 @@ import './Dashboard.scss';
 
 const Dashboard = () => {  // Le nom du composant commence par une majuscule
     const { t } = useTranslation();
-    const [pseudo, setPseudo] = useState('');
     const [players, setPlayers] = useState('');
     const [guilds, setGuilds] = useState('');
     const [selection, setSelection] = useState('joueur');
@@ -41,15 +40,15 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
         "Solo Chest": { color: "green", fontSize: "small" }
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = async (term) => {
         if (selection === 'map') {
-            await api.get(`/map/search?map=${pseudo}`).then((response) => {
+            await api.get(`/map/search?map=${term}`).then((response) => {
                 setMaps(response.data.maps);
                 setPlayers([]);
                 setGuilds([]);
             }).catch((error) => console.error('Error fetching maps:', error));
         }else {
-            await api.get("/player/search?pseudo=" + pseudo).then(
+            await api.get("/player/search?pseudo=" + term).then(
                 (response) => {
                     if (selection === 'joueur') {
                         setPlayers(response.data.players);
@@ -64,6 +63,17 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
             ).catch((error) => console.error('Error fetching player:', error));
         }
     }
+
+    // Auto-recherche dès 3 caractères, comme les autres écrans de recherche
+    const { query: pseudo, setQuery: setPseudo, triggerSearch } = useDebouncedSearch(handleSubmit);
+
+    // Changer de type (joueur/guilde/carte) relance la recherche courante
+    useEffect(() => {
+        if (pseudo.trim().length >= 3) {
+            handleSubmit(pseudo);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selection]);
 
     return (
         <Container maxWidth="lg" className="dashboard__container">
@@ -119,7 +129,7 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
                                 onChange={(e) => setPseudo(e.target.value)}
                                 onKeyPress={(e) => {
                                     if (e.key === 'Enter') {
-                                        handleSubmit();
+                                        triggerSearch();
                                     }
                                 }}
                                 placeholder={t('dashboard.search_placeholder')}
@@ -130,7 +140,7 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
                             <Button
                                 variant="contained"
                                 color="primary"
-                                onClick={handleSubmit}
+                                onClick={triggerSearch}
                                 fullWidth
                                 size="large"
                                 startIcon={<SearchIcon />}
@@ -150,32 +160,31 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
                             {t('dashboard.players_found', { count: players.length })}
                         </Typography>
 
-                        <Grid2 container spacing={3}>
+                        <Box className="dashboard__results-track">
                             {players.map((player) => (
-                                <Grid2 size={{xs: 12, sm: 6, md: 4}} key={player.Id}>
-                                    <Card
-                                        className="dashboard__item-card"
-                                        onClick={() => navigate(`/player/${player.Id}`)}
-                                    >
-                                        <CardContent className="dashboard__item-content">
-                                            <PersonIcon className="dashboard__item-icon" />
-                                            {player.AllianceName && (
-                                                <Chip 
-                                                    label={player.AllianceName} 
-                                                    size="small" 
-                                                    sx={{ mb: 1 }}
-                                                    color="primary"
-                                                    variant="outlined"
-                                                />
-                                            )}
-                                            <Typography variant="h6" className="dashboard__item-name">
-                                                {player.Name}
-                                            </Typography>
-                                        </CardContent>
-                                    </Card>
-                                </Grid2>
+                                <Card
+                                    key={player.Id}
+                                    className="dashboard__item-card"
+                                    onClick={() => navigate(`/player/${player.Id}`)}
+                                >
+                                    <CardContent className="dashboard__item-content">
+                                        <PersonIcon className="dashboard__item-icon" />
+                                        {player.AllianceName && (
+                                            <Chip
+                                                label={player.AllianceName}
+                                                size="small"
+                                                sx={{ mb: 1 }}
+                                                color="primary"
+                                                variant="outlined"
+                                            />
+                                        )}
+                                        <Typography variant="h6" className="dashboard__item-name">
+                                            {player.Name}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
                             ))}
-                        </Grid2>
+                        </Box>
                     </Box>
                 )}
 
@@ -185,31 +194,30 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
                             {t('dashboard.guilds_found', { count: guilds.length })}
                         </Typography>
 
-                        <Grid2 container spacing={3}>
+                        <Box className="dashboard__results-track">
                             {guilds.map((guild) => (
-                                <Grid2 size={{xs: 12, sm: 6, md: 4}} key={guild.Id}>
-                                    <Card
-                                        sx={{
-                                            cursor: 'pointer',
-                                            height: '100%',
-                                            transition: 'all 0.3s ease',
-                                            '&:hover': {
-                                                transform: 'translateY(-4px)',
-                                                boxShadow: '0px 8px 30px rgba(0, 0, 0, 0.15)',
-                                            }
-                                        }}
-                                        onClick={() => navigate(`/guild/${guild.Id}`)}
-                                    >
-                                        <CardContent sx={{ textAlign: 'center', p: 3 }}>
-                                            <GroupsIcon sx={{ fontSize: 48, color: 'primary.main', mb: 1 }} />
-                                            <Typography variant="h6" fontWeight={600} sx={{ mt: 1 }}>
-                                                {guild.Name}
-                                            </Typography>
-                                        </CardContent>
-                                    </Card>
-                                </Grid2>
+                                <Card
+                                    key={guild.Id}
+                                    sx={{
+                                        cursor: 'pointer',
+                                        height: '100%',
+                                        transition: 'all 0.3s ease',
+                                        '&:hover': {
+                                            transform: 'translateY(-4px)',
+                                            boxShadow: '0px 8px 30px rgba(0, 0, 0, 0.15)',
+                                        }
+                                    }}
+                                    onClick={() => navigate(`/guild/${guild.Id}`)}
+                                >
+                                    <CardContent sx={{ textAlign: 'center', p: 3 }}>
+                                        <GroupsIcon sx={{ fontSize: 48, color: 'primary.main', mb: 1 }} />
+                                        <Typography variant="h6" fontWeight={600} sx={{ mt: 1 }}>
+                                            {guild.Name}
+                                        </Typography>
+                                    </CardContent>
+                                </Card>
                             ))}
-                        </Grid2>
+                        </Box>
                     </Box>
                 )}
 
@@ -219,7 +227,7 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
                             {t('dashboard.maps_found', { count: maps.length })}
                         </Typography>
 
-                        <Grid2 container spacing={3}>
+                        <Box className="dashboard__results-track">
                             {maps.map((map) => {
                                 // Déterminer la couleur du fond selon le tier et le nom
                                 let backgroundColor = "transparent";
@@ -240,7 +248,7 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
                                 }
 
                                 // Compter les types de coffres
-                                const chestCounts = map.zoneInfo.markers.reduce((acc, marker) => {
+                                const chestCounts = (map.zoneInfo?.markers || []).reduce((acc, marker) => {
                                     if (chestTypes[marker.name]) {
                                         acc[marker.name] = (acc[marker.name] || 0) + 1;
                                     }
@@ -248,8 +256,8 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
                                 }, {});
 
                                 return (
-                                    <Grid2 xs={12} sm={6} md={4} key={map.name}>
                                         <Card
+                                            key={map.name}
                                             sx={{
                                                 cursor: 'pointer',
                                                 height: '100%',
@@ -278,26 +286,54 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
                                                     />
                                                 )}
 
-                                                {/* Affichage des coffres */}
+                                                {/* Affichage des coffres — même rendu que Map.jsx : hors Chip,
+                                                    dont le style interne écrase la couleur des pastilles */}
                                                 {Object.keys(chestCounts).length > 0 && (
-                                                    <Box sx={{ mt: 2, display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 1 }}>
-                                                        {Object.entries(chestCounts).map(([type, count], index) => (
-                                                            <Chip
-                                                                key={index}
-                                                                icon={<CircleIcon sx={{ color: chestTypes[type].color, fontSize: chestTypes[type].fontSize }} />}
-                                                                label={count}
-                                                                size="small"
-                                                                variant="outlined"
-                                                            />
-                                                        ))}
+                                                    <Box sx={{ mt: 2, display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 1.5 }}>
+                                                        {Object.entries(chestCounts).map(([type, count], index) => {
+                                                            const isBigChest = type.includes("Big");
+                                                            return (
+                                                                <Box key={index} sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                                                                    <Box
+                                                                        sx={{
+                                                                            position: 'relative',
+                                                                            display: 'inline-flex',
+                                                                            alignItems: 'center',
+                                                                            justifyContent: 'center',
+                                                                        }}
+                                                                    >
+                                                                        {isBigChest && (
+                                                                            <Box
+                                                                                sx={{
+                                                                                    position: 'absolute',
+                                                                                    width: '100%',
+                                                                                    height: '100%',
+                                                                                    borderRadius: '50%',
+                                                                                    border: `2px solid ${chestTypes[type].color}`,
+                                                                                    animation: 'pulse 2s ease-in-out infinite',
+                                                                                }}
+                                                                            />
+                                                                        )}
+                                                                        <CircleIcon sx={{
+                                                                            color: chestTypes[type].color,
+                                                                            fontSize: chestTypes[type].fontSize,
+                                                                            position: 'relative',
+                                                                            zIndex: 1
+                                                                        }} />
+                                                                    </Box>
+                                                                    <Typography variant="body2" fontWeight={500}>
+                                                                        {count}
+                                                                    </Typography>
+                                                                </Box>
+                                                            );
+                                                        })}
                                                     </Box>
                                                 )}
                                             </CardContent>
                                         </Card>
-                                    </Grid2>
                                 );
                             })}
-                        </Grid2>
+                        </Box>
                     </Box>
                 )}
         </Container>

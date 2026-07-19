@@ -308,7 +308,7 @@ const Map = () => {
                                     const mobResourceEntries = Object.entries(mobResourceIconsMap);
 
                                     return (
-                                        <Grid2 xs={12} sm={6} md={4} key={map.name}>
+                                        <Grid2 size={{xs: 12, sm: 6, md: 4}} key={map.name}>
                                             <Card
                                                 sx={{
                                                     cursor: 'pointer',
@@ -441,7 +441,7 @@ const Map = () => {
                     <Grid2 container spacing={2}>
                         {/* Affichage des types de tunnels */}
                         {Object.entries(filteredMapTypes).map(([type, { icon, info }]) => (
-                            <Grid2 xs={6} sm={4} md={3} key={type}>
+                            <Grid2 size={{xs: 6, sm: 4, md: 3}} key={type}>
                                 <Box
                                     sx={{
                                         padding: 2,
@@ -473,7 +473,7 @@ const Map = () => {
                         {showChestInfo && Object.entries(filteredChestTypes).map(([type, { color, fontSize, info }]) => {
                             const isBigChest = type.includes("Big");
                             return (
-                                <Grid2 xs={6} sm={4} md={3} key={type}>
+                                <Grid2 size={{xs: 6, sm: 4, md: 3}} key={type}>
                                     <Box
                                         sx={{
                                             padding: 2,
@@ -525,7 +525,7 @@ const Map = () => {
 
                         {/* Affichage des types de ressources */}
                         {showGatherInfo && Object.entries(resourceIcons).map(([type, icon]) => (
-                            <Grid2 xs={6} sm={4} md={3} key={type}>
+                            <Grid2 size={{xs: 6, sm: 4, md: 3}} key={type}>
                                 <Box
                                     sx={{
                                         padding: 2,

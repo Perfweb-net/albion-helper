@@ -36,6 +36,36 @@
     margin-bottom: 24px;
   }
 
+  // Grille de résultats : 3 colonnes (desktop), 2 (tablette) ;
+  // sur mobile, slider horizontal (scroll-snap) pour limiter la hauteur.
+  &__results-track {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+
+    @media (max-width: 899px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 599px) {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      gap: 16px;
+      // Pleine largeur : compense le padding du Container MUI (16px en xs)
+      margin: 0 -16px;
+      padding: 4px 16px 12px;
+      scrollbar-width: thin;
+
+      > * {
+        // 80 % de large : la carte suivante dépasse, invite au swipe
+        flex: 0 0 80%;
+        scroll-snap-align: start;
+      }
+    }
+  }
+
   &__item-card {
     cursor: pointer;
     height: 100%;
