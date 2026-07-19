@@ -591,6 +591,10 @@ const Craft = () => {
             {loadingRecipes ? (
                 <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}><CircularProgress /></Box>
             ) : (
+                <>
+                <Typography variant="caption" color="text.secondary" sx={{ display: 'block', textAlign: 'right', mb: 0.5 }}>
+                    {t('craft.table.silver_note')}
+                </Typography>
                 <TableContainer component={Paper} className="craft-table" sx={{ border: '1px solid rgba(201,168,76,0.15)' }}>
                     <Table size="small">
                         <TableHead>
@@ -752,6 +756,7 @@ const Craft = () => {
                         </TableBody>
                     </Table>
                 </TableContainer>
+                </>
             )}
 
             {hasPrices && results.length > 0 && (

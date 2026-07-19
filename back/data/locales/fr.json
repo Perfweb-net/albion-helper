@@ -571,7 +571,8 @@
       "spf": "SPF",
       "tax": "taxe",
       "no_price_tooltip": "Aucun ordre de vente sur ce marché : l'API d'Albion ne renvoie pas de prix pour cet item dans cette ville",
-      "no_results": "Aucune recette trouvée"
+      "no_results": "Aucune recette trouvée",
+      "silver_note": "Montants exprimés en silver (monnaie du jeu)"
     },
     "chip": {
       "spec_bonus": "+{{bonus}}% LPB {{type}}",
@@ -662,5 +663,9 @@
       "focus_consumed_amount": "{{amount}} focus consommé",
       "incomplete_prices": "Prix incomplets — certains items n'ont pas de cotation sur ce marché."
     }
+  },
+  "footer": {
+    "support": "Soutenir Albion Helper — faire un don",
+    "support_aria": "Faire un don pour soutenir Albion Helper (nouvel onglet)"
   }
 }

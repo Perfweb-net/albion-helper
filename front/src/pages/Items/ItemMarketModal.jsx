@@ -151,7 +151,7 @@ const ItemMarketModal = ({ item, onClose }) => {
 
                         {/* Tableau des prix par ville */}
                         <Typography variant="subtitle1" sx={{ fontFamily: 'Cinzel, serif', fontWeight: 600, mb: 1 }}>
-                            {t('items.prices_by_city')}
+                            {t('items.prices_by_city')} · silver
                         </Typography>
                         <TableContainer component={Paper} sx={{ mb: 3, border: '1px solid rgba(201,168,76,0.15)' }}>
                             <Table size="small">
@@ -193,7 +193,7 @@ const ItemMarketModal = ({ item, onClose }) => {
 
                         {/* Graphique historique */}
                         <Typography variant="subtitle1" sx={{ fontFamily: 'Cinzel, serif', fontWeight: 600, mb: 1 }}>
-                            {t('items.price_history_title')}
+                            {t('items.price_history_title')} · silver
                         </Typography>
                         {chartData.length === 0 ? (
                             <Typography variant="body2" color="text.secondary" sx={{ textAlign: 'center', py: 3 }}>
