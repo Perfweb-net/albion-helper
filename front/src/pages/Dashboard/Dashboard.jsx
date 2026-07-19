@@ -18,8 +18,9 @@ import {
     CardContent,
     Chip
 } from "@mui/material";
-import CircleIcon from "@mui/icons-material/Circle";
 import AddEmailBanner from '../../components/AddEmailBanner';
+import MapCard from '../../components/map/MapCard';
+import MapLegend from '../../components/map/MapLegend';
 import SearchIcon from "@mui/icons-material/Search";
 import PersonIcon from "@mui/icons-material/Person";
 import GroupsIcon from "@mui/icons-material/Groups";
@@ -33,13 +34,6 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
     const [selection, setSelection] = useState('joueur');
     const [maps, setMaps] = useState([]);
     const navigate = useNavigate();
-    const chestTypes = {
-        "Big Avalonian Chest": { color: "gold", fontSize: "large" },
-        "Avalonian Chest": { color: "gold", fontSize: "small" },
-        "Big Group Chest": { color: "blue", fontSize: "large" },
-        "Big Solo Chest": { color: "green", fontSize: "large" },
-        "Solo Chest": { color: "green", fontSize: "small" }
-    };
 
     const handleSubmit = async (term) => {
         if (selection === 'map') {
@@ -229,113 +223,15 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
                             {t('dashboard.maps_found', { count: maps.length })}
                         </Typography>
 
+                        {/* Même rendu que la page Carte : composants partagés (icônes de
+                            type de zone, coffres) + légende limitée aux résultats affichés */}
                         <Box className="dashboard__results-track">
-                            {maps.map((map) => {
-                                // Déterminer la couleur du fond selon le tier et le nom
-                                let backgroundColor = "transparent";
-                                let tierColor = "default";
-                                if (map.name.includes("-")) {
-                                    if (map.tier === 4) {
-                                        backgroundColor = "#f0f0f0";
-                                        tierColor = "default";
-                                    }
-                                    if (map.tier === 6) {
-                                        backgroundColor = "#e0f7ff";
-                                        tierColor = "info";
-                                    }
-                                    if (map.tier === 8) {
-                                        backgroundColor = "#fff5cc";
-                                        tierColor = "warning";
-                                    }
-                                }
-
-                                // Compter les types de coffres
-                                const chestCounts = (map.zoneInfo?.markers || []).reduce((acc, marker) => {
-                                    if (chestTypes[marker.name]) {
-                                        acc[marker.name] = (acc[marker.name] || 0) + 1;
-                                    }
-                                    return acc;
-                                }, {});
-
-                                return (
-                                        <Card
-                                            key={map.name}
-                                            sx={{
-                                                cursor: 'pointer',
-                                                height: '100%',
-                                                backgroundColor: backgroundColor,
-                                                transition: 'all 0.3s ease',
-                                                '&:hover': {
-                                                    transform: 'translateY(-4px)',
-                                                    boxShadow: '0px 8px 30px rgba(0, 0, 0, 0.15)',
-                                                }
-                                            }}
-                                        >
-                                            <CardContent sx={{ textAlign: 'center', p: 3 }}>
-                                                <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1, mb: 2 }}>
-                                                    <MapIcon sx={{ color: 'primary.main' }} />
-                                                    <Typography variant="h6" fontWeight={600}>
-                                                        {map.name}
-                                                    </Typography>
-                                                </Box>
-                                                
-                                                {map.tier && (
-                                                    <Chip 
-                                                        label={`Tier ${map.tier}`} 
-                                                        size="small" 
-                                                        color={tierColor}
-                                                        sx={{ mb: 2 }}
-                                                    />
-                                                )}
-
-                                                {/* Affichage des coffres — même rendu que Map.jsx : hors Chip,
-                                                    dont le style interne écrase la couleur des pastilles */}
-                                                {Object.keys(chestCounts).length > 0 && (
-                                                    <Box sx={{ mt: 2, display: "flex", justifyContent: "center", flexWrap: "wrap", gap: 1.5 }}>
-                                                        {Object.entries(chestCounts).map(([type, count], index) => {
-                                                            const isBigChest = type.includes("Big");
-                                                            return (
-                                                                <Box key={index} sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-                                                                    <Box
-                                                                        sx={{
-                                                                            position: 'relative',
-                                                                            display: 'inline-flex',
-                                                                            alignItems: 'center',
-                                                                            justifyContent: 'center',
-                                                                        }}
-                                                                    >
-                                                                        {isBigChest && (
-                                                                            <Box
-                                                                                sx={{
-                                                                                    position: 'absolute',
-                                                                                    width: '100%',
-                                                                                    height: '100%',
-                                                                                    borderRadius: '50%',
-                                                                                    border: `2px solid ${chestTypes[type].color}`,
-                                                                                    animation: 'pulse 2s ease-in-out infinite',
-                                                                                }}
-                                                                            />
-                                                                        )}
-                                                                        <CircleIcon sx={{
-                                                                            color: chestTypes[type].color,
-                                                                            fontSize: chestTypes[type].fontSize,
-                                                                            position: 'relative',
-                                                                            zIndex: 1
-                                                                        }} />
-                                                                    </Box>
-                                                                    <Typography variant="body2" fontWeight={500}>
-                                                                        {count}
-                                                                    </Typography>
-                                                                </Box>
-                                                            );
-                                                        })}
-                                                    </Box>
-                                                )}
-                                            </CardContent>
-                                        </Card>
-                                );
-                            })}
+                            {maps.map((map) => (
+                                <MapCard key={map.name} map={map} />
+                            ))}
                         </Box>
+
+                        <MapLegend maps={maps} />
                     </Box>
                 )}
         </Container>

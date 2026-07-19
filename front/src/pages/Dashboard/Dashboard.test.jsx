@@ -88,9 +88,14 @@ test('renders map results with colored chest dots (not Chip-styled)', async () =
     fireEvent.click(screen.getByRole('button', { name: 'common.search' }));
 
     await screen.findByText('Qiitun-Odesos');
-    const dots = document.querySelectorAll('[data-testid="CircleIcon"]');
+    // Comptage borné aux cartes de résultats : la légende partagée (MapLegend)
+    // affiche elle aussi des pastilles pour les types présents
+    const track = document.querySelector('.dashboard__results-track');
+    const dots = track.querySelectorAll('[data-testid="CircleIcon"]');
     expect(dots.length).toBe(2);
     // La pastille ne doit plus être dans un Chip MUI, dont le style interne
     // écrasait la couleur (pastilles blanches en thème sombre)
     dots.forEach((dot) => expect(dot.closest('.MuiChip-root')).toBeNull());
+    // La légende des cartes est affichée sous les résultats, comme sur la page Carte
+    expect(document.querySelectorAll('[data-testid="CircleIcon"]').length).toBeGreaterThan(2);
 });
