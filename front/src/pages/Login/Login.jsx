@@ -115,6 +115,11 @@ const Login = () => {
                                     S'inscrire
                                 </Link>
                             </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                                <Link to="/forgot-password" className="login__link">
+                                    Mot de passe oublié ?
+                                </Link>
+                            </Typography>
                         </Box>
                     </form>
                 </CardContent>

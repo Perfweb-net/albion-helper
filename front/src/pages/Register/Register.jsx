@@ -7,6 +7,7 @@ import './Register.scss';
 
 const Register = () => {
     const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
@@ -16,7 +17,7 @@ const Register = () => {
         setError('');
 
         try {
-            await api.post('/register', { username, password });
+            await api.post('/register', { username, password, email });
             navigate('/login');
         } catch (err) {
             setError(err.response?.data?.error || err.response?.data?.message || 'Une erreur est survenue lors de l\'inscription');
@@ -51,6 +52,21 @@ const Register = () => {
                             inputProps={{
                                 'aria-required': 'true',
                                 'aria-label': "Choisissez un nom d'utilisateur"
+                            }}
+                        />
+                        <TextField
+                            label="Adresse e-mail (optionnelle)"
+                            type="email"
+                            variant="outlined"
+                            fullWidth
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="register__textfield"
+                            sx={{ mb: 3 }}
+                            autoComplete="email"
+                            helperText="Nécessaire pour récupérer votre compte en cas de mot de passe oublié"
+                            inputProps={{
+                                'aria-label': 'Saisissez votre adresse e-mail (optionnelle)'
                             }}
                         />
                         <TextField
