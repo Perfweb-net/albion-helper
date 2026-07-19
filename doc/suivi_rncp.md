@@ -20,7 +20,7 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 | Bloc | Épreuve | Date | État au 14/07 |
 |---|---|---|---|
 | Bloc 2 | Dossier écrit 30p max + code source | ~~08–19/06~~ **décalé — date à confirmer** | 🟢 **dossier v3 prêt** (`Dossier_Bloc2_Albion_Helper_v3.docx`, 15/07 — skill docx, XML validé, corps 28 pages + 4 pages d.annexes) — relire, mettre à jour le sommaire dans Word, déposer |
-| Bloc 4 | Dossier écrit 20p max | **20–24/07/2026** | 🚨 **J-6** — prod à redéployer + UptimeRobot + relecture |
+| Bloc 4 | Dossier écrit 20p max | **20–24/07/2026** | **J-6** — prod redéployée ✅ (19/07) ; reste UptimeRobot + relecture |
 | Bloc 3 | Oral 45' (30'+15') + démo live | 17–21/08 ou 01–29/09 | 🟠 support prêt (pptx), reste kanban + prod + répétitions |
 | Bloc 1 | Oral 30' (20'+10') | Rentrée oct. 2026 | 🟡 support prêt (pptx), reste relecture + répétitions |
 
@@ -39,9 +39,10 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 - [x] Canal Monolog `incident` dédié (dev + prod)
 - [x] Indicateurs définis avec cibles : dispo ≥99%, réponse <1s, détection ≤5 min, 5xx <1% (dossier §3.1)
 - [x] Système décrit avec schéma : 2 sondes, /api/health détaillé, signalements, journaux (dossier §3)
-- [ ] 🚨 **BLOQUANT (re-vérifié le 14/07 : toujours 404)** : `/api/health` renvoie 404 en prod — le code déployé date d'avant le 12/06. Le job CI `deploy` n'a jamais tourné (secrets GitHub absents) et `deploy.sh` tire `master` alors que la branche par défaut distante est toujours `main` (re-vérifié 14/07). Étapes : ① pousser develop (18 commits locaux non poussés !) puis `git push origin develop:master`, ② créer les secrets GitHub Actions OU lancer `deploy/deploy.sh` en SSH à la main, ③ vérifier `curl https://albion-back.perfweb.net/api/health` → 200 `"status":"OK"`
-- [ ] Sonde externe : créer le monitor UptimeRobot sur https://albion-back.perfweb.net/api/health (5 min, mot-clé OK, alerte e-mail) + **insérer la capture dans le dossier §3.4** — dépend du redéploiement ci-dessus
+- [x] ~~🚨 BLOQUANT : `/api/health` renvoie 404 en prod~~ **RÉSOLU le 19/07** : VPS réinstallé (18/07), `master` poussé (`f97c7ddc`), `deploy/deploy.sh` exécuté en SSH (migrations + build front + sonde cron) — `curl https://albion-back.perfweb.net/api/health` → **200 `"status":"OK"`** (DB + API Albion OK). Reste à brancher les secrets GitHub Actions pour la CD automatique (déploiement manuel SSH opérationnel en attendant). ⚠️ deux sondes cron coexistent : l'ancienne `/usr/local/bin/albion-healthcheck-probe.sh` (posée à la réinstallation du VPS) + celle du repo — supprimer l'ancienne de la crontab
+- [ ] Sonde externe : créer le monitor UptimeRobot sur https://albion-back.perfweb.net/api/health (5 min, mot-clé OK, alerte e-mail) + **insérer la capture dans le dossier §3.4** — la prod est redéployée (19/07), plus rien ne bloque
 - [x] Sonde interne **automatisée le 14/07** : `deploy.sh` (ré)installe la crontab (*/5) de `healthcheck-probe.sh` à chaque déploiement (commit `1af1a572`) — elle sera posée sur le VPS au prochain déploiement, plus rien à faire à la main
+- [x] Alerte e-mail automatique **ajoutée et déployée le 19/07** : `/api/health` envoie le détail des services en erreur à `ALERT_EMAIL` (anti-spam : 1 mail max/30 min via cache) — Brevo configuré en prod (SMTP, expéditeur `no-reply@perfweb.net` vérifié DKIM/DMARC, 300 mails/jour gratuits), envoi réel testé depuis le VPS
 
 ### C4.2.1 — Consignation des anomalies ⚠️ ÉLIM
 - [x] Processus documenté : 6 canaux, cycle consignation→qualification→correctif→re-test, grille gravité/priorité (dossier §4)
@@ -73,7 +74,7 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 - [x] 7. Présentation d'un exemplaire du journal de version *(à rafraîchir après ajout v3.0.0)*
 - [x] 8. Exemple de problème résolu en collaboration avec le support client
 - [x] **15/07 : dossier v2 généré** → `dossier/Dossier_Bloc4_Albion_Helper_v2.docx` (v1 conservée) — skill docx, 13 pages/20, XML validé. Faits à jour : 131 tests, sonde auto-installée + log d'exécution réel, journal →v3.1.0, registre BUG-001→016, traitement BUG-011 & BUG-016, runbook d'alerte, §3.4 honnête (UptimeRobot spécifié, « à activer avec la remise en production »)
-- [ ] **DERNIÈRES ÉTAPES** : ① redéployer la prod (secrets GitHub) → ② activer le monitor UptimeRobot (spec dans le dossier §3.4) → ③ relire le docx v2 dans Word (sommaire) → ④ **déposer sur DigiformaCertif entre le 20 et le 24/07**
+- [ ] **DERNIÈRES ÉTAPES** : ① ~~redéployer la prod~~ ✅ fait le 19/07 (SSH ; secrets GitHub pour la CD auto encore à créer) → ② activer le monitor UptimeRobot (spec dans le dossier §3.4) → ③ relire le docx v2 dans Word (sommaire) → ④ **déposer sur DigiformaCertif entre le 20 et le 24/07**
 
 ---
 
@@ -116,7 +117,7 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 - [x] Logiciel utilisable — **re-vérifié le 14/07 : back PHPUnit OK (31 tests, 85 assertions), front Jest 95/95 verts**
 - [x] Script de démo en 10 étapes, vocabulaire commanditaire (annexe A)
 - [x] Conclusion orientée validation du commanditaire (slide 15 + étape 10)
-- [ ] **Environnement de démo : la prod n'est PAS à jour** (re-vérifié 14/07 : /api/health → 404) — redéployer (cf. bloquant Bloc 4), précharger les données, répéter la veille (check-list annexe B)
+- [ ] **Environnement de démo** : prod redéployée le 19/07 (front https://oportaler.perfweb.net + back /api/health → 200 OK, reset de mot de passe par e-mail fonctionnel) — reste : précharger les données, répéter la veille (check-list annexe B)
 
 ## Livrable Bloc 3 — oral 45' (les 14 points du règlement sont couverts par le support)
 
@@ -216,7 +217,7 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 
 1. **Règlement re-pointé** : les listes officielles (16 points Bloc 2, 8 points Bloc 4, 14 points Bloc 3, 17 points Bloc 1) et les éliminatoires (C1.1.1, C1.2.2, C1.3.2, C1.4.1, C1.6 / C2.2.1, C2.2.2, C2.2.3, C2.3.1 / C3.1, C3.2.1, C3.4.2 / C4.1.2, C4.2.1, C4.3.2) correspondent bien à ce fichier.
 2. **Tests verts** : back PHPUnit `OK (31 tests, 85 assertions)`, front Jest 12 suites / 95 tests (re-vérifiés après la repasse UI).
-3. **Prod toujours obsolète** : `/api/health` → 404 en prod, alors qu'il répond 200 OK en local — cause : CD jamais branchée (secrets absents), voir Corrections.
+3. ~~**Prod toujours obsolète** : `/api/health` → 404 en prod~~ → **résolu le 19/07** : VPS réinstallé, déploiement SSH réussi, `/api/health` → 200 OK (tests re-vérifiés au passage : back 49, front 115).
 4. ~~CHANGELOG figé à v2.1.0~~ → **corrigé** : entrée v3.0.0 ajoutée.
 
 # 🔎 Session du 14/07 (soir) — travaux réalisés
