@@ -3,16 +3,17 @@
 namespace App\Tests\Controller;
 
 use App\Service\PlayerService;
+use App\Tests\RegistersUsersTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class PlayerControllerTest extends WebTestCase
 {
+    use RegistersUsersTrait;
+
     private function getAuthToken(object $client): string
     {
         $username = 'playertest_' . uniqid();
-        $client->request('POST', '/api/register', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['username' => $username, 'password' => 'password123'])
-        );
+        $this->registerVerifiedUser($client, $username);
         $client->request('POST', '/api/login', [], [], ['CONTENT_TYPE' => 'application/json'],
             json_encode(['username' => $username, 'password' => 'password123'])
         );

@@ -2,22 +2,27 @@
 
 namespace App\Tests\Controller;
 
+use App\Tests\RegistersUsersTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class AuthControllerTest extends WebTestCase
 {
+    use RegistersUsersTrait;
+
     public function testRegisterSuccess(): void
     {
         $client = static::createClient();
         $username = 'testuser_' . uniqid();
 
         $client->request('POST', '/api/register', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['username' => $username, 'password' => 'password123'])
+            json_encode(['username' => $username, 'password' => 'password123', 'email' => $username . '@example.com'])
         );
 
         $this->assertResponseStatusCodeSame(201);
         $content = json_decode($client->getResponse()->getContent(), true);
-        $this->assertEquals('User created', $content['status']);
+        $this->assertEquals('User created, verification email sent', $content['status']);
+        // Le mail de confirmation part immédiatement
+        $this->assertEmailCount(1);
     }
 
     public function testRegisterDuplicateUser(): void
@@ -26,12 +31,12 @@ class AuthControllerTest extends WebTestCase
         $username = 'duplicate_' . uniqid();
 
         $client->request('POST', '/api/register', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['username' => $username, 'password' => 'password123'])
+            json_encode(['username' => $username, 'password' => 'password123', 'email' => $username . '@example.com'])
         );
         $this->assertResponseStatusCodeSame(201);
 
         $client->request('POST', '/api/register', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['username' => $username, 'password' => 'password123'])
+            json_encode(['username' => $username, 'password' => 'password123', 'email' => $username . '.bis@example.com'])
         );
         $this->assertResponseStatusCodeSame(400);
         $content = json_decode($client->getResponse()->getContent(), true);
@@ -49,6 +54,14 @@ class AuthControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(400);
         $content = json_decode($client->getResponse()->getContent(), true);
         $this->assertEquals('Missing credentials', $content['error']);
+
+        // L'e-mail est désormais obligatoire (activation du compte)
+        $client->request('POST', '/api/register', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['username' => 'noemail_' . uniqid(), 'password' => 'password123'])
+        );
+        $this->assertResponseStatusCodeSame(400);
+        $content = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals('Missing email', $content['error']);
     }
 
     public function testLoginSuccess(): void
@@ -57,10 +70,21 @@ class AuthControllerTest extends WebTestCase
         $username = 'logintest_' . uniqid();
 
         $client->request('POST', '/api/register', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['username' => $username, 'password' => 'password123'])
+            json_encode(['username' => $username, 'password' => 'password123', 'email' => $username . '@example.com'])
         );
         $this->assertResponseStatusCodeSame(201);
+        preg_match('/token=([a-f0-9]{64})/', $this->getMailerMessage()->getTextBody(), $m);
 
+        // Compte non activé : la connexion est refusée par le UserChecker
+        $client->request('POST', '/api/login', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['username' => $username, 'password' => 'password123'])
+        );
+        $this->assertResponseStatusCodeSame(401);
+
+        // Activation par le lien du mail, puis connexion
+        $client->request('POST', '/api/email/verify', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['token' => $m[1]])
+        );
         $client->request('POST', '/api/login', [], [], ['CONTENT_TYPE' => 'application/json'],
             json_encode(['username' => $username, 'password' => 'password123'])
         );
@@ -102,9 +126,7 @@ class AuthControllerTest extends WebTestCase
     private function registerAndLogin($client): string
     {
         $username = 'cookieuser_' . uniqid();
-        $client->request('POST', '/api/register', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['username' => $username, 'password' => 'password123'])
-        );
+        $this->registerVerifiedUser($client, $username);
         $client->request('POST', '/api/login', [], [], ['CONTENT_TYPE' => 'application/json'],
             json_encode(['username' => $username, 'password' => 'password123'])
         );

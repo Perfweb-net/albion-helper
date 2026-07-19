@@ -18,6 +18,8 @@ security:
         api:
             pattern: ^/api
             stateless: true
+            # Bloque la connexion des comptes dont l'e-mail n'est pas confirmé
+            user_checker: App\Security\UserChecker
             entry_point: jwt
             jwt: ~
             refresh_jwt:

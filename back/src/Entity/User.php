@@ -28,6 +28,12 @@ class User implements UserInterface, \Symfony\Component\Security\Core\User\Passw
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $resetTokenExpiresAt = null;
 
+    // Comptes historiques (sans e-mail) : l'adresse ajoutée après coup attend
+    // ici sa confirmation — elle n'est promue dans email qu'une fois vérifiée,
+    // sinon le compte se retrouverait bloqué à la connexion suivante.
+    #[ORM\Column(type: "string", length: 255, nullable: true)]
+    private ?string $pendingEmail = null;
+
     // Confirmation de l'adresse : tant qu'elle n'est pas vérifiée, aucune
     // récupération de compte n'est possible vers cette adresse.
     #[ORM\Column(type: "string", length: 64, nullable: true)]
@@ -99,6 +105,18 @@ class User implements UserInterface, \Symfony\Component\Security\Core\User\Passw
     public function setResetTokenExpiresAt(?\DateTimeImmutable $resetTokenExpiresAt): self
     {
         $this->resetTokenExpiresAt = $resetTokenExpiresAt;
+
+        return $this;
+    }
+
+    public function getPendingEmail(): ?string
+    {
+        return $this->pendingEmail;
+    }
+
+    public function setPendingEmail(?string $pendingEmail): self
+    {
+        $this->pendingEmail = $pendingEmail;
 
         return $this;
     }

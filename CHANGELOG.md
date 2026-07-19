@@ -4,10 +4,10 @@ All notable changes to the Albion Helper project will be documented in this file
 
 ## [3.2.0] - 2026-07-19
 ### Added
-- **Réinitialisation de mot de passe par e-mail :** adresse e-mail optionnelle sur le compte (unique, validée), `POST /api/password/forgot` (réponse générique anti-énumération, rate limit 5/h par IP) et `POST /api/password/reset` (jeton à usage unique valable 1 h, seul son hash SHA-256 est stocké). Pages front `/forgot-password` et `/reset-password`, champ e-mail optionnel à l'inscription. Envoi via Brevo (SMTP), templates HTML aux couleurs du site.
-- **Confirmation d'adresse à l'inscription :** e-mail de vérification (jeton à usage unique, hash SHA-256), endpoint `POST /api/email/verify` et page `/verify-email`. La récupération de compte n'est active que pour une adresse confirmée (anti-abus + consentement RGPD).
+- **Activation du compte par e-mail :** l'adresse e-mail est désormais obligatoire à l'inscription ; le compte n'est utilisable qu'après clic sur le lien de confirmation (UserChecker Symfony, jeton à usage unique, hash SHA-256). Endpoint `POST /api/email/verify`, page `/verify-email`. Rétro-compatible : les comptes antérieurs (sans e-mail) se connectent normalement et peuvent ajouter puis confirmer une adresse depuis le tableau de bord (`POST /api/profile/email`, l'adresse attend en `pending_email` sans jamais bloquer le compte).
+- **Réinitialisation de mot de passe par e-mail :** `POST /api/password/forgot` (réponse générique anti-énumération, rate limit 5/h par IP, adresse confirmée requise) et `POST /api/password/reset` (jeton à usage unique valable 1 h, seul son hash SHA-256 est stocké). Pages front `/forgot-password` et `/reset-password`. Envoi via Brevo (SMTP), templates HTML aux couleurs du site.
 - **Alertes de supervision par e-mail :** `/api/health` envoie le détail des services en erreur à `ALERT_EMAIL` (anti-spam : 1 envoi max / 30 min). Commande `app:mail-test` pour vérifier la configuration SMTP.
-- **Tests :** +38 tests (confirmation d'adresse, flux complet forgot → e-mail → reset → login côté back, pages front) — 169 au total (51 back, 118 front).
+- **Tests :** +42 tests (activation, rétro-compatibilité, flux complet forgot → e-mail → reset → login, pages front) — 173 au total (52 back, 121 front).
 
 ## [3.1.0] - 2026-07-15
 ### Security

@@ -27,6 +27,16 @@ class EmailVerificationController extends AbstractController
             return new JsonResponse(['error' => 'Invalid token'], 400);
         }
 
+        // Compte historique : l'adresse en attente est promue au moment de la
+        // confirmation (re-contrôle d'unicité : elle a pu être prise entre-temps)
+        if ($user->getPendingEmail() !== null) {
+            if ($userRepository->findOneBy(['email' => $user->getPendingEmail()])) {
+                return new JsonResponse(['error' => 'Email already in use'], 400);
+            }
+            $user->setEmail($user->getPendingEmail());
+            $user->setPendingEmail(null);
+        }
+
         $user->setEmailVerifiedAt(new \DateTimeImmutable());
         $user->setEmailVerificationTokenHash(null);
         $userRepository->save($user, true);

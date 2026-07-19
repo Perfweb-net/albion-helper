@@ -19,6 +19,7 @@ import {
     Chip
 } from "@mui/material";
 import CircleIcon from "@mui/icons-material/Circle";
+import AddEmailBanner from '../../components/AddEmailBanner';
 import SearchIcon from "@mui/icons-material/Search";
 import PersonIcon from "@mui/icons-material/Person";
 import GroupsIcon from "@mui/icons-material/Groups";
@@ -77,6 +78,7 @@ const Dashboard = () => {  // Le nom du composant commence par une majuscule
 
     return (
         <Container maxWidth="lg" className="dashboard__container">
+            <AddEmailBanner />
             <Box className="dashboard__header">
                 <Typography variant="h3" className="dashboard__title ah-page-title ah-page-title--center" gutterBottom>
                     {t('dashboard.title')}

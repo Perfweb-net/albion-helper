@@ -31,7 +31,13 @@ const Login = () => {
             setIsLogin(true);
             navigate('/dashboard');
         } catch (err) {
-            setError('Une erreur est survenue lors de la connexion. Vérifiez vos identifiants.');
+            // Le serveur détaille certains refus (ex. compte non activé par e-mail)
+            const serverMessage = err.response?.data?.message;
+            if (serverMessage && /activé|confirm/i.test(serverMessage)) {
+                setError(serverMessage);
+            } else {
+                setError('Une erreur est survenue lors de la connexion. Vérifiez vos identifiants.');
+            }
         }
     };
 

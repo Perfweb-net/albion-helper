@@ -55,6 +55,55 @@ class PasswordResetControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(400);
     }
 
+    /** Rétro-compatibilité : un compte créé sans e-mail (avant v3.2.0) l'ajoute puis le confirme. */
+    public function testLegacyAccountAddsAndVerifiesEmail(): void
+    {
+        $client = static::createClient();
+        $username = 'legacy_' . uniqid();
+
+        // Compte historique créé directement en base, sans e-mail
+        $container = static::getContainer();
+        $em = $container->get('doctrine')->getManager();
+        $hasher = $container->get('security.user_password_hasher');
+        $legacy = new \App\Entity\User();
+        $legacy->setUsername($username);
+        $legacy->setPassword($hasher->hashPassword($legacy, 'password123'));
+        $legacy->setRoles(['ROLE_USER']);
+        $legacy->setCreatedAt(new \DateTimeImmutable());
+        $em->persist($legacy);
+        $em->flush();
+
+        // Il peut toujours se connecter (le UserChecker ne bloque que les comptes avec e-mail non confirmé)
+        $client->request('POST', '/api/login', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['username' => $username, 'password' => 'password123'])
+        );
+        $this->assertResponseStatusCodeSame(200);
+
+        // Ajout de l'adresse : elle part en pendingEmail, un mail de confirmation est envoyé
+        $email = $username . '@example.com';
+        $client->request('POST', '/api/profile/email', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['email' => $email])
+        );
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertEmailCount(1);
+        preg_match('/token=([a-f0-9]{64})/', $this->getMailerMessage()->getTextBody(), $m);
+
+        // Tant que non confirmée, la connexion reste possible (l'adresse n'est pas promue)
+        $client->request('POST', '/api/login', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['username' => $username, 'password' => 'password123'])
+        );
+        $this->assertResponseStatusCodeSame(200);
+
+        // Confirmation : l'adresse est promue et visible sur /api/me
+        $client->request('POST', '/api/email/verify', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['token' => $m[1]])
+        );
+        $this->assertResponseStatusCodeSame(200);
+        $client->request('GET', '/api/me');
+        $content = json_decode($client->getResponse()->getContent(), true);
+        $this->assertEquals($email, $content['email']);
+    }
+
     public function testForgotOnUnverifiedEmailSendsNothing(): void
     {
         $client = static::createClient();

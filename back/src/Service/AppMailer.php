@@ -69,15 +69,16 @@ class AppMailer
         $this->mailer->send($email);
     }
 
-    public function sendEmailVerification(User $user, string $plainToken): void
+    public function sendEmailVerification(User $user, string $plainToken, ?string $to = null): void
     {
+        $to ??= $user->getEmail();
         $verifyUrl = rtrim($this->frontendUrl, '/') . '/verify-email?token=' . $plainToken;
         $username = htmlspecialchars($user->getUsername(), ENT_QUOTES);
 
         $content =
             '<p style="margin:0 0 16px;">Bienvenue <strong style="color:' . self::COLOR_GOLD . ';">' . $username . '</strong>,</p>' .
-            '<p style="margin:0 0 24px;">Votre compte Albion Helper est créé. Confirmez votre adresse e-mail pour activer ' .
-            'la récupération de compte (réinitialisation du mot de passe en cas d\'oubli).</p>' .
+            '<p style="margin:0 0 24px;">Confirmez votre adresse e-mail pour activer votre compte Albion Helper : ' .
+            'connexion et récupération du mot de passe en cas d\'oubli.</p>' .
             '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 24px;"><tr><td style="border-radius:12px;background:linear-gradient(135deg,' . self::COLOR_GOLD . ',' . self::COLOR_GOLD_DARK . ');background-color:' . self::COLOR_GOLD . ';">' .
             '<a href="' . $verifyUrl . '" style="display:inline-block;padding:14px 32px;font-size:16px;font-weight:700;color:#1a1005;text-decoration:none;border-radius:12px;">Confirmer mon adresse</a>' .
             '</td></tr></table>' .
@@ -87,12 +88,12 @@ class AppMailer
 
         $email = (new Email())
             ->from(new Address($this->from, self::SENDER_NAME))
-            ->to($user->getEmail())
+            ->to($to)
             ->subject('Albion Helper — Confirmez votre adresse e-mail')
             ->text(
                 "Bienvenue {$user->getUsername()},\n\n" .
-                "Votre compte Albion Helper est créé. Confirmez votre adresse e-mail pour activer " .
-                "la récupération de compte (réinitialisation du mot de passe en cas d'oubli) :\n\n" .
+                "Confirmez votre adresse e-mail pour activer votre compte Albion Helper " .
+                "(connexion et récupération du mot de passe en cas d'oubli) :\n\n" .
                 "{$verifyUrl}\n\n" .
                 "Vous n'êtes pas à l'origine de cette inscription ? Ignorez simplement cet e-mail.\n"
             )

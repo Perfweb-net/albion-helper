@@ -26,7 +26,7 @@ test('confirms the address with the token from the URL', async () => {
 
     await waitFor(() => {
         expect(api.post).toHaveBeenCalledWith('/email/verify', { token: 'abc123' });
-        expect(screen.getByRole('status')).toHaveTextContent(/adresse e-mail est confirmée/i);
+        expect(screen.getByRole('status')).toHaveTextContent(/compte est activé/i);
     });
 });
 

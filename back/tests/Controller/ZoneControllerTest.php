@@ -3,16 +3,17 @@
 namespace App\Tests\Controller;
 
 use App\Service\MapService;
+use App\Tests\RegistersUsersTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class ZoneControllerTest extends WebTestCase
 {
+    use RegistersUsersTrait;
+
     private function getAuthToken(object $client): string
     {
         $username = 'zonetest_' . uniqid();
-        $client->request('POST', '/api/register', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['username' => $username, 'password' => 'password123'])
-        );
+        $this->registerVerifiedUser($client, $username);
         $client->request('POST', '/api/login', [], [], ['CONTENT_TYPE' => 'application/json'],
             json_encode(['username' => $username, 'password' => 'password123'])
         );

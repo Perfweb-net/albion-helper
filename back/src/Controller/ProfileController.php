@@ -2,7 +2,10 @@
 
 namespace App\Controller;
 
+use App\Repository\UserRepository;
+use App\Service\AppMailer;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,5 +54,46 @@ class ProfileController extends AbstractController
         $this->em->flush();
 
         return new JsonResponse($current);
+    }
+
+    // Rétro-compatibilité : les comptes créés avant la v3.2.0 (sans e-mail)
+    // ajoutent leur adresse ici. Elle attend dans pendingEmail jusqu'au clic
+    // sur le lien de confirmation — le compte reste utilisable entre-temps.
+    #[Route('/api/profile/email', methods: ['POST'])]
+    public function addEmail(
+        Request $request,
+        UserRepository $userRepository,
+        AppMailer $mailer,
+        LoggerInterface $logger,
+    ): JsonResponse {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
+
+        if ($user->getEmail() !== null) {
+            return new JsonResponse(['error' => 'An email is already linked to this account'], 400);
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $email = trim($data['email'] ?? '');
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return new JsonResponse(['error' => 'Invalid email'], 400);
+        }
+        if ($userRepository->findOneBy(['email' => $email])) {
+            return new JsonResponse(['error' => 'Email already in use'], 400);
+        }
+
+        $token = bin2hex(random_bytes(32));
+        $user->setPendingEmail($email);
+        $user->setEmailVerificationTokenHash(hash('sha256', $token));
+        $this->em->flush();
+
+        try {
+            $mailer->sendEmailVerification($user, $token, $email);
+        } catch (\Throwable $e) {
+            $logger->error('Échec d\'envoi du mail de confirmation (ajout d\'adresse) : ' . $e->getMessage());
+            return new JsonResponse(['error' => 'Could not send the verification email, try again later'], 500);
+        }
+
+        return new JsonResponse(['status' => 'Verification email sent']);
     }
 }

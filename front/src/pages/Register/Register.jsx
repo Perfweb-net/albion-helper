@@ -10,6 +10,7 @@ const Register = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [registered, setRegistered] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -18,11 +19,41 @@ const Register = () => {
 
         try {
             await api.post('/register', { username, password, email });
-            navigate('/login');
+            // Le compte doit être activé via le lien reçu par e-mail avant la connexion
+            setRegistered(true);
         } catch (err) {
             setError(err.response?.data?.error || err.response?.data?.message || 'Une erreur est survenue lors de l\'inscription');
         }
     };
+
+    if (registered) {
+        return (
+            <Container maxWidth="sm" className="register__container">
+                <Card className="register__card">
+                    <CardContent className="register__content">
+                        <Box className="register__header">
+                            <PersonAddIcon className="register__icon" />
+                            <Typography variant="h4" className="register__title" gutterBottom>
+                                Vérifiez votre boîte mail
+                            </Typography>
+                        </Box>
+                        <Alert severity="success" role="status" aria-live="polite" sx={{ mb: 3 }}>
+                            Votre compte est créé ! Un e-mail de confirmation a été envoyé à{' '}
+                            <strong>{email}</strong> : cliquez sur le lien qu'il contient pour
+                            activer votre compte, puis connectez-vous.
+                        </Alert>
+                        <Box className="register__link-container">
+                            <Typography variant="body2" color="text.secondary">
+                                <Link to="/login" className="register__link">
+                                    Aller à la connexion
+                                </Link>
+                            </Typography>
+                        </Box>
+                    </CardContent>
+                </Card>
+            </Container>
+        );
+    }
 
     return (
         <Container maxWidth="sm" className="register__container">
@@ -55,18 +86,20 @@ const Register = () => {
                             }}
                         />
                         <TextField
-                            label="Adresse e-mail (optionnelle)"
+                            label="Adresse e-mail"
                             type="email"
                             variant="outlined"
                             fullWidth
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            required
                             className="register__textfield"
                             sx={{ mb: 3 }}
                             autoComplete="email"
-                            helperText="Nécessaire pour récupérer votre compte en cas de mot de passe oublié"
+                            helperText="Un lien de confirmation vous sera envoyé pour activer le compte"
                             inputProps={{
-                                'aria-label': 'Saisissez votre adresse e-mail (optionnelle)'
+                                'aria-required': 'true',
+                                'aria-label': 'Saisissez votre adresse e-mail'
                             }}
                         />
                         <TextField

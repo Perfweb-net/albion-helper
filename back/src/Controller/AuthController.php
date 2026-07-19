@@ -51,15 +51,17 @@ class AuthController extends AbstractController
             return new JsonResponse(['error' => sprintf('Password must be at least %d characters long', self::PASSWORD_MIN_LENGTH)], 400);
         }
 
-        // E-mail optionnel (nécessaire pour la réinitialisation de mot de passe)
+        // E-mail obligatoire : le compte n'est activé qu'après confirmation
+        // du lien reçu (le UserChecker refuse la connexion avant cela)
         $email = trim($data['email'] ?? '');
-        if ($email !== '') {
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                return new JsonResponse(['error' => 'Invalid email'], 400);
-            }
-            if ($userRepository->findOneBy(['email' => $email])) {
-                return new JsonResponse(['error' => 'Email already in use'], 400);
-            }
+        if ($email === '') {
+            return new JsonResponse(['error' => 'Missing email'], 400);
+        }
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return new JsonResponse(['error' => 'Invalid email'], 400);
+        }
+        if ($userRepository->findOneBy(['email' => $email])) {
+            return new JsonResponse(['error' => 'Email already in use'], 400);
         }
 
         // Vérifier si l'utilisateur existe déjà
@@ -71,14 +73,10 @@ class AuthController extends AbstractController
         // Création de l'utilisateur
         $user = new User();
         $user->setUsername($data['username']);
-        $user->setEmail($email !== '' ? $email : null);
+        $user->setEmail($email);
 
-        // Adresse fournie : un mail de confirmation active la récupération de compte
-        $verificationToken = null;
-        if ($email !== '') {
-            $verificationToken = bin2hex(random_bytes(32));
-            $user->setEmailVerificationTokenHash(hash('sha256', $verificationToken));
-        }
+        $verificationToken = bin2hex(random_bytes(32));
+        $user->setEmailVerificationTokenHash(hash('sha256', $verificationToken));
         $user->setPassword($this->passwordHasher->hashPassword($user, $data['password']));
         $user->setRoles(['ROLE_USER']);
         $user->setCreatedAt(new \DateTimeImmutable());
@@ -86,16 +84,14 @@ class AuthController extends AbstractController
         // Enregistrer l'utilisateur en base de données
         $userRepository->save($user, true);
 
-        if ($verificationToken !== null) {
-            try {
-                $this->mailer->sendEmailVerification($user, $verificationToken);
-            } catch (\Throwable $e) {
-                // L'inscription reste valide même si l'envoi échoue
-                $this->logger->error('Échec d\'envoi du mail de confirmation : ' . $e->getMessage());
-            }
+        try {
+            $this->mailer->sendEmailVerification($user, $verificationToken);
+        } catch (\Throwable $e) {
+            // L'inscription reste enregistrée même si l'envoi échoue
+            $this->logger->error('Échec d\'envoi du mail de confirmation : ' . $e->getMessage());
         }
 
-        return new JsonResponse(['status' => 'User created'], 201);
+        return new JsonResponse(['status' => 'User created, verification email sent'], 201);
     }
 
     // La connexion est gérée par le firewall (json_login + lexik), qui intercepte
@@ -118,6 +114,9 @@ class AuthController extends AbstractController
         return new JsonResponse([
             'username' => $user->getUsername(),
             'roles' => $user->getRoles(),
+            // Permet au front de proposer l'ajout d'adresse aux comptes historiques
+            'email' => $user->getEmail(),
+            'pendingEmail' => $user->getPendingEmail(),
         ]);
     }
 

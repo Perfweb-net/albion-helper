@@ -44,8 +44,8 @@ const VerifyEmail = () => {
 
                     {status === 'success' && (
                         <Alert severity="success" role="status" aria-live="polite" sx={{ mb: 3 }}>
-                            Votre adresse e-mail est confirmée : la récupération de compte
-                            (mot de passe oublié) est maintenant active.
+                            Votre compte est activé ! Vous pouvez maintenant vous connecter.
+                            La récupération de compte (mot de passe oublié) est également active.
                         </Alert>
                     )}
 

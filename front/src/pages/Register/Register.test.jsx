@@ -38,6 +38,9 @@ test('shows error from API on registration failure', async () => {
     fireEvent.change(screen.getByLabelText(/choisissez un nom d'utilisateur/i), {
         target: { value: 'existinguser' },
     });
+    fireEvent.change(screen.getByLabelText(/saisissez votre adresse e-mail/i), {
+        target: { value: 'existinguser@example.com' },
+    });
     fireEvent.change(screen.getByLabelText(/choisissez un mot de passe sécurisé/i), {
         target: { value: 'password123' },
     });
@@ -49,17 +52,27 @@ test('shows error from API on registration failure', async () => {
     });
 });
 
-test('navigates to login on successful registration', async () => {
-    api.post.mockResolvedValueOnce({ data: { status: 'User created' } });
+test('shows the activation notice on successful registration', async () => {
+    api.post.mockResolvedValueOnce({ data: { status: 'User created, verification email sent' } });
     renderRegister();
 
     fireEvent.change(screen.getByLabelText(/choisissez un nom d'utilisateur/i), {
         target: { value: 'newuser' },
+    });
+    fireEvent.change(screen.getByLabelText(/saisissez votre adresse e-mail/i), {
+        target: { value: 'newuser@example.com' },
     });
     fireEvent.change(screen.getByLabelText(/choisissez un mot de passe sécurisé/i), {
         target: { value: 'password123' },
     });
     fireEvent.click(screen.getByRole('button', { name: /créer mon compte/i }));
 
-    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/login'));
+    // Le compte doit être activé par e-mail : pas de redirection automatique
+    await waitFor(() => {
+        expect(api.post).toHaveBeenCalledWith('/register', {
+            username: 'newuser', password: 'password123', email: 'newuser@example.com',
+        });
+        expect(screen.getByRole('status')).toHaveTextContent(/e-mail de confirmation a été envoyé/i);
+    });
+    expect(mockNavigate).not.toHaveBeenCalled();
 });

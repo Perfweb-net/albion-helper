@@ -3,16 +3,17 @@
 namespace App\Tests\Controller;
 
 use App\Service\GuildService;
+use App\Tests\RegistersUsersTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class GuildControllerTest extends WebTestCase
 {
+    use RegistersUsersTrait;
+
     private function getAuthToken(object $client): string
     {
         $username = 'guildtest_' . uniqid();
-        $client->request('POST', '/api/register', [], [], ['CONTENT_TYPE' => 'application/json'],
-            json_encode(['username' => $username, 'password' => 'password123'])
-        );
+        $this->registerVerifiedUser($client, $username);
         $client->request('POST', '/api/login', [], [], ['CONTENT_TYPE' => 'application/json'],
             json_encode(['username' => $username, 'password' => 'password123'])
         );
