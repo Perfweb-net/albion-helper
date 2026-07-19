@@ -667,5 +667,15 @@
   "footer": {
     "support": "Dukung Albion Helper — Donasi",
     "support_aria": "Donasi untuk mendukung Albion Helper (tab baru)"
+  },
+  "notfound": {
+    "title": "Kamu tersesat, petualang",
+    "message": "Halaman ini tidak ada — atau telah ditelan oleh Kabut. Kembali ke jalan yang dikenal.",
+    "back": "Kembali ke beranda"
+  },
+  "offline": {
+    "title": "Koneksi terputus",
+    "message": "Tidak dapat menjangkau kerajaan: periksa koneksi Internet Anda. Halaman akan dipulihkan saat jaringan kembali.",
+    "retry": "Coba lagi"
   }
 }

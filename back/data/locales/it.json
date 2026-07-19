@@ -667,5 +667,15 @@
   "footer": {
     "support": "Sostieni Albion Helper — Dona",
     "support_aria": "Dona per sostenere Albion Helper (nuova scheda)"
+  },
+  "notfound": {
+    "title": "Ti sei perso, avventuriero",
+    "message": "Questa pagina non esiste — o è stata inghiottita dalle Nebbie. Riprendi la strada verso terre conosciute.",
+    "back": "Torna alla home"
+  },
+  "offline": {
+    "title": "Connessione persa",
+    "message": "Impossibile raggiungere il regno: verifica la tua connessione Internet. La pagina si ripristinerà al ritorno della rete.",
+    "retry": "Riprova"
   }
 }

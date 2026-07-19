@@ -667,5 +667,15 @@
   "footer": {
     "support": "Albion Helper'ı Destekle — Bağış Yap",
     "support_aria": "Albion Helper'ı desteklemek için bağış yapın (yeni sekme)"
+  },
+  "notfound": {
+    "title": "Kayboldun, maceraperest",
+    "message": "Bu sayfa yok — ya da Sisler tarafından yutuldu. Bilinen topraklara geri dön.",
+    "back": "Ana sayfaya dön"
+  },
+  "offline": {
+    "title": "Bağlantı kesildi",
+    "message": "Krallığa ulaşılamıyor: internet bağlantınızı kontrol edin. Ağ geri geldiğinde sayfa yeniden yüklenecektir.",
+    "retry": "Yeniden dene"
   }
 }

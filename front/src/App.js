@@ -4,6 +4,8 @@ import Login from './pages/Login/Login';
 import ForgotPassword from './pages/ForgotPassword/ForgotPassword';
 import ResetPassword from './pages/ResetPassword/ResetPassword';
 import VerifyEmail from './pages/VerifyEmail/VerifyEmail';
+import NotFound from './pages/NotFound/NotFound';
+import OfflineOverlay from './components/OfflineOverlay';
 import Register from './pages/Register/Register';
 import Dashboard from './pages/Dashboard/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
@@ -30,6 +32,7 @@ import RateLimitToast from "./components/RateLimitToast";
 const App = () => {
     return (
         <Router>
+            <OfflineOverlay/>
             <RateLimitToast/>
             <Header/>
             <main style={{ marginBottom: '80px', marginTop: '20px', flex: 1 }}>
@@ -105,6 +108,9 @@ const App = () => {
                         path="/admin"
                         element={<PrivateRoute element={<Admin/>}/>}
                     />
+
+                    {/* Toute route inconnue : page 404 stylée */}
+                    <Route path="*" element={<NotFound/>}/>
                 </Routes>
             </main>
 

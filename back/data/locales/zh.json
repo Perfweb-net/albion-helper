@@ -667,5 +667,15 @@
   "footer": {
     "support": "支持Albion Helper — 捐赠",
     "support_aria": "捐赠以支持Albion Helper(新标签页)"
+  },
+  "notfound": {
+    "title": "你迷路了，冒险者",
+    "message": "此页面不存在 — 或已被迷雾吞没。回到熟悉的道路上吧。",
+    "back": "返回主页"
+  },
+  "offline": {
+    "title": "连接已断开",
+    "message": "无法到达王国：请检查您的网络连接。网络恢复后页面将自动恢复。",
+    "retry": "重试"
   }
 }

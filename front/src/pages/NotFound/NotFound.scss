@@ -1,0 +1,49 @@
+@import '../../styles/variables';
+
+.not-found {
+  &__container {
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__content {
+    text-align: center;
+    padding: 48px 0;
+  }
+
+  &__icon {
+    font-size: 72px !important;
+    color: $primary-color;
+    margin-bottom: 8px;
+    opacity: 0.85;
+  }
+
+  &__code {
+    font-family: 'Cinzel', serif !important;
+    font-weight: 900 !important;
+    font-size: clamp(72px, 16vw, 140px) !important;
+    line-height: 1 !important;
+    color: $primary-color;
+    text-shadow: 0 4px 24px rgba(201, 168, 76, 0.35);
+  }
+
+  &__title {
+    font-family: 'Cinzel', serif !important;
+    font-weight: 700 !important;
+    margin-top: 8px !important;
+  }
+
+  &__message {
+    color: $text-secondary;
+    max-width: 420px;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  &__button {
+    padding: 12px 32px !important;
+    font-weight: 600 !important;
+  }
+}

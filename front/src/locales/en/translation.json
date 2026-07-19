@@ -702,5 +702,15 @@
   "footer": {
     "support": "Support Albion Helper — donate",
     "support_aria": "Donate to support Albion Helper (new tab)"
+  },
+  "notfound": {
+    "title": "You have lost your way, adventurer",
+    "message": "This page does not exist — or was swallowed by the Mists. Head back to familiar lands.",
+    "back": "Back to home"
+  },
+  "offline": {
+    "title": "Connection lost",
+    "message": "Cannot reach the realm: check your Internet connection. The page will recover as soon as the network is back.",
+    "retry": "Retry"
   }
 }

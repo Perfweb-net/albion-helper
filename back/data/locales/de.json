@@ -667,5 +667,15 @@
   "footer": {
     "support": "Albion Helper unterstützen — Spenden",
     "support_aria": "Spenden, um Albion Helper zu unterstützen (neuer Tab)"
+  },
+  "notfound": {
+    "title": "Du hast dich verirrt, Abenteurer",
+    "message": "Diese Seite existiert nicht — oder wurde von den Nebeln verschlungen. Kehre auf bekannte Wege zurück.",
+    "back": "Zur Startseite"
+  },
+  "offline": {
+    "title": "Verbindung unterbrochen",
+    "message": "Das Königreich ist unerreichbar: Überprüfe deine Internetverbindung. Die Seite wird wiederhergestellt, sobald das Netzwerk zurück ist.",
+    "retry": "Erneut versuchen"
   }
 }

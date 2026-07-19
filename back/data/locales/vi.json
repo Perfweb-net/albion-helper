@@ -667,5 +667,15 @@
   "footer": {
     "support": "Hỗ trợ Albion Helper — Quyên góp",
     "support_aria": "Quyên góp để hỗ trợ Albion Helper (tab mới)"
+  },
+  "notfound": {
+    "title": "Bạn đã lạc đường, nhà thám hiểm",
+    "message": "Trang này không tồn tại — hoặc đã bị Sương mù nuốt chửng. Hãy quay lại những vùng đất quen thuộc.",
+    "back": "Về trang chủ"
+  },
+  "offline": {
+    "title": "Mất kết nối",
+    "message": "Không thể tiếp cận vương quốc: hãy kiểm tra kết nối Internet của bạn. Trang sẽ được khôi phục khi mạng trở lại.",
+    "retry": "Thử lại"
   }
 }

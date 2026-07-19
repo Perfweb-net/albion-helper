@@ -667,5 +667,15 @@
   "footer": {
     "support": "Albion Helper 지원 — 기부",
     "support_aria": "Albion Helper 지원을 위해 기부 (새 탭)"
+  },
+  "notfound": {
+    "title": "길을 잃었군요, 모험가여",
+    "message": "이 페이지는 존재하지 않습니다 — 혹은 안개에 삼켜졌습니다. 알려진 땅으로 돌아가세요.",
+    "back": "홈으로 돌아가기"
+  },
+  "offline": {
+    "title": "연결이 끊겼습니다",
+    "message": "왕국에 도달할 수 없습니다. 인터넷 연결을 확인하세요. 네트워크가 복구되면 페이지가 복원됩니다.",
+    "retry": "다시 시도"
   }
 }

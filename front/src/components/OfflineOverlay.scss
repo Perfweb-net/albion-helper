@@ -1,0 +1,40 @@
+@import '../styles/variables';
+
+.offline-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(ellipse at center, rgba(28, 21, 8, 0.98) 0%, rgba(10, 8, 5, 0.99) 70%);
+  backdrop-filter: blur(4px);
+
+  &__content {
+    text-align: center;
+    padding: 32px;
+    max-width: 480px;
+  }
+
+  &__icon {
+    font-size: 80px !important;
+    color: $primary-color;
+    margin-bottom: 16px;
+    animation: offline-pulse 2s ease-in-out infinite;
+  }
+
+  &__title {
+    font-family: 'Cinzel', serif !important;
+    font-weight: 700 !important;
+    color: #e8dcc8;
+  }
+
+  &__message {
+    color: #b8a88a;
+  }
+}
+
+@keyframes offline-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}

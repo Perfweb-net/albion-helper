@@ -667,5 +667,15 @@
   "footer": {
     "support": "Apoyar Albion Helper — Donar",
     "support_aria": "Donar para apoyar Albion Helper (nueva pestaña)"
+  },
+  "notfound": {
+    "title": "Te has perdido, aventurero",
+    "message": "Esta página no existe — o ha sido engullida por las Brumas. Retoma el camino hacia tierras conocidas.",
+    "back": "Volver al inicio"
+  },
+  "offline": {
+    "title": "Conexión perdida",
+    "message": "No se puede alcanzar el reino: verifica tu conexión a Internet. La página se restablecerá cuando regrese la red.",
+    "retry": "Reintentar"
   }
 }
