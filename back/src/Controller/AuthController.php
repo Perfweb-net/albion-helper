@@ -46,6 +46,17 @@ class AuthController extends AbstractController
             return new JsonResponse(['error' => sprintf('Password must be at least %d characters long', self::PASSWORD_MIN_LENGTH)], 400);
         }
 
+        // E-mail optionnel (nécessaire pour la réinitialisation de mot de passe)
+        $email = trim($data['email'] ?? '');
+        if ($email !== '') {
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                return new JsonResponse(['error' => 'Invalid email'], 400);
+            }
+            if ($userRepository->findOneBy(['email' => $email])) {
+                return new JsonResponse(['error' => 'Email already in use'], 400);
+            }
+        }
+
         // Vérifier si l'utilisateur existe déjà
         $existingUser = $userRepository->findOneBy(['username' => $data['username']]);
         if ($existingUser) {
@@ -55,6 +66,7 @@ class AuthController extends AbstractController
         // Création de l'utilisateur
         $user = new User();
         $user->setUsername($data['username']);
+        $user->setEmail($email !== '' ? $email : null);
         $user->setPassword($this->passwordHasher->hashPassword($user, $data['password']));
         $user->setRoles(['ROLE_USER']);
         $user->setCreatedAt(new \DateTimeImmutable());

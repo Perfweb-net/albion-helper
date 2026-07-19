@@ -17,6 +17,17 @@ class User implements UserInterface, \Symfony\Component\Security\Core\User\Passw
     #[ORM\Column(type: "string", length: 255, unique: true)]
     private ?string $username = null;
 
+    #[ORM\Column(type: "string", length: 255, unique: true, nullable: true)]
+    private ?string $email = null;
+
+    // Seul le hash SHA-256 du jeton de reset est stocké : un dump de la base
+    // ne permet pas de réinitialiser les mots de passe des utilisateurs.
+    #[ORM\Column(type: "string", length: 64, nullable: true)]
+    private ?string $resetTokenHash = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $resetTokenExpiresAt = null;
+
     #[ORM\Column(type: "string", length: 255)]
     private ?string $password = null;
 
@@ -44,6 +55,42 @@ class User implements UserInterface, \Symfony\Component\Security\Core\User\Passw
     public function setUsername(string $username): self
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getResetTokenHash(): ?string
+    {
+        return $this->resetTokenHash;
+    }
+
+    public function setResetTokenHash(?string $resetTokenHash): self
+    {
+        $this->resetTokenHash = $resetTokenHash;
+
+        return $this;
+    }
+
+    public function getResetTokenExpiresAt(): ?\DateTimeImmutable
+    {
+        return $this->resetTokenExpiresAt;
+    }
+
+    public function setResetTokenExpiresAt(?\DateTimeImmutable $resetTokenExpiresAt): self
+    {
+        $this->resetTokenExpiresAt = $resetTokenExpiresAt;
 
         return $this;
     }

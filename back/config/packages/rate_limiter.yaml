@@ -9,6 +9,14 @@ framework:
             interval: '1 hour'
             lock_factory: null
 
+        # Limite les demandes de reset de mot de passe : 5 par IP par heure
+        # (route publique : anti-spam d'e-mails et anti-énumération).
+        password_reset:
+            policy: 'fixed_window'
+            limit: 5
+            interval: '1 hour'
+            lock_factory: null
+
         # Garde-fou général sur l'API : 50 requêtes/minute par utilisateur connecté
         # (par IP pour les routes publiques) — cf. ApiRateLimitSubscriber.
         api_general:
@@ -30,4 +38,9 @@ when@test:
                 policy: 'fixed_window'
                 limit: 100000
                 interval: '1 minute'
+                lock_factory: null
+            password_reset:
+                policy: 'fixed_window'
+                limit: 100000
+                interval: '1 hour'
                 lock_factory: null
