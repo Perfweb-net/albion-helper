@@ -606,7 +606,8 @@
       "spf": "SPF",
       "tax": "tax",
       "no_price_tooltip": "No sell order on this market: the Albion API returns no price for this item in this city",
-      "no_results": "No recipe found"
+      "no_results": "No recipe found",
+      "silver_note": "Amounts in silver (in-game currency)"
     },
     "chip": {
       "spec_bonus": "+{{bonus}}% LPB {{type}}",
@@ -697,5 +698,9 @@
       "focus_consumed_amount": "{{amount}} focus consumed",
       "incomplete_prices": "Incomplete prices — some items have no listing on this market."
     }
+  },
+  "footer": {
+    "support": "Support Albion Helper — donate",
+    "support_aria": "Donate to support Albion Helper (new tab)"
   }
 }
