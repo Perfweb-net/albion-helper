@@ -24,6 +24,13 @@ cd ../front
 npm ci --legacy-peer-deps
 npm run build
 
+echo "--- Frontend : pré-compression des assets (gzip_static nginx) ---"
+# nginx sert directement les .gz (gzip_static on) : compression maximale
+# faite une fois au déploiement plutôt qu'à chaque requête.
+find build -type f \( -name '*.js' -o -name '*.css' -o -name '*.html' -o -name '*.svg' -o -name '*.json' -o -name '*.map' \) \
+    -exec gzip -kf9 {} \;
+echo "$(find build -name '*.gz' | wc -l) fichiers pré-compressés"
+
 echo "--- Supervision : installation de la sonde cron (*/5) ---"
 # Idempotent : l'ancienne ligne est retirée puis la ligne courante réécrite,
 # la sonde suit donc automatiquement chaque déploiement.
