@@ -39,7 +39,7 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 - [x] Canal Monolog `incident` dédié (dev + prod)
 - [x] Indicateurs définis avec cibles : dispo ≥99%, réponse <1s, détection ≤5 min, 5xx <1% (dossier §3.1)
 - [x] Système décrit avec schéma : 2 sondes, /api/health détaillé, signalements, journaux (dossier §3)
-- [x] ~~🚨 BLOQUANT : `/api/health` renvoie 404 en prod~~ **RÉSOLU le 19/07** : VPS réinstallé (18/07), `master` poussé (`f97c7ddc`), `deploy/deploy.sh` exécuté en SSH (migrations + build front + sonde cron) — `curl https://albion-back.perfweb.net/api/health` → **200 `"status":"OK"`** (DB + API Albion OK). Reste à brancher les secrets GitHub Actions pour la CD automatique (déploiement manuel SSH opérationnel en attendant). ~~⚠️ deux sondes cron coexistaient~~ → ancienne sonde `/usr/local/bin/albion-healthcheck-probe.sh` retirée de la crontab le 19/07, seule celle du repo reste
+- [x] ~~🚨 BLOQUANT : `/api/health` renvoie 404 en prod~~ **RÉSOLU le 19/07** : VPS réinstallé (18/07), `master` poussé (`f97c7ddc`), `deploy/deploy.sh` exécuté en SSH (migrations + build front + sonde cron) — `curl https://albion-back.perfweb.net/api/health` → **200 `"status":"OK"`** (DB + API Albion OK). **CD automatique opérationnelle (constatée le 20/07)** : les secrets GitHub Actions sont en place, le job deploy tourne en vert sur chaque push master (runs #40-42). ~~⚠️ deux sondes cron coexistaient~~ → ancienne sonde `/usr/local/bin/albion-healthcheck-probe.sh` retirée de la crontab le 19/07, seule celle du repo reste
 - [x] Sonde externe **créée le 19/07** : monitor UptimeRobot keyword sur https://albion-back.perfweb.net/api/health — incident si le mot-clé `ERROR` apparaît (plus fiable que « OK disparaît » : les services sains gardent leur `"status":"OK"` en panne partielle), check 5 min, alerte e-mail vers contact@perfweb.net (notification de test reçue), statut Up ✅
 - [ ] **Capture UptimeRobot à insérer dans le dossier §3.4** — la prendre après quelques heures d'historique d'uptime (dashboard.uptimerobot.com/monitors)
 - [x] Sonde interne **automatisée le 14/07** : `deploy.sh` (ré)installe la crontab (*/5) de `healthcheck-probe.sh` à chaque déploiement (commit `1af1a572`) — elle sera posée sur le VPS au prochain déploiement, plus rien à faire à la main
@@ -75,7 +75,7 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 - [x] 7. Présentation d'un exemplaire du journal de version *(à rafraîchir après ajout v3.0.0)*
 - [x] 8. Exemple de problème résolu en collaboration avec le support client
 - [x] **15/07 : dossier v2 généré** → `dossier/Dossier_Bloc4_Albion_Helper_v2.docx` (v1 conservée) — skill docx, 13 pages/20, XML validé. Faits à jour : 131 tests, sonde auto-installée + log d'exécution réel, journal →v3.1.0, registre BUG-001→016, traitement BUG-011 & BUG-016, runbook d'alerte, §3.4 honnête (UptimeRobot spécifié, « à activer avec la remise en production »)
-- [ ] **DERNIÈRES ÉTAPES** : ① ~~redéployer la prod~~ ✅ fait le 19/07 (SSH ; secrets GitHub pour la CD auto encore à créer) → ② activer le monitor UptimeRobot (spec dans le dossier §3.4) → ③ relire le docx v2 dans Word (sommaire) → ④ **déposer sur DigiformaCertif entre le 20 et le 24/07**
+- [ ] **DERNIÈRES ÉTAPES** : ① ~~redéployer la prod~~ ✅ fait le 19/07, **CD auto GitHub Actions vérifiée en vert le 20/07** → ② activer le monitor UptimeRobot (spec dans le dossier §3.4) → ③ relire le docx v2 dans Word (sommaire) → ④ **déposer sur DigiformaCertif entre le 20 et le 24/07**
 
 ---
 
