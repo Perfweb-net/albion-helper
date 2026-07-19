@@ -19,7 +19,7 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 
 | Bloc | Épreuve | Date | État au 14/07 |
 |---|---|---|---|
-| Bloc 2 | Dossier écrit 30p max + code source | ~~08–19/06~~ **décalé — date à confirmer** | 🟢 **dossier v3 prêt** (`Dossier_Bloc2_Albion_Helper_v3.docx`, 15/07 — skill docx, XML validé, corps 28 pages + 4 pages d.annexes) — relire, mettre à jour le sommaire dans Word, déposer |
+| Bloc 2 | Dossier écrit 30p max + code source | ~~08–19/06~~ **décalé — date à confirmer** | 🟢 **dossier v4 prêt** (`Dossier_Bloc2_Albion_Helper_v4.docx`, 19/07 — retours prof intégrés : MCD 3.2, schémas remplaçant les tableaux 4.2/5.1, seuil de couverture 4.3, console de tests 6.1, diagramme de séquence 6.2, Lighthouse prod 8.3, schéma sauvegarde 12.4 ; v3.2.0 : reset mdp par e-mail, 164 tests) — ⚠️ 34 pages PDF au total (corps ~30 + 4 annexes) : re-vérifier la règle des 30 pages avec le campus ; relire, **mettre à jour le sommaire dans Word (clic droit → Mettre à jour les champs)**, déposer |
 | Bloc 4 | Dossier écrit 20p max | **20–24/07/2026** | **J-6** — prod redéployée ✅ (19/07) ; reste UptimeRobot + relecture |
 | Bloc 3 | Oral 45' (30'+15') + démo live | 17–21/08 ou 01–29/09 | 🟠 support prêt (pptx), reste kanban + prod + répétitions |
 | Bloc 1 | Oral 30' (20'+10') | Rentrée oct. 2026 | 🟡 support prêt (pptx), reste relecture + répétitions |

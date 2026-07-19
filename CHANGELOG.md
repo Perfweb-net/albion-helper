@@ -2,6 +2,12 @@
 
 All notable changes to the Albion Helper project will be documented in this file.
 
+## [3.2.0] - 2026-07-19
+### Added
+- **Réinitialisation de mot de passe par e-mail :** adresse e-mail optionnelle sur le compte (unique, validée), `POST /api/password/forgot` (réponse générique anti-énumération, rate limit 5/h par IP) et `POST /api/password/reset` (jeton à usage unique valable 1 h, seul son hash SHA-256 est stocké). Pages front `/forgot-password` et `/reset-password`, champ e-mail optionnel à l'inscription. Envoi via Brevo (SMTP), templates HTML aux couleurs du site.
+- **Alertes de supervision par e-mail :** `/api/health` envoie le détail des services en erreur à `ALERT_EMAIL` (anti-spam : 1 envoi max / 30 min). Commande `app:mail-test` pour vérifier la configuration SMTP.
+- **Tests :** +33 tests (flux complet forgot → e-mail → reset → login côté back, pages front) — 164 au total (49 back, 115 front).
+
 ## [3.1.0] - 2026-07-15
 ### Security
 - **Jetons JWT en cookies httpOnly :** le jeton d'accès et le refresh token ne transitent plus par localStorage — ils sont posés et lus exclusivement par l'API (cookies httpOnly + Secure). La classe d'attaque XSS → vol de jeton disparaît ; l'axe d'amélioration identifié au Bloc 2 (§7.1) est réalisé.
