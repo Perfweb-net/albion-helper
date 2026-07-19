@@ -571,7 +571,8 @@
       "spf": "SPF",
       "tax": "pajak",
       "no_price_tooltip": "Tidak ada pesanan jual di pasar ini: API Albion tidak mengembalikan harga untuk item ini di kota ini",
-      "no_results": "Tidak ada resep ditemukan"
+      "no_results": "Tidak ada resep ditemukan",
+      "silver_note": "Jumlah yang dinyatakan dalam silver (mata uang permainan)"
     },
     "chip": {
       "spec_bonus": "+{{bonus}}% LPB {{type}}",
@@ -662,5 +663,9 @@
       "focus_consumed_amount": "{{amount}} fokus terpakai",
       "incomplete_prices": "Harga tidak lengkap — beberapa item tidak memiliki penawaran di pasar ini."
     }
+  },
+  "footer": {
+    "support": "Dukung Albion Helper — Donasi",
+    "support_aria": "Donasi untuk mendukung Albion Helper (tab baru)"
   }
 }

@@ -571,7 +571,8 @@
       "spf": "SPF",
       "tax": "कर",
       "no_price_tooltip": "इस बाजार पर कोई बिक्री ऑर्डर नहीं: Albion API इस शहर में इस आइटम के लिए कोई कीमत नहीं लौटाता",
-      "no_results": "कोई रेसिपी नहीं मिली"
+      "no_results": "कोई रेसिपी नहीं मिली",
+      "silver_note": "silver में व्यक्त की गई राशि (गेम की मुद्रा)"
     },
     "chip": {
       "spec_bonus": "+{{bonus}}% LPB {{type}}",
@@ -662,5 +663,9 @@
       "focus_consumed_amount": "{{amount}} focus उपभोग",
       "incomplete_prices": "अपूर्ण कीमतें — कुछ आइटम इस बाजार पर उद्धृत नहीं हैं।"
     }
+  },
+  "footer": {
+    "support": "Albion Helper का समर्थन करें — दान दें",
+    "support_aria": "Albion Helper का समर्थन करने के लिए दान दें (नया टैब)"
   }
 }

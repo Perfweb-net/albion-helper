@@ -571,7 +571,8 @@
       "spf": "SPF",
       "tax": "vergi",
       "no_price_tooltip": "Bu markette satış emri yok: Albion API'si bu şehirde bu eşya için fiyat döndürmüyor",
-      "no_results": "Tarif bulunamadı"
+      "no_results": "Tarif bulunamadı",
+      "silver_note": "silver cinsinden ifade edilen tutarlar (oyun para birimi)"
     },
     "chip": {
       "spec_bonus": "+{{bonus}}% LPB {{type}}",
@@ -662,5 +663,9 @@
       "focus_consumed_amount": "{{amount}} focus harcandı",
       "incomplete_prices": "Eksik fiyatlar — bazı eşyaların bu markette kotasyonu yok."
     }
+  },
+  "footer": {
+    "support": "Albion Helper'ı Destekle — Bağış Yap",
+    "support_aria": "Albion Helper'ı desteklemek için bağış yapın (yeni sekme)"
   }
 }

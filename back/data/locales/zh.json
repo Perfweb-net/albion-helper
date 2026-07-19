@@ -571,7 +571,8 @@
       "spf": "SPF",
       "tax": "税",
       "no_price_tooltip": "该市场无卖出订单：Albion API 未返回此物品在该城市的价格",
-      "no_results": "未找到配方"
+      "no_results": "未找到配方",
+      "silver_note": "以silver表示的金额(游戏货币)"
     },
     "chip": {
       "spec_bonus": "+{{bonus}}% LPB {{type}}",
@@ -662,5 +663,9 @@
       "focus_consumed_amount": "已消耗 {{amount}} 专注点",
       "incomplete_prices": "价格不完整——部分物品在该市场无报价。"
     }
+  },
+  "footer": {
+    "support": "支持Albion Helper — 捐赠",
+    "support_aria": "捐赠以支持Albion Helper(新标签页)"
   }
 }

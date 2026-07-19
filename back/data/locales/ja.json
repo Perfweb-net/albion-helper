@@ -571,7 +571,8 @@
       "spf": "SPF",
       "tax": "税金",
       "no_price_tooltip": "この市場に売り注文がありません：AlbionのAPIがこの都市のこのアイテムの価格を返しません",
-      "no_results": "レシピが見つかりません"
+      "no_results": "レシピが見つかりません",
+      "silver_note": "silver(ゲーム内通貨)で表記された金額"
     },
     "chip": {
       "spec_bonus": "+{{bonus}}% LPB {{type}}",
@@ -662,5 +663,9 @@
       "focus_consumed_amount": "{{amount}} フォーカス消費",
       "incomplete_prices": "価格が不完全です — この市場で一部のアイテムに相場がありません。"
     }
+  },
+  "footer": {
+    "support": "Albion Helperをサポート — 寄付する",
+    "support_aria": "Albion Helperをサポートするために寄付する(新しいタブ)"
   }
 }

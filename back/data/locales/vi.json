@@ -571,7 +571,8 @@
       "spf": "SPF",
       "tax": "thuế",
       "no_price_tooltip": "Không có lệnh bán trên thị trường này: API Albion không trả về giá cho vật phẩm này ở thành phố này",
-      "no_results": "Không tìm thấy công thức nào"
+      "no_results": "Không tìm thấy công thức nào",
+      "silver_note": "Số tiền được biểu thị bằng silver (tiền tệ trò chơi)"
     },
     "chip": {
       "spec_bonus": "+{{bonus}}% LPB {{type}}",
@@ -662,5 +663,9 @@
       "focus_consumed_amount": "{{amount}} focus đã dùng",
       "incomplete_prices": "Giá chưa đầy đủ — một số vật phẩm không có niêm yết trên thị trường này."
     }
+  },
+  "footer": {
+    "support": "Hỗ trợ Albion Helper — Quyên góp",
+    "support_aria": "Quyên góp để hỗ trợ Albion Helper (tab mới)"
   }
 }

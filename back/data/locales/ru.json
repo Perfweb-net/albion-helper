@@ -571,7 +571,8 @@
       "spf": "SPF",
       "tax": "налог",
       "no_price_tooltip": "Нет ордеров на продажу на этом рынке: API Albion не возвращает цену для этого предмета в данном городе",
-      "no_results": "Рецепты не найдены"
+      "no_results": "Рецепты не найдены",
+      "silver_note": "Суммы, выраженные в silver (валюта игры)"
     },
     "chip": {
       "spec_bonus": "+{{bonus}}% LPB {{type}}",
@@ -662,5 +663,9 @@
       "focus_consumed_amount": "{{amount}} фокуса потрачено",
       "incomplete_prices": "Неполные цены — для некоторых предметов нет котировок на этом рынке."
     }
+  },
+  "footer": {
+    "support": "Поддержать Albion Helper — Пожертвовать",
+    "support_aria": "Пожертвовать для поддержки Albion Helper (новая вкладка)"
   }
 }

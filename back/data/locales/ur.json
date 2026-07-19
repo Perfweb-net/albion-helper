@@ -571,7 +571,8 @@
       "spf": "SPF",
       "tax": "ٹیکس",
       "no_price_tooltip": "اس مارکیٹ پر کوئی فروخت آرڈر نہیں: Albion API اس شہر میں اس شے کی قیمت نہیں دیتا",
-      "no_results": "کوئی ترکیب نہیں ملی"
+      "no_results": "کوئی ترکیب نہیں ملی",
+      "silver_note": "silver میں ظاہر کی گئی رقوم (گیم کی کرنسی)"
     },
     "chip": {
       "spec_bonus": "+{{bonus}}% LPB {{type}}",
@@ -662,5 +663,9 @@
       "focus_consumed_amount": "{{amount}} focus خرچ",
       "incomplete_prices": "ادھوری قیمتیں — کچھ اشیاء کی اس مارکیٹ پر کوئی قیمت نہیں۔"
     }
+  },
+  "footer": {
+    "support": "Albion Helper کو سپورٹ کریں — عطیہ دیں",
+    "support_aria": "Albion Helper کو سپورٹ کرنے کے لیے عطیہ دیں (نیا ٹیب)"
   }
 }

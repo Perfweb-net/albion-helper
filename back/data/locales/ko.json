@@ -571,7 +571,8 @@
       "spf": "SPF",
       "tax": "세금",
       "no_price_tooltip": "이 시장에 판매 주문 없음: Albion API가 이 도시에서 이 아이템의 가격을 반환하지 않습니다",
-      "no_results": "레시피를 찾을 수 없습니다"
+      "no_results": "레시피를 찾을 수 없습니다",
+      "silver_note": "silver(게임 화폐)로 표시된 금액"
     },
     "chip": {
       "spec_bonus": "+{{bonus}}% LPB {{type}}",
@@ -662,5 +663,9 @@
       "focus_consumed_amount": "{{amount}} 포커스 소비",
       "incomplete_prices": "가격 불완전 — 일부 아이템이 이 시장에서 시세가 없습니다."
     }
+  },
+  "footer": {
+    "support": "Albion Helper 지원 — 기부",
+    "support_aria": "Albion Helper 지원을 위해 기부 (새 탭)"
   }
 }
