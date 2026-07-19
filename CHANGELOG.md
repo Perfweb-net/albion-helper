@@ -5,8 +5,9 @@ All notable changes to the Albion Helper project will be documented in this file
 ## [3.2.0] - 2026-07-19
 ### Added
 - **Réinitialisation de mot de passe par e-mail :** adresse e-mail optionnelle sur le compte (unique, validée), `POST /api/password/forgot` (réponse générique anti-énumération, rate limit 5/h par IP) et `POST /api/password/reset` (jeton à usage unique valable 1 h, seul son hash SHA-256 est stocké). Pages front `/forgot-password` et `/reset-password`, champ e-mail optionnel à l'inscription. Envoi via Brevo (SMTP), templates HTML aux couleurs du site.
+- **Confirmation d'adresse à l'inscription :** e-mail de vérification (jeton à usage unique, hash SHA-256), endpoint `POST /api/email/verify` et page `/verify-email`. La récupération de compte n'est active que pour une adresse confirmée (anti-abus + consentement RGPD).
 - **Alertes de supervision par e-mail :** `/api/health` envoie le détail des services en erreur à `ALERT_EMAIL` (anti-spam : 1 envoi max / 30 min). Commande `app:mail-test` pour vérifier la configuration SMTP.
-- **Tests :** +33 tests (flux complet forgot → e-mail → reset → login côté back, pages front) — 164 au total (49 back, 115 front).
+- **Tests :** +38 tests (confirmation d'adresse, flux complet forgot → e-mail → reset → login côté back, pages front) — 169 au total (51 back, 118 front).
 
 ## [3.1.0] - 2026-07-15
 ### Security

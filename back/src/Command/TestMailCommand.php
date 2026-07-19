@@ -39,11 +39,15 @@ class TestMailCommand extends Command
             ->setUsername('test-mail')
             ->setEmail($recipient);
 
-        $io->section('1/2 — Mail de réinitialisation de mot de passe');
+        $io->section('1/3 — Mail de confirmation d\'inscription');
+        $this->mailer->sendEmailVerification($user, bin2hex(random_bytes(32)));
+        $io->success("Envoyé à {$recipient}");
+
+        $io->section('2/3 — Mail de réinitialisation de mot de passe');
         $this->mailer->sendPasswordReset($user, bin2hex(random_bytes(32)));
         $io->success("Envoyé à {$recipient} (le lien pointe vers un jeton factice, il ne fonctionnera pas)");
 
-        $io->section('2/2 — Alerte health check (vers ALERT_EMAIL)');
+        $io->section('3/3 — Alerte health check (vers ALERT_EMAIL)');
         $this->mailer->sendHealthAlert([
             'database' => ['status' => 'ERROR', 'message' => 'Database connection failed'],
             'albion_api' => ['status' => 'ERROR', 'message' => 'Albion API unreachable'],

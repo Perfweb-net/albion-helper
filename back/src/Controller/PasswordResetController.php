@@ -44,8 +44,10 @@ class PasswordResetController extends AbstractController
 
         $genericResponse = new JsonResponse(['status' => 'If this email is linked to an account, a reset link has been sent']);
 
+        // Adresse inconnue OU non confirmée : même réponse générique — le reset
+        // n'est actif que pour une adresse dont la propriété a été vérifiée.
         $user = $this->userRepository->findOneBy(['email' => $email]);
-        if (!$user) {
+        if (!$user || $user->getEmailVerifiedAt() === null) {
             return $genericResponse;
         }
 

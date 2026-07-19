@@ -14,6 +14,22 @@ class PasswordResetControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(201);
     }
 
+    /** Inscription avec e-mail puis confirmation de l'adresse via le jeton du mail. */
+    private function registerAndVerifyUser($client, string $username, string $email): void
+    {
+        $this->registerUser($client, $username, $email);
+
+        // Un mail de confirmation part à l'inscription
+        $this->assertEmailCount(1);
+        preg_match('/token=([a-f0-9]{64})/', $this->getMailerMessage()->getTextBody(), $m);
+        $this->assertNotEmpty($m, 'Le mail de confirmation doit contenir un jeton');
+
+        $client->request('POST', '/api/email/verify', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['token' => $m[1]])
+        );
+        $this->assertResponseStatusCodeSame(200);
+    }
+
     public function testForgotWithUnknownEmailReturnsGenericResponseWithoutEmail(): void
     {
         $client = static::createClient();
@@ -39,12 +55,37 @@ class PasswordResetControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(400);
     }
 
+    public function testForgotOnUnverifiedEmailSendsNothing(): void
+    {
+        $client = static::createClient();
+        $username = 'unverified_' . uniqid();
+        $email = $username . '@example.com';
+        $this->registerUser($client, $username, $email);
+        // Adresse jamais confirmée : réponse générique, aucun mail de reset
+        $client->request('POST', '/api/password/forgot', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['email' => $email])
+        );
+        $this->assertResponseStatusCodeSame(200);
+        $this->assertEmailCount(0);
+    }
+
+    public function testVerifyWithInvalidTokenReturns400(): void
+    {
+        $client = static::createClient();
+
+        $client->request('POST', '/api/email/verify', [], [], ['CONTENT_TYPE' => 'application/json'],
+            json_encode(['token' => str_repeat('b', 64)])
+        );
+
+        $this->assertResponseStatusCodeSame(400);
+    }
+
     public function testFullResetFlow(): void
     {
         $client = static::createClient();
         $username = 'resetflow_' . uniqid();
         $email = $username . '@example.com';
-        $this->registerUser($client, $username, $email);
+        $this->registerAndVerifyUser($client, $username, $email);
 
         // 1. Demande de reset : un mail contenant le lien est envoyé
         $client->request('POST', '/api/password/forgot', [], [], ['CONTENT_TYPE' => 'application/json'],

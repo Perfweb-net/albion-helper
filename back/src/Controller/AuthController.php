@@ -4,7 +4,9 @@ namespace App\Controller;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Service\AppMailer;
 use Gesdinet\JWTRefreshTokenBundle\Model\RefreshTokenManagerInterface;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,8 +21,11 @@ class AuthController extends AbstractController
 
     private UserPasswordHasherInterface $passwordHasher;
 
-    public function __construct(UserPasswordHasherInterface $passwordHasher)
-    {
+    public function __construct(
+        UserPasswordHasherInterface $passwordHasher,
+        private readonly AppMailer $mailer,
+        private readonly LoggerInterface $logger,
+    ) {
         $this->passwordHasher = $passwordHasher;
     }
 
@@ -67,12 +72,28 @@ class AuthController extends AbstractController
         $user = new User();
         $user->setUsername($data['username']);
         $user->setEmail($email !== '' ? $email : null);
+
+        // Adresse fournie : un mail de confirmation active la récupération de compte
+        $verificationToken = null;
+        if ($email !== '') {
+            $verificationToken = bin2hex(random_bytes(32));
+            $user->setEmailVerificationTokenHash(hash('sha256', $verificationToken));
+        }
         $user->setPassword($this->passwordHasher->hashPassword($user, $data['password']));
         $user->setRoles(['ROLE_USER']);
         $user->setCreatedAt(new \DateTimeImmutable());
 
         // Enregistrer l'utilisateur en base de données
         $userRepository->save($user, true);
+
+        if ($verificationToken !== null) {
+            try {
+                $this->mailer->sendEmailVerification($user, $verificationToken);
+            } catch (\Throwable $e) {
+                // L'inscription reste valide même si l'envoi échoue
+                $this->logger->error('Échec d\'envoi du mail de confirmation : ' . $e->getMessage());
+            }
+        }
 
         return new JsonResponse(['status' => 'User created'], 201);
     }

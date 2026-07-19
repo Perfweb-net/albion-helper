@@ -28,6 +28,14 @@ class User implements UserInterface, \Symfony\Component\Security\Core\User\Passw
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $resetTokenExpiresAt = null;
 
+    // Confirmation de l'adresse : tant qu'elle n'est pas vérifiée, aucune
+    // récupération de compte n'est possible vers cette adresse.
+    #[ORM\Column(type: "string", length: 64, nullable: true)]
+    private ?string $emailVerificationTokenHash = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $emailVerifiedAt = null;
+
     #[ORM\Column(type: "string", length: 255)]
     private ?string $password = null;
 
@@ -91,6 +99,30 @@ class User implements UserInterface, \Symfony\Component\Security\Core\User\Passw
     public function setResetTokenExpiresAt(?\DateTimeImmutable $resetTokenExpiresAt): self
     {
         $this->resetTokenExpiresAt = $resetTokenExpiresAt;
+
+        return $this;
+    }
+
+    public function getEmailVerificationTokenHash(): ?string
+    {
+        return $this->emailVerificationTokenHash;
+    }
+
+    public function setEmailVerificationTokenHash(?string $hash): self
+    {
+        $this->emailVerificationTokenHash = $hash;
+
+        return $this;
+    }
+
+    public function getEmailVerifiedAt(): ?\DateTimeImmutable
+    {
+        return $this->emailVerifiedAt;
+    }
+
+    public function setEmailVerifiedAt(?\DateTimeImmutable $at): self
+    {
+        $this->emailVerifiedAt = $at;
 
         return $this;
     }
