@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Service\AppMailer;
 use Doctrine\ORM\EntityManagerInterface;
+use Monolog\Attribute\WithMonologChannel;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -11,6 +12,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+#[WithMonologChannel('incident')]
 class HealthCheckController extends AbstractController
 {
     // La sonde cron interroge /api/health toutes les 5 minutes : sans ce délai
@@ -43,6 +45,10 @@ class HealthCheckController extends AbstractController
         if ($failing !== []) {
             $status['status'] = 'ERROR';
             $statusCode = 503;
+            // Canal Monolog « incident » : chaque dégradation constatée est consignée
+            $this->logger->error('Health check dégradé — service(s) en erreur', [
+                'services' => array_map(fn (array $s) => $s['message'], $failing),
+            ]);
             $this->sendAlert($failing);
         }
 
