@@ -4,6 +4,7 @@ All notable changes to the Albion Helper project will be documented in this file
 
 ## [3.3.1] - 2026-08-14
 ### Fixed
+- **Installation de la sonde par `deploy.sh` :** correction d'un bogue qui **effaçait la crontab** à chaque déploiement dès que la sonde en était la seule entrée (`grep -v` filtrait tout → code retour 1 → `set -e` tuait le sous-shell avant le `echo` → `crontab -` recevait un flux vide). C'est la cause racine de la disparition de la sonde constatée après le déploiement du 20/07. Garde `|| true` ajoutée.
 - **Sonde de supervision interne :** le journal s'écrit désormais dans un emplacement toujours inscriptible (`/var/log` si possible, sinon le HOME de l'utilisateur du cron — sur le VPS, `/var/log` n'est pas inscriptible par l'utilisateur de déploiement et le journal restait muet) ; si la commande `mail` est absente du serveur, l'échec d'envoi est journalisé (`MAIL-SKIP`) au lieu d'être perdu silencieusement — l'alerte applicative Brevo de `/api/health` reste le canal e-mail principal. Constat du 14/08 : la crontab de la sonde avait disparu du VPS ; elle est réinstallée automatiquement par `deploy/deploy.sh` à chaque déploiement.
 
 ## [3.3.0] - 2026-07-20

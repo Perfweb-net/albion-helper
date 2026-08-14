@@ -41,7 +41,10 @@ echo "--- Supervision : installation de la sonde cron (*/5) ---"
 # la sonde suit donc automatiquement chaque déploiement.
 chmod +x "$PROJECT_DIR/deploy/healthcheck-probe.sh"
 CRON_LINE="*/5 * * * * $PROJECT_DIR/deploy/healthcheck-probe.sh"
-( crontab -l 2>/dev/null | grep -vF "deploy/healthcheck-probe.sh" ; echo "$CRON_LINE" ) | crontab -
+# || true : crontab vide ou ne contenant que la sonde -> grep sort en code 1
+# et set -e tuerait le sous-shell AVANT le echo : crontab - recevrait un flux
+# vide et EFFACERAIT la planification (cause réelle de la panne du 20/07).
+( crontab -l 2>/dev/null | grep -vF "deploy/healthcheck-probe.sh" || true ; echo "$CRON_LINE" ) | crontab -
 echo "Sonde installée : $CRON_LINE"
 
 echo "=== Déploiement terminé : $(date '+%Y-%m-%d %H:%M:%S') ==="
