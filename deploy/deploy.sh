@@ -3,6 +3,11 @@
 # Prérequis serveur : git, php >= 8.2, composer, node >= 20, accès en écriture au dossier.
 set -e
 
+# Outils utilisateur (composer.phar, node) installés sans privilèges dans ~/bin :
+# le shell SSH non-interactif de la CI ne charge pas .profile, on étend le PATH ici.
+PATH="$HOME/bin:$PATH"
+export PATH
+
 echo "=== Déploiement Albion Helper ==="
 cd "$(dirname "$0")/.."
 PROJECT_DIR="$(pwd)"
