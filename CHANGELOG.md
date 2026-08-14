@@ -2,6 +2,28 @@
 
 All notable changes to the Albion Helper project will be documented in this file.
 
+## [3.3.1] - 2026-08-14
+### Fixed
+- **Sonde de supervision interne :** le journal s'écrit désormais dans un emplacement toujours inscriptible (`/var/log` si possible, sinon le HOME de l'utilisateur du cron — sur le VPS, `/var/log` n'est pas inscriptible par l'utilisateur de déploiement et le journal restait muet) ; si la commande `mail` est absente du serveur, l'échec d'envoi est journalisé (`MAIL-SKIP`) au lieu d'être perdu silencieusement — l'alerte applicative Brevo de `/api/health` reste le canal e-mail principal. Constat du 14/08 : la crontab de la sonde avait disparu du VPS ; elle est réinstallée automatiquement par `deploy/deploy.sh` à chaque déploiement.
+
+## [3.3.0] - 2026-07-20
+### Added
+- **Page 404 stylée :** toute route front inconnue affiche une page « fantasy » dédiée (traduite dans les 20 langues) au lieu d'un écran vide.
+- **Écran hors-ligne :** superposition « connexion perdue » sur les événements navigateur online/offline.
+- **Favicon et icônes d'application :** générés depuis le logo (64/192/512), manifest à jour.
+- **404 JSON sur l'API :** attrape-tout en dernière priorité — toute URL inconnue de l'API renvoie un 404 JSON minimal au lieu de la page d'erreur HTML de Symfony.
+- **Recherche de cartes du dashboard :** rendu aligné sur la page Carte (compteurs de coffres/ressources, légende).
+- **Unité silver explicite** sur les prix du market/craft et **bloc donation Ko-fi** au pied de page (lien actif, clés `silver_note` / `footer.support` traduites dans les 20 langues).
+
+### Changed
+- **Déploiement :** pré-compression gzip des assets front au déploiement (`gzip_static` Nginx — compression faite une fois au build plutôt qu'à chaque requête).
+
+### Fixed
+- Clés i18n `silver_note` et `footer.support` ajoutées aux ressources fr/en embarquées (affichage brut de la clé sinon).
+
+### Tests
+- +4 tests (page 404, écran hors-ligne) — **177 au total (53 back, 124 front)**.
+
 ## [3.2.0] - 2026-07-19
 ### Added
 - **Activation du compte par e-mail :** l'adresse e-mail est désormais obligatoire à l'inscription ; le compte n'est utilisable qu'après clic sur le lien de confirmation (UserChecker Symfony, jeton à usage unique, hash SHA-256). Endpoint `POST /api/email/verify`, page `/verify-email`. Rétro-compatible : les comptes antérieurs (sans e-mail) se connectent normalement et peuvent ajouter puis confirmer une adresse depuis le tableau de bord (`POST /api/profile/email`, l'adresse attend en `pending_email` sans jamais bloquer le compte).
