@@ -96,6 +96,7 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 # 🟠 BLOC 3 — Coordonner et piloter le projet (oral 17–21/08 ou 01–29/09 — date à confirmer)
 
 > Support : `dossier/Support_Bloc3_Albion_Helper.html` (v1 du 06/07) + export **`Support_Bloc3_Albion_Helper.pptx`** (07/07, non commité). Couvre les 14 points du règlement + script de démo en annexe A.
+> **14/08 : version FINALE générée** → `dossier/rendu_final/Support_Bloc3_Albion_Helper_FINAL.pptx` (17 diapos 16:9, chiffres à jour v3.3.1/177 tests, notes du présentateur, rendu QA) + `Discours_Bloc3.md` (22 min minutées + démo 8 min sur la prod + check-list veille d'oral) + `Questions_Jury_Bloc3.md` (64 Q/R dont pièges et plan « si la démo plante »). Le dossier `rendu_final/` contient aussi les copies FINAL des dossiers Bloc 2 (v4) et Bloc 4 (v4).
 
 ## Compétences
 
@@ -148,6 +149,7 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 # 🟡 BLOC 1 — Cadrer le projet (oral rentrée octobre)
 
 > Support : `dossier/Support_Bloc1_Albion_Helper.html` (v1 du 06/07) + export **`Support_Bloc1_Albion_Helper.pptx`** (07/07, non commité). Couvre les 17 points du règlement + timing d'oral en annexe.
+> **14/08 : version FINALE générée** → `dossier/rendu_final/Support_Bloc1_Albion_Helper_FINAL.pptx` (17 diapos 16:9, chiffres à jour, notes du présentateur, rendu QA) + `Discours_Bloc1.md` (≈20 min 40 minutées, éliminatoires annoncées explicitement) + `Questions_Jury_Bloc1.md` (63 Q/R dont 10 pièges).
 > Point d'attention : le commanditaire est présenté comme « une communauté/guilde de joueurs » — vérifier que cette fiction cadre avec ce qui a été dit au campus.
 
 ## Compétences
