@@ -108,7 +108,7 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 
 ### C3.2.1 — Pilotage et indicateurs ⚠️ ÉLIM
 - [x] Indicateurs mesurables : avancement, coûts, délais, risques, RH (slide 6)
-- [ ] **Outil de suivi à matérialiser** : créer le tableau GitHub Projects (Backlog/À faire/En cours/Recette/Fait) et y reporter les lots réels — le support le présente, il doit exister pour l'oral (~30 min)
+- [x] ~~Outil de suivi à matérialiser~~ **fait le 14/08** : tableau **GitHub Projects « Albion Helper — Pilotage »** créé → https://github.com/users/Perfweb-net/projects/3 — 5 colonnes (Backlog / À faire / En cours / Recette / Fait), 16 cartes : les 7 lots livrés (v1.0→v3.3.x avec dates réelles), la CD, et les recommandations du Bloc 4 en backlog chiffré
 - [ ] Tableau de bord présentable au jury (GitHub Projects + dernier run CI ouverts en direct — annexe B)
 
 ### C3.2.2 — Arbitrages
@@ -134,6 +134,8 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 - [x] Script de démo en 10 étapes, vocabulaire commanditaire (annexe A)
 - [x] Conclusion orientée validation du commanditaire (slide 15 + étape 10)
 - [ ] **Environnement de démo** : prod redéployée le 19/07 (front https://oportaler.perfweb.net + back /api/health → 200 OK, reset de mot de passe par e-mail fonctionnel) — reste : précharger les données, répéter la veille (check-list annexe B)
+- [x] **14/08 : environnement local de démo monté et peuplé** (Docker Postgres + symfony serve + npm start) : **228 inscrits** aux pseudos crédibles (6 « aujourd'hui »), 37 routes dont 9 actives, 26 compositions, 1 274 recherches consignées, 12 066 items — tous les KPI de l'admin sont parlants. Compte de démo admin : **Aldric** (mot de passe transmis hors repo)
+- [x] **14/08 : vidéo de secours de la démo enregistrée** → `dossier/rendu_final/Demo_Albion_Helper_Bloc3.mp4` (1080p, ~1 min 27, sous-titres d'étapes incrustés) : accueil → connexion → recherche joueur/fiche → batailles → carte → routes → compositions → back office (KPI, 20 langues) → thème/langue — **la page rentabilité craft est volontairement exclue**. Plan B officiel si la démo live plante le jour J
 
 ## Livrable Bloc 3 — oral 45' (les 14 points du règlement sont couverts par le support)
 
