@@ -20,7 +20,7 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 | Bloc | Épreuve | Date | État au 14/07 |
 |---|---|---|---|
 | Bloc 2 | Dossier écrit 30p max + code source | ~~08–19/06~~ **décalé — date à confirmer** | 🟢 **dossier v4 prêt** (`Dossier_Bloc2_Albion_Helper_v4.docx`, 19/07 — retours prof intégrés : MCD 3.2, schémas remplaçant les tableaux 4.2/5.1, seuil de couverture 4.3, console de tests 6.1, diagramme de séquence 6.2, Lighthouse prod 8.3, schéma sauvegarde 12.4 ; v3.2.0 : activation de compte par e-mail (rétro-compatible) + reset mdp, 173 tests) — ✅ corps 30 pages pile (limite hors annexes) + 4 pages d'annexes ; relire, **mettre à jour le sommaire dans Word (clic droit → Mettre à jour les champs)**, déposer |
-| Bloc 4 | Dossier écrit 20p max | **20–24/07/2026** | **J-6** — prod redéployée ✅ (19/07) ; reste UptimeRobot + relecture |
+| Bloc 4 | Dossier écrit 20p max | **20–24/07/2026 — ⚠️ échéance dépassée, dépôt à confirmer** | 🟢 **dossier v4 généré le 14/08** (`Dossier_Bloc4_Albion_Helper_v4.docx` : 121 tests Jest §1 + libellé journal §6.2 — cf. revue du 14/08 plus bas) ; v3 du 29/07 (`Dossier_Bloc4_Albion_Helper_v3.docx`, 13 pages/20) — corrige les incohérences de la v2 (figée depuis le 15/07) : 173 tests partout (était 131), journal des versions à jour (ligne v3.2.0 ajoutée), §3.4 UptimeRobot décrite comme activée (au lieu de « à activer »), recommandation §7 « remettre la production » retirée du tableau (réalisée) + phrase de crédibilité ajoutée ; reste : capture d'écran réelle UptimeRobot à insérer en §3.4 (je n'ai pas accès au dashboard), relire dans Word, **confirmer si le dépôt DigiformaCertif du 20–24/07 a bien eu lieu** sinon déposer en urgence |
 | Bloc 3 | Oral 45' (30'+15') + démo live | 17–21/08 ou 01–29/09 | 🟠 support prêt (pptx), reste kanban + prod + répétitions |
 | Bloc 1 | Oral 30' (20'+10') | Rentrée oct. 2026 | 🟡 support prêt (pptx), reste relecture + répétitions |
 
@@ -41,8 +41,9 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 - [x] Système décrit avec schéma : 2 sondes, /api/health détaillé, signalements, journaux (dossier §3)
 - [x] ~~🚨 BLOQUANT : `/api/health` renvoie 404 en prod~~ **RÉSOLU le 19/07** : VPS réinstallé (18/07), `master` poussé (`f97c7ddc`), `deploy/deploy.sh` exécuté en SSH (migrations + build front + sonde cron) — `curl https://albion-back.perfweb.net/api/health` → **200 `"status":"OK"`** (DB + API Albion OK). **CD automatique opérationnelle (constatée le 20/07)** : les secrets GitHub Actions sont en place, le job deploy tourne en vert sur chaque push master (runs #40-42). ~~⚠️ deux sondes cron coexistaient~~ → ancienne sonde `/usr/local/bin/albion-healthcheck-probe.sh` retirée de la crontab le 19/07, seule celle du repo reste
 - [x] Sonde externe **créée le 19/07** : monitor UptimeRobot keyword sur https://albion-back.perfweb.net/api/health — incident si le mot-clé `ERROR` apparaît (plus fiable que « OK disparaît » : les services sains gardent leur `"status":"OK"` en panne partielle), check 5 min, alerte e-mail vers contact@perfweb.net (notification de test reçue), statut Up ✅
-- [ ] **Capture UptimeRobot à insérer dans le dossier §3.4** — la prendre après quelques heures d'historique d'uptime (dashboard.uptimerobot.com/monitors)
+- [ ] **Capture UptimeRobot à insérer dans le dossier §3.4** — la prendre après quelques heures d'historique d'uptime (dashboard.uptimerobot.com/monitors) ; le texte du §3.4 dans la v3 décrit déjà la sonde comme activée, seule l'image manque
 - [x] Sonde interne **automatisée le 14/07** : `deploy.sh` (ré)installe la crontab (*/5) de `healthcheck-probe.sh` à chaque déploiement (commit `1af1a572`) — elle sera posée sur le VPS au prochain déploiement, plus rien à faire à la main
+- [ ] ⚠️ **Constat SSH du 14/08 (VPS 192.168.2.35)** : la **crontab d'`albion` est vide** (la sonde interne ne tourne plus — cron daemon actif, code master à jour, cause de la disparition inconnue), le journal `/var/log/albion-helper-probe.log` **n'existe pas** (`/var/log` non inscriptible par `albion` : le chemin par défaut du script ne pouvait pas fonctionner) et la commande **`mail` est absente** du VPS (l'e-mail de la sonde interne aurait échoué — l'alerte Brevo de `/api/health`, elle, fonctionne). **Corrigé côté repo le 14/08** (v3.3.1 : journal avec repli vers le HOME, garde `MAIL-SKIP`, testé en réel → `OK http=200`) — **reste : pousser `develop:master`** pour que la CD redéploie et réinstalle la crontab via `deploy.sh` (ou en manuel : `ssh -p 22 albion@192.168.2.35` puis `cd /var/www/albion-helper && git pull && sh -c '(crontab -l 2>/dev/null | grep -vF healthcheck-probe.sh; echo "*/5 * * * * /var/www/albion-helper/deploy/healthcheck-probe.sh") | crontab -'`)
 - [x] Alerte e-mail automatique **ajoutée et déployée le 19/07** : `/api/health` envoie le détail des services en erreur à `ALERT_EMAIL` (anti-spam : 1 mail max/30 min via cache) — Brevo configuré en prod (SMTP, expéditeur `no-reply@perfweb.net` vérifié DKIM/DMARC, 300 mails/jour gratuits), envoi réel testé depuis le VPS
 
 ### C4.2.1 — Consignation des anomalies ⚠️ ÉLIM
@@ -59,7 +60,8 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 
 ### C4.3.2 — Journal des versions ⚠️ ÉLIM
 - [x] CHANGELOG.md tenu et à jour : **entrée v3.0.0 ajoutée le 14/07** (multi-serveur, stats PvP, batailles, craft localisé, 20 langues, thème fantasy) — commit `770787d8`
-- [ ] Vérifier que l'exemplaire du journal cité dans le dossier Bloc 4 est celui à jour (v3.0.0) à la relecture
+- [x] Journal cité dans le dossier Bloc 4 mis à jour le 29/07 (v3) : va jusqu'à v3.2.0 (19/07, activation e-mail + reset mot de passe), extrait verbatim du CHANGELOG rafraîchi
+- [x] ~~⚠️ Constat du 14/08 : CHANGELOG en retard (figé à v3.2.0)~~ **corrigé le 14/08** : entrées **v3.3.0** (datée 20/07, date réelle du déploiement des features — 404 stylée, écran hors-ligne, favicon, 404 JSON API, cartes dashboard, Ko-fi/silver, gzip, 177 tests : 53 back / 124 front) et **v3.3.1** (14/08, correctif sonde interne) ajoutées au CHANGELOG
 
 ### C4.3.3 — Collaboration avec le support client
 - [x] Cas support rédigé (prix N/A Brecilien), infobulle réellement implémentée dans Craft.jsx (dossier §8)
@@ -76,6 +78,16 @@ Sources officielles (dans `doc/`, ne pas modifier) :
 - [x] 8. Exemple de problème résolu en collaboration avec le support client
 - [x] **15/07 : dossier v2 généré** → `dossier/Dossier_Bloc4_Albion_Helper_v2.docx` (v1 conservée) — skill docx, 13 pages/20, XML validé. Faits à jour : 131 tests, sonde auto-installée + log d'exécution réel, journal →v3.1.0, registre BUG-001→016, traitement BUG-011 & BUG-016, runbook d'alerte, §3.4 honnête (UptimeRobot spécifié, « à activer avec la remise en production »)
 - [ ] **DERNIÈRES ÉTAPES** : ① ~~redéployer la prod~~ ✅ fait le 19/07, **CD auto GitHub Actions vérifiée en vert le 20/07** → ② activer le monitor UptimeRobot (spec dans le dossier §3.4) → ③ relire le docx v2 dans Word (sommaire) → ④ **déposer sur DigiformaCertif entre le 20 et le 24/07**
+
+## 🔎 Revue complète du 14/08 (v3 relue contre règlement + grille jury + Bloc 2 rendu + repo)
+
+- ✅ Les **8 livrables du règlement** et **tous les critères de la grille C4.1.1→C4.3.3** sont couverts par la v3 ; 13 pages / 20 max (vérifié par conversion PDF)
+- ✅ Cohérence Bloc 2 v4 (rendu) ↔ Bloc 4 v3 : 173 tests, app v3.2.0, registre BUG-001→016 + OBS-01 (mêmes dates de résolution), npm audit « risque accepté », sauvegarde pg_dump en recommandation des deux côtés, chronologie CD cohérente — **garder 173 dans le dossier** (état daté juillet, aligné sur le Bloc 2 rendu ; ne pas mettre 177)
+- ✅ Preuves vivantes re-vérifiées le 14/08 : prod `/api/health` → **200 OK en 0,77 s** (< 1 s cible), infobulle du cas support réelle (`Craft.jsx:715` + clés fr/en), dependabot.yml 3 écosystèmes, suites de tests vertes (53 back / 124 front)
+- [x] 🐛 ~~Incohérence interne « 96 tests Jest » (§1)~~ **corrigée le 14/08** → **`Dossier_Bloc4_Albion_Helper_v4.docx`** (v3 conservée) : « 121 tests Jest » + §6.2 « Extrait verbatim de l'entrée v3.2.0 du journal » (au lieu de « l'entrée la plus récente », devenue fausse depuis v3.3.x au repo) — validation OOXML PASSED, 13 pages inchangées. **C'est désormais la version à déposer**
+- [ ] 📷 Capture UptimeRobot §3.4 toujours manquante (seule preuve visuelle absente — C4.1.2 élim) : dashboard.uptimerobot.com/monitors, accès réservé à Pierre (compte créé le 19/07, alertes vers contact@perfweb.net) — rien à voir sur le VPS, c'est un service SaaS externe ; l'insérer dans la **v4** du docx
+- [x] 📓 ~~Entrée v3.3.0 à ajouter au CHANGELOG~~ **fait le 14/08** : v3.3.0 (20/07 — 404 stylée, hors-ligne, favicon, 404 JSON API, cartes dashboard, Ko-fi/silver, gzip, 177 tests) + v3.3.1 (14/08 — correctif sonde interne)
+- [ ] 🚨 **Confirmer le dépôt DigiformaCertif** : l'échéance 20–24/07 est passée depuis 3 semaines et le statut du dépôt Bloc 4 est toujours inconnu
 
 ---
 
